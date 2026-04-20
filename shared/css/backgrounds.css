@@ -1,0 +1,44 @@
+.bg-canvas {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bg-icon {
+  position: absolute;
+  opacity: var(--area-icon-op, 0.08);
+  fill: var(--area-accent);
+  animation: float-icon var(--dur, 12s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+@keyframes float-icon {
+  0%   { transform: translateY(0px)   rotate(0deg);  }
+  33%  { transform: translateY(-16px) rotate(4deg);  }
+  66%  { transform: translateY(-6px)  rotate(-3deg); }
+  100% { transform: translateY(0px)   rotate(0deg);  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-icon { animation: none; }
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero-bg-item {
+  position: absolute;
+  opacity: 0.06;
+  color: var(--area-accent);
+  font-family: var(--font-display);
+  font-weight: 700;
+  animation: float-icon 15s ease-in-out infinite;
+  user-select: none;
+}

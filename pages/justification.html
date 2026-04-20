@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Análisis de Pregunta</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <script src="../shared/js/questions.js?v=3"></script>
+  <link rel="stylesheet" href="../shared/css/variables.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            mat: { light: '#E8F2FB', DEFAULT: '#2F6EB5', dark: '#1A3A5C' },
+            lc: { light: '#FEF0EF', DEFAULT: '#C0392B', dark: '#6B1A1A' },
+            cn: { light: '#EBF8EF', DEFAULT: '#1E8449', dark: '#1A4D2E' },
+            cc: { light: '#FEF6EC', DEFAULT: '#D4680B', dark: '#6B3800' },
+            en: { light: '#F2EAF9', DEFAULT: '#7B2D8B', dark: '#3B1259' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .option-card { transition: all 0.3s ease; }
+    .option-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+    .prose table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+    .prose th, .prose td { border: 1px solid #e5e7eb; padding: 0.5rem; text-align: center; }
+    .prose img { max-width: 100%; height: auto; }
+    .frac { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; margin: 0 2px; }
+    .frac .num { border-bottom: 1px solid currentColor; padding-bottom: 2px; }
+    .frac .den { padding-top: 2px; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-fade { animation: fadeIn 0.5s ease forwards; }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans antialiased pb-12" data-area="mat">
+
+  <!-- Header dinámico según área -->
+  <header id="headerArea" class="bg-mat-dark text-white py-6 shadow-md transition-colors duration-300">
+    <div class="max-w-5xl mx-auto px-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <span id="areaBadge" class="bg-white/20 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">Matemáticas - ID: 0</span>
+          <h1 id="mainTitle" class="text-3xl font-extrabold mt-2">Análisis de Pregunta</h1>
+        </div>
+        <i id="areaIcon" class="fas fa-calculator text-4xl opacity-80"></i>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-6 mt-8 space-y-8" id="questionContent">
+    <!-- Contenido se carga dinámicamente aquí -->
+  </main>
+
+  <!-- Navegación mejorada -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-3 px-6 shadow-lg z-50">
+    <div class="max-w-5xl mx-auto flex justify-between items-center gap-2">
+      <div class="flex gap-2">
+        <a href="../index.html" class="px-3 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition flex items-center gap-2 text-sm">
+          <i class="fas fa-home"></i> Inicio
+        </a>
+        <a id="navPrev" href="#" class="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition flex items-center gap-2 text-sm">
+          <i class="fas fa-arrow-left"></i> <span class="hidden sm:inline">Ant</span>
+        </a>
+      </div>
+      
+      <div class="relative group">
+        <button class="px-3 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition flex items-center gap-2 text-sm">
+          <i class="fas fa-list"></i> Área <span id="areaNameNav">?</span>
+          <i class="fas fa-chevron-down text-xs"></i>
+        </button>
+        <div id="areaDropdown" class="absolute bottom-full left-0 mb-2 bg-white rounded-lg shadow-xl border border-gray-200 py-2 min-w-[200px] hidden group-hover:block">
+          <!-- Se llena dinámicamente -->
+        </div>
+      </div>
+      
+      <div class="flex gap-2">
+        <a id="navArea" href="#" class="px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition flex items-center gap-2 text-sm">
+          <i class="fas fa-folder"></i> Área
+        </a>
+        <a id="navNext" href="#" class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2 text-sm">
+          <span class="hidden sm:inline">Sig</span> <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <script>
+    // ============================================================
+    // CONFIGURACIÓN DE ÁREAS
+    // ============================================================
+    const AREA_CONFIG = {
+      mat: { name: 'Matemáticas', icon: 'fa-calculator', color: 'mat' },
+      lc: { name: 'Lectura Crítica', icon: 'fa-book-reader', color: 'lc' },
+      cn: { name: 'Ciencias Naturales', icon: 'fa-flask', color: 'cn' },
+      cc: { name: 'Competencias Ciudadanas', icon: 'fa-users', color: 'cc' },
+      soc: { name: 'Competencias Ciudadanas', icon: 'fa-users', color: 'cc' },
+      en: { name: 'Inglés', icon: 'fa-language', color: 'en' }
+    };
+
+    const AREA_ICONS = {
+      mat: 'fa-calculator',
+      lc: 'fa-book-reader', 
+      cn: 'fa-flask',
+      cc: 'fa-users',
+      soc: 'fa-users',
+      en: 'fa-language'
+    };
+
+    // ============================================================
+    // CARGAR PREGUNTA DESDE URL
+    // ============================================================
+    function init() {
+      console.log('Init called, PREGUNTAS:', typeof PREGUNTAS);
+      const params = new URLSearchParams(location.search);
+      const id = parseInt(params.get('id'));
+      const areaUrl = params.get('area') || 'mat';
+      
+      console.log('Params:', id, areaUrl);
+      
+      if (!id) {
+        document.getElementById('questionContent').innerHTML = '<p class="text-center text-red-600 p-8">Falta ID de pregunta. URL: ' + location.href + '</p>';
+        return;
+      }
+
+      if (typeof PREGUNTAS === 'undefined') {
+        document.getElementById('questionContent').innerHTML = '<p class="text-center text-red-600 p-8">Error: PREGUNTAS no está definido. Revisa la consola.</p>';
+        return;
+      }
+
+      // Map URL area to subject - FIX for all areas
+      var subject = areaUrl;
+      if (areaUrl === 'cc') subject = 'soc';
+      else if (areaUrl === 'en') subject = 'ing';
+      
+      // Debug info
+      const debugInfo = '<div class="bg-yellow-100 p-4 mb-4 rounded"><strong>Debug:</strong> id=' + id + ', areaUrl=' + areaUrl + ', subject=' + subject + ', total preguntas=' + PREGUNTAS.length + '</div>';
+      
+      const q = PREGUNTAS.find(p => p.id === id && p.subject === subject);
+
+      if (!q) {
+        const allIds = PREGUNTAS.map(p => p.id + '(' + p.subject + ')').slice(0, 10).join(', ');
+        document.getElementById('questionContent').innerHTML = debugInfo + '<p class="text-center text-red-600 p-8">Pregunta no encontrada. Disponibles: ' + allIds + '...</p>';
+        return;
+      }
+
+      configureArea(areaUrl);
+      renderQuestion(q, areaUrl);
+      setupNavigation(areaUrl, id);
+    }
+
+    // ============================================================
+    // CONFIGURAR COLORES SEGÚN ÁREA
+    // ============================================================
+    function configureArea(area) {
+      // Map URL area to subject for config lookup
+      var configArea = area;
+      if (area === 'cc' || area === 'soc') configArea = 'cc';
+      else if (area === 'ing') configArea = 'en';
+      
+      const config = AREA_CONFIG[configArea] || AREA_CONFIG.mat;
+      const header = document.getElementById('headerArea');
+      const badge = document.getElementById('areaBadge');
+      const icon = document.getElementById('areaIcon');
+      
+      header.className = `bg-${config.color}-dark text-white py-6 shadow-md transition-colors duration-300`;
+      badge.textContent = `${config.name} - ID: ${0}`;
+      icon.className = `fas ${config.icon} text-4xl opacity-80`;
+      
+      document.body.dataset.area = area;
+    }
+
+    // ============================================================
+    // DETECTAR TIPO DE CONTENIDO (auto-detectar imágenes)
+    // ============================================================
+    function detectContentConfig(q) {
+      // Auto-detectar si hay imágenes en el HTML
+      const hasContextImg = q.context && q.context.includes('<img');
+      const hasQuestionImg = q.text && q.text.includes('<img');
+      const hasOptionsImg = q.optionsImg && q.optionsImg.length > 0;
+      
+      return {
+        hasContextImg,
+        hasQuestionImg,
+        hasOptionsImg,
+        contextText: q.context ? q.context.replace(/<[^>]+>/g, '').trim() : '',
+        questionText: q.text ? q.text.replace(/<[^>]+>/g, '').trim() : ''
+      };
+    }
+
+    // ============================================================
+    // RENDERIZAR OPCIÓN CORRECTA
+    // ============================================================
+    function renderCorrectOption(letter, text, textImg, justification, hasImg) {
+      return `
+        <div class="option-card bg-white rounded-xl border-2 border-green-500 shadow-md overflow-hidden flex flex-col relative">
+          <div class="absolute top-0 right-0 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">RESPUESTA CORRECTA</div>
+          <div class="bg-green-50 p-4 border-b border-green-200 flex items-start flex-wrap gap-4 pt-6">
+            <div class="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shrink-0 shadow">${letter}</div>
+            <div class="flex-1">
+              <p class="text-gray-900 font-semibold">${text}</p>
+              ${hasImg && textImg ? `<img src="/shared/img/questions/${textImg}.png" alt="Opción ${letter}" class="mt-2 max-w-[150px] rounded">` : ''}
+            </div>
+          </div>
+          <div class="p-5 bg-white flex-grow">
+            <h4 class="text-green-600 font-bold text-sm mb-2 uppercase tracking-wide flex items-center"><i class="fas fa-check-circle mr-1"></i> Justificación</h4>
+            <p class="text-gray-700 text-sm">${justification || 'Esta es la respuesta correcta.'}</p>
+          </div>
+        </div>
+      `;
+    }
+
+    // ============================================================
+    // RENDERIZAR OPCIÓN INCORRECTA
+    // ============================================================
+    function renderWrongOption(letter, text, textImg, reason, hasImg) {
+      return `
+        <div class="option-card bg-white rounded-xl border border-red-200 shadow-sm overflow-hidden flex flex-col">
+          <div class="bg-red-50 p-4 border-b border-red-200 flex items-start flex-wrap gap-4">
+            <div class="bg-red-100 text-red-600 rounded-full w-8 h-8 flex items-center justify-center font-bold shrink-0">${letter}</div>
+            <div class="flex-1">
+              <p class="text-gray-800 text-sm font-medium">${text}</p>
+              ${hasImg && textImg ? `<img src="/shared/img/questions/${textImg}.png" alt="Opción ${letter}" class="mt-2 max-w-[150px] rounded">` : ''}
+            </div>
+          </div>
+          <div class="p-5 bg-white flex-grow">
+            <h4 class="text-red-600 font-bold text-sm mb-2 uppercase tracking-wide flex items-center"><i class="fas fa-times-circle mr-1"></i> Incorrecta</h4>
+            <p class="text-gray-600 text-sm">${reason}</p>
+          </div>
+        </div>
+      `;
+    }
+
+    // ============================================================
+    // EXTRAER IMÁGENES DE HTML
+    // ============================================================
+    function extractImages(html) {
+      if (!html) return [];
+      const imgRegex = /<img[^>]+src=["']([^"']+)["'][^>]*>/gi;
+      const images = [];
+      let match;
+      while ((match = imgRegex.exec(html)) !== null) {
+        images.push(match[1]);
+      }
+      return images;
+    }
+
+// ============================================================
+    // PARSEAR INVALID OPTIONS - mejorado para más formatos
+    // ============================================================
+    function parseInvalidOptions(invalidText, optionsCount) {
+      const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+      const result = {};
+      
+      if (!invalidText) return result;
+      
+      // Primero intentar splitting por <br>
+      let parts = invalidText.split(/<br\s*\/?\s*/i);
+      
+      // Si no hay <br> o solo hay una parte, tentar split por ". " seguido de letra
+      if (parts.length <= 1) {
+        // Dividir por ". A)" o ". La opción A" o " - A)"
+        parts = invalidText.split(/\.\s+(?=La\s+opci|Opci|[A-H][\)\s])/i);
+      }
+      
+      // Dividir también por " y la opción X" o " y la X" para casos como "La opción A... y la opción B..."
+      let allParts = [];
+      parts.forEach(part => {
+        if (!part.trim()) return;
+        // Split por " y la opción" o " y la " (entre opciones)
+        const subParts = part.split(/\s+y\s+la\s+opci[oón]+\s*/i);
+        if (subParts.length > 1) {
+          allParts = allParts.concat(subParts);
+        } else {
+          allParts.push(part);
+        }
+      });
+      
+      allParts.forEach(part => {
+        if (!part.trim()) return;
+        
+        let foundLetter = null;
+        const cleanPart = part.trim();
+        
+        // Buscar letra al inicio o después de "opción"
+        const laMatch = cleanPart.match(/^La\s+opci[oón]+\s+([A-H])/i);
+        const opMatch = cleanPart.match(/^Opci[oón]+\s+([A-H])/i);
+        const parenMatch = cleanPart.match(/^([A-H])[\)\.]/);
+        
+        if (laMatch) foundLetter = laMatch[1].toUpperCase();
+        else if (opMatch) foundLetter = opMatch[1].toUpperCase();
+        else if (parenMatch) foundLetter = parenMatch[1].toUpperCase();
+        
+        // Si no se encontró letra al inicio, buscar en cualquier posición
+        if (!foundLetter) {
+          const anywhereMatch = cleanPart.match(/La\s+opci[oón]+\s+([A-H])/i) || cleanPart.match(/Opci[oón]+\s+([A-H])/i);
+          if (anywhereMatch) foundLetter = anywhereMatch[1].toUpperCase();
+        }
+        
+        // Si aún no tiene letra, usar primer char si es A-H
+        if (!foundLetter && cleanPart.length > 0) {
+          const firstChar = cleanPart[0].toUpperCase();
+          if (letters.includes(firstChar)) foundLetter = firstChar;
+        }
+        
+        if (foundLetter) {
+          const idx = letters.indexOf(foundLetter);
+          if (idx >= 0 && idx < optionsCount) {
+            // Limpiar el texto
+            let cleanText = cleanPart
+              .replace(/^La\s+opci[oón]+\s+[A-H][\s\)\.]*/i, '')
+              .replace(/^Opci[oón]+\s+[A-H][\s\)\.]*/i, '')
+              .replace(/^[A-H][\)\.\s,:;]*/, '')
+              .trim();
+            if (!cleanText || cleanText.length < 5) cleanText = cleanPart;
+            result[idx] = cleanText;
+          }
+        }
+});
+       
+      return result;
+    }
+
+    // ============================================================
+    // RENDERIZAR PREGUNTA
+    // ============================================================
+    function renderQuestion(q, area) {
+      const config = AREA_CONFIG[area] || AREA_CONFIG.mat;
+      const content = document.getElementById('questionContent');
+      const badge = document.getElementById('areaBadge');
+      const title = document.getElementById('mainTitle');
+      
+      badge.textContent = `${config.name} - ID: ${q.id}`;
+      title.textContent = `Pregunta #${q.id}`;
+
+      const conf = detectContentConfig(q);
+      const options = q.options || [];
+      const optionsImg = q.optionsImg || [];
+      const correctIdx = q.correct !== undefined ? q.correct : 0;
+
+      let html = '';
+
+      // ============================================================
+      // SECCIÓN 1: CONTEXTO (simple - la imagen ya viene dentro del HTML)
+      // ============================================================
+      if (q.context) {
+        html += `
+          <section class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-${config.color}">
+            <h2 class="text-xl font-bold text-${config.color}-dark mb-4 flex items-center">
+              <i class="fas fa-book-open mr-2"></i> Contexto
+            </h2>
+            <div class="prose text-gray-700 max-w-none">${q.context}</div>
+          </section>
+        `;
+      }
+
+      // ============================================================
+      // SECCIÓN 2: PREGUNTA (con/sin imagen)
+      // ============================================================
+      if (conf.hasQuestionImg) {
+        html += `
+          <section class="bg-white rounded-xl shadow-sm p-8 border-l-4 border-${config.color}-light">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Pregunta</h2>
+            <div class="prose text-gray-700 mb-4">${q.text || ''}</div>
+            <div class="flex justify-center">${extractImages(q.text).map(src => `<img src="${src}" alt="Pregunta" class="max-w-full h-auto rounded-lg">`).join('')}</div>
+          </section>
+        `;
+      } else {
+        html += `
+          <section class="bg-white rounded-xl shadow-sm p-8 border-l-4 border-${config.color}">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Pregunta</h2>
+            <p class="text-lg text-gray-700 font-medium">${q.text || ''}</p>
+          </section>
+        `;
+      }
+
+      // ============================================================
+      // SECCIÓN 3: ANÁLISIS DE OPCIONES
+      // ============================================================
+      const invalidReasons = parseInvalidOptions(q.invalidOptions, options.length);
+      
+      html += `<section>
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+          <i class="fas fa-tasks text-${config.color} mr-3"></i> Análisis de Opciones
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">`;
+
+      // Renderizar cada opción
+      const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+      
+      options.forEach((opt, idx) => {
+        const isCorrect = idx === correctIdx;
+        const optLetter = letters[idx];
+        const optImg = optionsImg[idx] || '';
+        
+        if (isCorrect) {
+          html += renderCorrectOption(optLetter, opt, optImg, q.justification, conf.hasOptionsImg);
+        } else {
+          const reason = invalidReasons[idx] || (q.invalidOptions ? q.invalidOptions.replace(/<br\s*\/?\s*/gi, ' ') : 'Razón no disponible.');
+          html += renderWrongOption(optLetter, opt, optImg, reason, conf.hasOptionsImg);
+        }
+      });
+      
+      html += '</div></section>';
+
+      // ============================================================
+      // SECCIÓN 4: INFORMACIÓN PEDAGÓGICA
+      // ============================================================
+      html += `
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="md:col-span-2 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100 shadow-sm">
+            <h3 class="text-lg font-bold text-indigo-800 mb-3"><i class="fas fa-microscope mr-2"></i> Concepto Clave</h3>
+            <p class="text-sm text-indigo-900">${q.competency || 'Análisis de la pregunta ICFES'}</p>
+          </div>
+          <div class="bg-gray-800 rounded-xl p-6 text-white shadow-sm flex flex-col justify-between">
+            <div>
+              <h3 class="text-lg font-bold text-gray-100 mb-4 border-b border-gray-600 pb-2"><i class="fas fa-tags mr-2"></i> Ficha Técnica</h3>
+              <div class="space-y-3 text-xs">
+                <div>
+                  <span class="text-gray-400 block uppercase tracking-wider">Competencia</span>
+                  <span class="font-medium text-blue-300">${q.competency || '-'}</span>
+                </div>
+                <div>
+                  <span class="text-gray-400 block uppercase tracking-wider">Componente</span>
+                  <span class="font-medium">${q.component || '-'}</span>
+                </div>
+                <div>
+                  <span class="text-gray-400 block uppercase tracking-wider">Criterio</span>
+                  <span class="font-medium text-gray-300">${q.evaluationCriteria || '-'}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      `;
+
+      content.innerHTML = html;
+    }
+
+    // ============================================================
+    // NAVEGACIÓN MEJORADA
+    // ============================================================
+    function setupNavigation(area, currentId) {
+      const config = AREA_CONFIG[area] || AREA_CONFIG.mat;
+      // Map URL area to subject
+      var subject = area;
+      if (area === 'cc') subject = 'soc';
+      else if (area === 'en') subject = 'ing';
+      
+      const questions = PREGUNTAS.filter(q => q.subject === subject).sort((a, b) => a.id - b.id);
+      const idx = questions.findIndex(q => q.id === currentId);
+      
+      // Botones anterior/siguiente
+      const prevBtn = document.getElementById('navPrev');
+      const nextBtn = document.getElementById('navNext');
+      
+      if (idx > 0) {
+        prevBtn.href = `justification.html?area=${area}&id=${questions[idx - 1].id}`;
+      } else {
+        prevBtn.classList.add('opacity-50', 'pointer-events-none');
+      }
+      
+      if (idx < questions.length - 1) {
+        nextBtn.href = `justification.html?area=${area}&id=${questions[idx + 1].id}`;
+      } else {
+        nextBtn.classList.add('opacity-50', 'pointer-events-none');
+      }
+      
+      // Botón volver al área
+      const navArea = document.getElementById('navArea');
+      navArea.href = `area.html?area=${area}`;
+      
+      // Mostrar nombre del área en el dropdown
+      document.getElementById('areaNameNav').textContent = config.name;
+      
+      // Llenar dropdown con otras áreas
+      const dropdown = document.getElementById('areaDropdown');
+      const otherAreas = Object.entries(AREA_CONFIG).filter(([key]) => key !== area);
+      
+      dropdown.innerHTML = otherAreas.map(([key, cfg]) => `
+        <a href="justification.html?area=${key}&id=${currentId}" class="block px-4 py-2 hover:bg-gray-100 text-sm">
+          <i class="fas ${cfg.icon} w-4"></i> ${cfg.name}
+        </a>
+      `).join('');
+      
+      // También agregar enlace directo al área
+      dropdown.innerHTML += `
+        <hr class="my-1 border-gray-200">
+        <a href="area.html?area=${area}" class="block px-4 py-2 hover:bg-gray-100 text-sm font-medium">
+          <i class="fas fa-folder-open w-4"></i> Todas las preguntas
+        </a>
+      `;
+    }
+
+    // Iniciar
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

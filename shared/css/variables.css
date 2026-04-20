@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Poppins:wght@600;700&display=swap');
+
+:root {
+  --font-body:    'Nunito', sans-serif;
+  --font-display: 'Poppins', sans-serif;
+
+  --color-page-bg:   #F5F7FA;
+  --color-text:      #2D3748;
+  --color-text-soft: #718096;
+  --color-white:     #FFFFFF;
+  --color-shadow:    rgba(0, 0, 0, 0.08);
+
+  /* MATEMÁTICAS — Azul pastel */
+  --mat-primary: #BDD7EE;  --mat-accent: #2F6EB5;
+  --mat-light:   #E8F2FB;  --mat-text:   #1A3A5C;  --mat-icon-op: 0.08;
+
+  /* LECTURA CRÍTICA — Rojo/Rosa pastel */
+  --lc-primary:  #F4CCCC;  --lc-accent:  #C0392B;
+  --lc-light:    #FEF0EF;  --lc-text:    #6B1A1A;  --lc-icon-op: 0.07;
+
+  /* CIENCIAS NATURALES — Verde pastel */
+  --cn-primary:  #C6EFCE;  --cn-accent:  #1E8449;
+  --cn-light:    #EBF8EF;  --cn-text:    #1A4D2E;  --cn-icon-op: 0.08;
+
+  /* COMPETENCIAS CIUDADANAS — Naranja/Amarillo pastel */
+  --cc-primary:  #FCE4C2;  --cc-accent:  #D4680A;
+  --cc-light:    #FEF6EC;  --cc-text:    #6B3800;  --cc-icon-op: 0.08;
+
+  /* INGLÉS — Púrpura pastel */
+  --en-primary:  #D9C9F0;  --en-accent:  #7B2D8B;
+  --en-light:    #F2EAF9;  --en-text:    #3B1259;  --en-icon-op: 0.07;
+
+  /* Estados */
+  --color-correct: #1E8449;
+  --color-wrong:   #C0392B;
+  --color-hint:    #2471A3;
+
+  /* Espaciado y radios */
+  --sp-xs: 4px;  --sp-sm: 8px;   --sp-md: 16px;
+  --sp-lg: 32px; --sp-xl: 64px;
+  --r-card: 16px; --r-btn: 10px;
+
+  /* Variables genéricas de área — sobreescritas por data-area */
+  --area-primary: var(--mat-primary);
+  --area-accent:  var(--mat-accent);
+  --area-light:   var(--mat-light);
+  --area-text:    var(--mat-text);
+  --area-icon-op: var(--mat-icon-op);
+}
+
+[data-area="mat"] { --area-primary:var(--mat-primary); --area-accent:var(--mat-accent); --area-light:var(--mat-light); --area-text:var(--mat-text); --area-icon-op:var(--mat-icon-op); }
+[data-area="lc"]  { --area-primary:var(--lc-primary);  --area-accent:var(--lc-accent);  --area-light:var(--lc-light);  --area-text:var(--lc-text);  --area-icon-op:var(--lc-icon-op);  }
+[data-area="cn"]  { --area-primary:var(--cn-primary);  --area-accent:var(--cn-accent);  --area-light:var(--cn-light);  --area-text:var(--cn-text);  --area-icon-op:var(--cn-icon-op);  }
+[data-area="cc"]  { --area-primary:var(--cc-primary);  --area-accent:var(--cc-accent);  --area-light:var(--cc-light);  --area-text:var(--cc-text);  --area-icon-op:var(--cc-icon-op);  }
+[data-area="en"]  { --area-primary:var(--en-primary);  --area-accent:var(--en-accent);  --area-light:var(--en-light);  --area-text:var(--en-text);  --area-icon-op:var(--en-icon-op);  }
