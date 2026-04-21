@@ -42,9 +42,8 @@
     <p>Material de apoyo pedagógico — No oficial</p>
   </footer>
 
-  <script src="../shared/js/questions.js"></script>
+  <script src="../shared/js/questions_db.js"></script>
   <script>
-    // Mapping de nombre de área visible
     const AREA_NAMES = {
       mat: 'Matemáticas',
       lc: 'Lectura Crítica',
@@ -54,7 +53,6 @@
       en: 'Inglés'
     };
     
-    // Mapping de áreas URL -> subject del preguntas.js
     const AREA_SUBJECT = {
       mat: 'mat',
       lc: 'lc',
@@ -64,14 +62,12 @@
       en: 'ing'
     };
     
-    // Íconos por área
     const AREA_ICONS = {
       mat: ['∑', '∫', 'π', '√', '≈', 'Δ', 'Ω', 'λ', '∞'],
       lc: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'],
       cn: ['⚛', '🧬', '🔬', '🧪', '🌿', '⚡', '🔥', '💧', '🌊'],
       cc: ['⚖️', '🤝', '🗳️', '🗣️', '📢', '👥', '👤', '🏛️', '🛡️'],
-      en: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'],
-      ing: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
+      en: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
     };
     
     function truncate(str, len) {
@@ -93,23 +89,10 @@
       }
     }
     
-    // Obtener preguntas de un área
-    function getQuestionsByArea(area) {
-      if (typeof PREGUNTAS === 'undefined') return [];
-      return PREGUNTAS.filter(function(q) { return q.subject === area; });
-    }
-    
-    // Inicializar
-    (function() {
-      // Debug
-      if (typeof PREGUNTAS === 'undefined') {
-        document.getElementById('question-list').innerHTML = '<p class="text-red-600">Error: PREGUNTAS no cargado</p>';
-        return;
-      }
-      
-      var params = new URLSearchParams(location.search);
-      var areaUrl = params.get('area') || 'mat';
-      var subject = AREA_SUBJECT[areaUrl] || areaUrl;
+    async function init() {
+      const params = new URLSearchParams(location.search);
+      const areaUrl = params.get('area') || 'mat';
+      const subject = AREA_SUBJECT[areaUrl] || areaUrl;
       
       document.body.dataset.area = areaUrl;
       document.getElementById('breadcrumb-area').textContent = AREA_NAMES[areaUrl] || areaUrl;
@@ -117,26 +100,27 @@
       
       spawnBackgroundIcons(areaUrl);
       
-      var data = getQuestionsByArea(subject);
-      var list = document.getElementById('question-list');
+      const data = await getQuestionsByArea(subject);
+      const list = document.getElementById('question-list');
       
       if (data.length === 0) {
         list.innerHTML = '<p class="text-soft">No hay preguntas para esta área.</p>';
         return;
       }
       
-      // Ordenar por ID
-      data.sort(function(a, b) { return a.id - b.id; });
+      data.sort((a, b) => a.id - b.id);
       
-      data.forEach(function(q) {
-        var item = document.createElement('a');
+      data.forEach(q => {
+        const item = document.createElement('a');
         item.href = 'justification.html?id=' + q.id + '&area=' + areaUrl;
         item.className = 'question-list-item';
-        var qtext = q.text || 'Pregunta #' + q.id;
+        const qtext = q.text || 'Pregunta #' + q.id;
         item.innerHTML = '<span class="qli-id">#' + q.id + '</span><p class="qli-text">' + truncate(qtext, 80) + '</p><span class="qli-arrow">→</span>';
         list.appendChild(item);
       });
-    })();
+    }
+    
+    init();
   </script>
 </body>
 </html>

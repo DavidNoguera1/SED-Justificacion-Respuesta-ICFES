@@ -6,7 +6,7 @@
   <title>Análisis de Pregunta</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <script src="../shared/js/questions.js?v=3"></script>
+  <script src="../shared/js/questions_db.js"></script>
   <link rel="stylesheet" href="../shared/css/variables.css">
   <script>
     tailwind.config = {
@@ -113,43 +113,32 @@
     // ============================================================
     // CARGAR PREGUNTA DESDE URL
     // ============================================================
-    function init() {
-      console.log('Init called, PREGUNTAS:', typeof PREGUNTAS);
+    async function init() {
+      await initDB();
       const params = new URLSearchParams(location.search);
       const id = parseInt(params.get('id'));
       const areaUrl = params.get('area') || 'mat';
-      
-      console.log('Params:', id, areaUrl);
       
       if (!id) {
         document.getElementById('questionContent').innerHTML = '<p class="text-center text-red-600 p-8">Falta ID de pregunta. URL: ' + location.href + '</p>';
         return;
       }
 
-      if (typeof PREGUNTAS === 'undefined') {
-        document.getElementById('questionContent').innerHTML = '<p class="text-center text-red-600 p-8">Error: PREGUNTAS no está definido. Revisa la consola.</p>';
-        return;
-      }
-
-      // Map URL area to subject - FIX for all areas
       var subject = areaUrl;
       if (areaUrl === 'cc') subject = 'soc';
       else if (areaUrl === 'en') subject = 'ing';
       
-      // Debug info
-      const debugInfo = '<div class="bg-yellow-100 p-4 mb-4 rounded"><strong>Debug:</strong> id=' + id + ', areaUrl=' + areaUrl + ', subject=' + subject + ', total preguntas=' + PREGUNTAS.length + '</div>';
-      
-      const q = PREGUNTAS.find(p => p.id === id && p.subject === subject);
+      const q = await getQuestionById(id, subject);
 
       if (!q) {
-        const allIds = PREGUNTAS.map(p => p.id + '(' + p.subject + ')').slice(0, 10).join(', ');
-        document.getElementById('questionContent').innerHTML = debugInfo + '<p class="text-center text-red-600 p-8">Pregunta no encontrada. Disponibles: ' + allIds + '...</p>';
+        const debugInfo = '<div class="bg-yellow-100 p-4 mb-4 rounded"><strong>Debug:</strong> id=' + id + ', area=' + subject + ', total=' + PREGUNTAS.length + '</div>';
+        document.getElementById('questionContent').innerHTML = debugInfo + '<p class="text-center text-red-600 p-8">Pregunta no encontrada.</p>';
         return;
       }
 
       configureArea(areaUrl);
       renderQuestion(q, areaUrl);
-      setupNavigation(areaUrl, id);
+      await setupNavigation(areaUrl, id, subject);
     }
 
     // ============================================================
@@ -217,6 +206,13 @@
     // RENDERIZAR OPCIÓN INCORRECTA
     // ============================================================
     function renderWrongOption(letter, text, textImg, reason, hasImg) {
+      let reasonHtml = reason;
+      if (reason && reason.includes('<br')) {
+        const items = reason.split(/<br\s*\/?\s*/i).filter(s => s.trim());
+        if (items.length > 1) {
+          reasonHtml = '<ul class="list-disc list-inside space-y-1">' + items.map(item => `<li>${item.trim()}</li>`).join('') + '</ul>';
+        }
+      }
       return `
         <div class="option-card bg-white rounded-xl border border-red-200 shadow-sm overflow-hidden flex flex-col">
           <div class="bg-red-50 p-4 border-b border-red-200 flex items-start flex-wrap gap-4">
@@ -228,7 +224,7 @@
           </div>
           <div class="p-5 bg-white flex-grow">
             <h4 class="text-red-600 font-bold text-sm mb-2 uppercase tracking-wide flex items-center"><i class="fas fa-times-circle mr-1"></i> Incorrecta</h4>
-            <p class="text-gray-600 text-sm">${reason}</p>
+            <div class="text-gray-600 text-sm">${reasonHtml}</div>
           </div>
         </div>
       `;
@@ -443,17 +439,13 @@
     // ============================================================
     // NAVEGACIÓN MEJORADA
     // ============================================================
-    function setupNavigation(area, currentId) {
+    async function setupNavigation(area, currentId, subject) {
       const config = AREA_CONFIG[area] || AREA_CONFIG.mat;
-      // Map URL area to subject
-      var subject = area;
-      if (area === 'cc') subject = 'soc';
-      else if (area === 'en') subject = 'ing';
       
-      const questions = PREGUNTAS.filter(q => q.subject === subject).sort((a, b) => a.id - b.id);
+      const questions = await getQuestionsByArea(subject);
+      questions.sort((a, b) => a.id - b.id);
       const idx = questions.findIndex(q => q.id === currentId);
       
-      // Botones anterior/siguiente
       const prevBtn = document.getElementById('navPrev');
       const nextBtn = document.getElementById('navNext');
       
@@ -469,14 +461,11 @@
         nextBtn.classList.add('opacity-50', 'pointer-events-none');
       }
       
-      // Botón volver al área
       const navArea = document.getElementById('navArea');
       navArea.href = `area.html?area=${area}`;
       
-      // Mostrar nombre del área en el dropdown
       document.getElementById('areaNameNav').textContent = config.name;
       
-      // Llenar dropdown con otras áreas
       const dropdown = document.getElementById('areaDropdown');
       const otherAreas = Object.entries(AREA_CONFIG).filter(([key]) => key !== area);
       
@@ -486,7 +475,6 @@
         </a>
       `).join('');
       
-      // También agregar enlace directo al área
       dropdown.innerHTML += `
         <hr class="my-1 border-gray-200">
         <a href="area.html?area=${area}" class="block px-4 py-2 hover:bg-gray-100 text-sm font-medium">
