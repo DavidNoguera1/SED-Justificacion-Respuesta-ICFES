@@ -458,7 +458,7 @@ async function setupNavigation(area, currentId, subject) {
     const navArea = document.getElementById('navArea');
     navArea.href = 'area.php?area=' + area;
 
-    // Quick nav pills
+    // Quick nav pills con tooltip
     const quickNav = document.getElementById('quickNav');
     const start = Math.max(0, idx - 4);
     const end = Math.min(questions.length, idx + 6);
@@ -467,10 +467,13 @@ async function setupNavigation(area, currentId, subject) {
     for (let i = start; i < end; i++) {
       const q = questions[i];
       const isActive = q.id === currentId;
+      const questionText = q.text ? q.text.replace(/<[^>]+>/g, '').trim().substring(0, 100) : 'Pregunta sin texto';
+      const truncatedText = questionText.length > 80 ? questionText.substring(0, 80) + '...' : questionText;
       pillsHtml +=
         '<a href="justification.php?area=' + area + '&id=' + q.id + '" ' +
-        'class="px-2.5 py-1 rounded-lg text-xs font-medium transition ' + (isActive ? 'bg-blue-600 text-white' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-100') + '">' +
+        'class="px-2.5 py-1 rounded-lg text-xs font-medium transition relative ' + (isActive ? 'bg-blue-600 text-white' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-100') + '">' +
         q.id +
+        '<span class="quick-nav-tooltip">' + truncatedText.replace(/"/g, '&quot;') + '</span>' +
         '</a>';
     }
     quickNav.innerHTML = pillsHtml;
