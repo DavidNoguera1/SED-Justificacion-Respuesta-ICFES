@@ -106,37 +106,15 @@ function detectContentConfig(q) {
 }
 
 // ============================================================
-// RENDERIZAR OPCIÓN INCORRECTA
-// ============================================================
+  // EXTRAER IMÁGENES DE HTML
+  // ============================================================
 
-function renderWrongOption(letter, text, textImg, hasImg) {
-  return `
-    <div class="option-card bg-white rounded-xl border border-red-200 shadow-sm overflow-hidden flex flex-col">
-      <div class="bg-red-50 p-4 border-b border-red-200 flex items-start flex-wrap gap-4">
-        <div class="bg-red-100 text-red-600 rounded-full w-8 h-8 flex items-center justify-center font-bold shrink-0">${letter}</div>
-        <div class="flex-1">
-          <p class="text-gray-800 text-sm font-medium">${text}</p>
-          ${hasImg && textImg ? `<img src="/shared/img/questions/${textImg}.png" alt="Opción ${letter}" class="mt-2 max-w-[150px] rounded">` : ''}
-        </div>
-      </div>
-    </div>
-  `;
-}
+  const IMG_BASE_PATH = '../shared/img/questions/';
 
-// ============================================================
-// EXTRAER IMÁGENES DE HTML
-// ============================================================
-
-function extractImages(html) {
-  if (!html) return [];
-  const imgRegex = /<img[^>]+src=["']([^"']+)["'][^>]*>/gi;
-  const images = [];
-  let match;
-  while ((match = imgRegex.exec(html)) !== null) {
-    images.push(match[1]);
+  function getOptionImgSrc(imgName) {
+    if (!imgName) return '';
+    return IMG_BASE_PATH + imgName + '.png';
   }
-  return images;
-}
 
 // ============================================================
 // PARSEAR INVALID OPTIONS
@@ -297,7 +275,7 @@ function parseInvalidOptions(invalidText, optionsCount) {
               <div class="bg-green-500 text-white rounded-full w-7 h-7 flex items-center justify-center font-bold shrink-0">${letters[correctIdx]}</div>
               <div class="flex-1">
                 <p class="text-gray-900 font-medium">${correctOption}</p>
-                ${conf.hasOptionsImg && correctImg ? `<img src="/shared/img/questions/${correctImg}.png" alt="Opción ${letters[correctIdx]}" class="mt-2 max-w-[150px] rounded">` : ''}
+                ${conf.hasOptionsImg && correctImg ? `<img src="${getOptionImgSrc(correctImg)}" alt="Opción ${letters[correctIdx]}" class="mt-2 max-w-[150px] rounded">` : ''}
               </div>
             </div>
           </div>
@@ -350,10 +328,14 @@ function parseInvalidOptions(invalidText, optionsCount) {
       options.forEach((opt, idx) => {
         if (idx !== correctIdx) {
           const optLetter = letters[idx];
+          const optImg = optionsImg[idx] || '';
           html += `
             <li class="bg-white border border-red-200 rounded-lg p-3 flex items-start gap-3">
               <span class="bg-red-100 text-red-600 rounded-full w-7 h-7 flex items-center justify-center font-bold text-sm shrink-0">${optLetter}</span>
-              <span class="text-gray-700 text-sm">${opt}</span>
+              <div class="flex-1">
+                <p class="text-gray-700 text-sm">${opt}</p>
+                ${conf.hasOptionsImg && optImg ? `<img src="${getOptionImgSrc(optImg)}" alt="Opción ${optLetter}" class="mt-2 max-w-[150px] rounded">` : ''}
+              </div>
             </li>`;
         }
       });
