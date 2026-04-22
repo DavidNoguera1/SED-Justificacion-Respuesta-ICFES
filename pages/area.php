@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="../shared/css/layout.css">
   <link rel="stylesheet" href="../shared/css/components.css?v=4">
   <link rel="stylesheet" href="../shared/css/backgrounds.css">
+  <link rel="stylesheet" href="css/area.css">
 </head>
 <body>
 
@@ -16,7 +17,7 @@
 
   <header class="site-header">
     <div class="container">
-      <a href="../index.php" style="text-decoration:none;">
+<a href="../index.php" style="text-decoration:none;">
         <h1 class="site-title">Apoyo ICFES</h1>
       </a>
       <p class="site-subtitle">Entiende el <em>por qué</em> de cada respuesta</p>
