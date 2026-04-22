@@ -12,7 +12,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS
 
 require_once __DIR__ . '/db.php';
 
-function getQuestions($subject = null, $activeOnly = true) {
+function getQuestions($subject = null, $activeOnly = true, $filters = []) {
     $conn = getConnection();
     
     $sql = "SELECT 
@@ -51,6 +51,30 @@ function getQuestions($subject = null, $activeOnly = true) {
         $sql .= " AND (activo IS NULL OR activo = 1)";
     }
     
+    if (!empty($filters['competency'])) {
+        $sql .= " AND competency = ?";
+        $params[] = $filters['competency'];
+        $types .= 's';
+    }
+    
+    if (!empty($filters['level'])) {
+        $sql .= " AND level = ?";
+        $params[] = $filters['level'];
+        $types .= 's';
+    }
+    
+    if (!empty($filters['component'])) {
+        $sql .= " AND component = ?";
+        $params[] = $filters['component'];
+        $types .= 's';
+    }
+    
+    if (!empty($filters['skill'])) {
+        $sql .= " AND skill = ?";
+        $params[] = $filters['skill'];
+        $types .= 's';
+    }
+    
     $sql .= " ORDER BY id ASC";
     
     $stmt = $conn->prepare($sql);
@@ -70,6 +94,49 @@ function getQuestions($subject = null, $activeOnly = true) {
     $stmt->close();
     
     return $questions;
+}
+
+function getUniqueFieldValues($subject) {
+    $conn = getConnection();
+    
+    $sql = "SELECT DISTINCT competency, level, component, skill 
+            FROM questions 
+            WHERE (activo IS NULL OR activo = 1)";
+    
+    if ($subject !== null && $subject !== '') {
+        $sql .= " AND subject = ?";
+    }
+    
+    $stmt = $conn->prepare($sql);
+    if ($subject !== null && $subject !== '') {
+        $stmt->bind_param('s', $subject);
+    }
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    $uniqueValues = [
+        'competency' => [],
+        'level' => [],
+        'component' => [],
+        'skill' => []
+    ];
+    
+    while ($row = $result->fetch_assoc()) {
+        foreach (['competency', 'level', 'component', 'skill'] as $field) {
+            $val = $row[$field];
+            if (!empty($val) && !in_array($val, $uniqueValues[$field])) {
+                $uniqueValues[$field][] = $val;
+            }
+        }
+    }
+    
+    $stmt->close();
+    
+    foreach ($uniqueValues as $key => $values) {
+        sort($uniqueValues[$key]);
+    }
+    
+    return $uniqueValues;
 }
 
 function transformQuestion($row) {
@@ -143,9 +210,19 @@ function getSubjects() {
 $subject = $_GET['subject'] ?? null;
 $id = $_GET['id'] ?? null;
 $subjects = $_GET['subjects'] ?? false;
+$uniqueFields = $_GET['uniqueFields'] ?? false;
+$competency = $_GET['competency'] ?? null;
+$level = $_GET['level'] ?? null;
+$component = $_GET['component'] ?? null;
+$skill = $_GET['skill'] ?? null;
 
 if ($subjects) {
     echo json_encode(getSubjects());
+    exit;
+}
+
+if ($uniqueFields) {
+    echo json_encode(getUniqueFieldValues($subject));
     exit;
 }
 
@@ -160,4 +237,10 @@ if ($id !== null) {
     exit;
 }
 
-echo json_encode(getQuestions($subject));
+$filters = [];
+if ($competency) $filters['competency'] = $competency;
+if ($level) $filters['level'] = $level;
+if ($component) $filters['component'] = $component;
+if ($skill) $filters['skill'] = $skill;
+
+echo json_encode(getQuestions($subject, true, $filters));

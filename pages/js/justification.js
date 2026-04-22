@@ -238,8 +238,8 @@ function parseInvalidOptions(invalidText, optionsCount) {
             <h2 class="text-xl font-bold text-${config.color}-dark flex items-center">
               <i class="fas fa-book-open mr-2"></i> Contexto
             </h2>
-            <button class="collapse-btn text-xs text-gray-400 hover:text-gray-600 flex items-center gap-1" onclick="toggleCollapse(this)">
-              <span>Click para ocultar</span> <i class="fas fa-chevron-up"></i>
+            <button class="collapse-btn text-sm text-gray-500 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg transition flex items-center gap-2 font-medium" onclick="toggleCollapse(this)">
+              <i class="fas fa-eye-slash"></i> <span>Click para ocultar</span> <i class="fas fa-chevron-up"></i>
             </button>
           </div>
           <div class="collapse-content prose text-gray-700 max-w-none">${processHtmlImages(q.context)}</div>
@@ -252,9 +252,11 @@ function parseInvalidOptions(invalidText, optionsCount) {
       html += `
         <section class="bg-white rounded-xl shadow-sm p-8 border-l-4 border-${config.color}-light collapse-section" data-opened="true">
           <div class="flex items-center justify-between mb-4">
-            <h2 class="text-xl font-bold text-gray-800">Pregunta</h2>
-            <button class="collapse-btn text-xs text-gray-400 hover:text-gray-600 flex items-center gap-1" onclick="toggleCollapse(this)">
-              <span>Click para ocultar</span> <i class="fas fa-chevron-up"></i>
+            <h2 class="text-xl font-bold text-gray-800 flex items-center">
+              <i class="fas fa-question-circle mr-2 text-${config.color}"></i> Pregunta
+            </h2>
+            <button class="collapse-btn text-sm text-gray-500 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg transition flex items-center gap-2 font-medium" onclick="toggleCollapse(this)">
+              <i class="fas fa-eye-slash"></i> <span>Click para ocultar</span> <i class="fas fa-chevron-up"></i>
             </button>
           </div>
           <div class="collapse-content">
@@ -267,9 +269,11 @@ function parseInvalidOptions(invalidText, optionsCount) {
       html += `
         <section class="bg-white rounded-xl shadow-sm p-8 border-l-4 border-${config.color} collapse-section" data-opened="true">
           <div class="flex items-center justify-between mb-4">
-            <h2 class="text-xl font-bold text-gray-800">Pregunta</h2>
-            <button class="collapse-btn text-xs text-gray-400 hover:text-gray-600 flex items-center gap-1" onclick="toggleCollapse(this)">
-              <span>Click para ocultar</span> <i class="fas fa-chevron-up"></i>
+            <h2 class="text-xl font-bold text-gray-800 flex items-center">
+              <i class="fas fa-question-circle mr-2 text-${config.color}"></i> Pregunta
+            </h2>
+            <button class="collapse-btn text-sm text-gray-500 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg transition flex items-center gap-2 font-medium" onclick="toggleCollapse(this)">
+              <i class="fas fa-eye-slash"></i> <span>Click para ocultar</span> <i class="fas fa-chevron-up"></i>
             </button>
           </div>
           <div class="collapse-content">
@@ -289,8 +293,8 @@ function parseInvalidOptions(invalidText, optionsCount) {
           <h2 class="text-xl font-bold text-green-700 flex items-center">
             <i class="fas fa-check-circle mr-2"></i> Respuesta Correcta
           </h2>
-          <button class="collapse-btn text-xs text-gray-400 hover:text-gray-600 flex items-center gap-1" onclick="toggleCollapse(this)">
-            <span>Click para ocultar</span> <i class="fas fa-chevron-up"></i>
+          <button class="collapse-btn text-sm text-green-600 hover:text-green-800 bg-green-100 hover:bg-green-200 px-3 py-1.5 rounded-lg transition flex items-center gap-2 font-medium" onclick="toggleCollapse(this)">
+            <i class="fas fa-eye-slash"></i> <span>Click para ocultar</span> <i class="fas fa-chevron-up"></i>
           </button>
         </div>
         <div class="collapse-content">
@@ -312,60 +316,56 @@ function parseInvalidOptions(invalidText, optionsCount) {
       </section>
     `;
 
-    // SECCIÓN 3B: ¿POR QUÉ LAS OTRAS SON INCORRECTAS?
-    if (q.invalidOptions) {
-      html += `
-        <section class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-red-400 collapse-section" data-opened="false">
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-bold text-red-700 flex items-center">
-              <i class="fas fa-times-circle mr-2"></i> ¿Por qué las otras opciones son incorrectas?
-            </h3>
-            <button class="collapse-btn text-xs text-blue-500 hover:text-blue-700 flex items-center gap-1" onclick="toggleCollapse(this)">
-              <span>Click para abrir</span> <i class="fas fa-chevron-down"></i>
-            </button>
-          </div>
-          <div class="collapse-content hidden">
-            <div class="bg-red-50 rounded-lg p-4">
-              <p class="text-gray-700 text-sm">${q.invalidOptions}</p>
-            </div>
-          </div>
-        </section>
-      `;
-    }
+    // SECCIÓN 3B + 3C: OPCIONES INCORRECTAS (fusionadas)
+    const hasInvalidText = q.invalidOptions ? true : false;
+    const hasWrongOptions = options.filter((_, idx) => idx !== correctIdx).length > 0;
 
-    // SECCIÓN 3C: LISTA DE OPCIONES INCORRECTAS
-    const wrongOptions = options.filter((_, idx) => idx !== correctIdx);
-
-    if (wrongOptions.length > 0) {
+    if (hasInvalidText || hasWrongOptions) {
       html += `
         <section class="bg-white rounded-xl shadow-sm collapse-section border-l-4 border-red-400 p-6" data-opened="false">
           <div class="flex items-center justify-between mb-4">
             <h3 class="text-lg font-bold text-red-700 flex items-center">
               <i class="fas fa-times-circle mr-2"></i> Opciones Incorrectas
+              ${hasInvalidText && hasWrongOptions ? '<span class="ml-2 text-xs text-red-500 bg-red-100 px-2 py-0.5 rounded-full">(razones + lista)</span>' : ''}
             </h3>
-            <button class="collapse-btn text-xs text-blue-500 hover:text-blue-700 flex items-center gap-1" onclick="toggleCollapse(this)">
-              <span>Click para abrir</span> <i class="fas fa-chevron-down"></i>
+            <button class="collapse-btn text-sm text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition flex items-center gap-2 font-medium shadow-sm" onclick="toggleCollapse(this)">
+              <i class="fas fa-eye"></i> <span>Click para abrir</span> <i class="fas fa-chevron-down"></i>
             </button>
           </div>
-          <div class="collapse-content hidden">
-            <ul class="space-y-2">`;
-
-      options.forEach((opt, idx) => {
-        if (idx !== correctIdx) {
-          const optLetter = letters[idx];
-          const optImg = optionsImg[idx] || '';
-          html += `
-            <li class="bg-white border border-red-200 rounded-lg p-3 flex items-start gap-3">
-              <span class="bg-red-100 text-red-600 rounded-full w-7 h-7 flex items-center justify-center font-bold text-sm shrink-0">${optLetter}</span>
-              <div class="flex-1">
-                <p class="text-gray-700 text-sm">${opt}</p>
-                ${conf.hasOptionsImg && optImg ? `<img src="${getOptionImgSrc(optImg)}" alt="Opción ${optLetter}" class="mt-2 max-w-[150px] rounded">` : ''}
+          <div class="collapse-content hidden space-y-4">
+            ${q.invalidOptions ? `
+              <div class="bg-red-50 rounded-lg p-4 border border-red-200">
+                <h4 class="text-red-700 font-semibold text-sm mb-2 flex items-center"><i class="fas fa-question-circle mr-2"></i> ¿Por qué son incorrectas?</h4>
+                <p class="text-gray-700 text-sm">${q.invalidOptions}</p>
               </div>
-            </li>`;
-        }
-      });
-
-      html += '</ul></div></section>';
+            ` : ''}
+            ${hasWrongOptions ? `
+              <div class="border border-red-200 rounded-lg overflow-hidden">
+                <h4 class="text-red-700 font-semibold text-sm bg-red-50 px-4 py-2 border-b border-red-200 flex items-center">
+                  <i class="fas fa-list mr-2"></i> Lista de opciones
+                </h4>
+                <ul class="divide-y divide-red-100">
+                  ${options.map((opt, idx) => {
+                    if (idx !== correctIdx) {
+                      const optLetter = letters[idx];
+                      const optImg = optionsImg[idx] || '';
+                      return `
+                        <li class="bg-white p-3 flex items-start gap-3 hover:bg-red-50 transition">
+                          <span class="bg-red-100 text-red-600 rounded-full w-7 h-7 flex items-center justify-center font-bold text-sm shrink-0">${optLetter}</span>
+                          <div class="flex-1">
+                            <p class="text-gray-700 text-sm">${opt}</p>
+                            ${conf.hasOptionsImg && optImg ? `<img src="${getOptionImgSrc(optImg)}" alt="Opción ${optLetter}" class="mt-2 max-w-[150px] rounded">` : ''}
+                          </div>
+                        </li>`;
+                    }
+                    return '';
+                  }).join('')}
+                </ul>
+              </div>
+            ` : ''}
+          </div>
+        </section>
+      `;
     }
 
     // SECCIÓN 4: INFORMACIÓN PEDAGÓGICA (cerrada por defecto)
@@ -375,8 +375,8 @@ function parseInvalidOptions(invalidText, optionsCount) {
           <h3 class="text-lg font-bold text-indigo-800 flex items-center">
             <i class="fas fa-info-circle mr-2"></i> Información Pedagógica
           </h3>
-          <button class="collapse-btn text-xs text-blue-500 hover:text-blue-700 flex items-center gap-1" onclick="toggleCollapse(this)">
-            <span>Click para abrir</span> <i class="fas fa-chevron-down"></i>
+          <button class="collapse-btn text-sm text-indigo-600 hover:text-indigo-800 bg-indigo-100 hover:bg-indigo-200 px-3 py-1.5 rounded-lg transition flex items-center gap-2 font-medium" onclick="toggleCollapse(this)">
+            <i class="fas fa-eye"></i> <span>Click para abrir</span> <i class="fas fa-chevron-down"></i>
           </button>
         </div>
         <div class="md:col-span-2 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100 shadow-sm collapse-content hidden">
@@ -498,11 +498,17 @@ async function setupNavigation(area, currentId, subject) {
       content.classList.add('hidden');
       section.setAttribute('data-opened', 'false');
       btn.querySelector('span').textContent = 'Click para abrir';
-      btn.querySelector('i').className = 'fas fa-chevron-down';
+      btn.querySelectorAll('i').forEach((icon, i) => {
+        if (i === 0) icon.className = 'fas fa-eye';
+        if (i === 1) icon.className = 'fas fa-chevron-down';
+      });
     } else {
       content.classList.remove('hidden');
       section.setAttribute('data-opened', 'true');
       btn.querySelector('span').textContent = 'Click para ocultar';
-      btn.querySelector('i').className = 'fas fa-chevron-up';
+      btn.querySelectorAll('i').forEach((icon, i) => {
+        if (i === 0) icon.className = 'fas fa-eye-slash';
+        if (i === 1) icon.className = 'fas fa-chevron-up';
+      });
     }
   }
