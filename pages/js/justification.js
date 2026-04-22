@@ -230,6 +230,27 @@ function parseInvalidOptions(invalidText, optionsCount) {
 
     let html = '';
 
+    // SECCIÓN 0: CRITERIO DE EVALUACIÓN (antes del contexto, color amarillo/ámbar)
+    if (q.evaluationCriteria) {
+      html += `
+        <section class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-amber-500 mb-6 collapse-section" data-opened="true">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-bold text-amber-700 flex items-center">
+              <i class="fas fa-clipboard-check mr-2"></i> ¿Qué evalúa esta pregunta?
+            </h2>
+            <button class="collapse-btn text-sm text-amber-600 hover:text-amber-800 bg-amber-100 hover:bg-amber-200 px-3 py-1.5 rounded-lg transition flex items-center gap-2 font-medium" onclick="toggleCollapse(this)">
+              <i class="fas fa-eye-slash"></i> <span>Click para ocultar</span> <i class="fas fa-chevron-up"></i>
+            </button>
+          </div>
+          <div class="collapse-content">
+            <div class="bg-amber-50 border border-amber-200 rounded-lg p-4">
+              <p class="text-gray-800">${q.evaluationCriteria}</p>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
     // SECCIÓN 1: CONTEXTO (abierta por defecto)
     if (q.context) {
       html += `
@@ -368,7 +389,7 @@ function parseInvalidOptions(invalidText, optionsCount) {
       `;
     }
 
-    // SECCIÓN 4: INFORMACIÓN PEDAGÓGICA (cerrada por defecto)
+    // SECCIÓN 5: INFORMACIÓN PEDAGÓGICA (cerrada por defecto)
     html += `
       <section class="grid grid-cols-1 md:grid-cols-3 gap-6 collapse-section" data-opened="false">
         <div class="flex items-center justify-between mb-4 md:hidden">
