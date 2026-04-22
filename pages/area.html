@@ -42,7 +42,6 @@
     <p>Material de apoyo pedagógico — No oficial</p>
   </footer>
 
-  <script src="../shared/js/questions_db.js"></script>
   <script>
     const AREA_NAMES = {
       mat: 'Matemáticas',
@@ -67,7 +66,8 @@
       lc: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'],
       cn: ['⚛', '🧬', '🔬', '🧪', '🌿', '⚡', '🔥', '💧', '🌊'],
       cc: ['⚖️', '🤝', '🗳️', '🗣️', '📢', '👥', '👤', '🏛️', '🛡️'],
-      en: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
+      en: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'],
+      ing: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
     };
     
     function truncate(str, len) {
@@ -89,7 +89,19 @@
       }
     }
     
-    async function init() {
+    async function fetchQuestionsFromDB(subject) {
+      try {
+        const response = await fetch('../api/questions.php?subject=' + subject);
+        if (!response.ok) throw new Error('API Error');
+        const data = await response.json();
+        return data;
+      } catch (e) {
+        console.error('Error fetching questions:', e);
+        return [];
+      }
+    }
+    
+    (async function() {
       const params = new URLSearchParams(location.search);
       const areaUrl = params.get('area') || 'mat';
       const subject = AREA_SUBJECT[areaUrl] || areaUrl;
@@ -100,17 +112,20 @@
       
       spawnBackgroundIcons(areaUrl);
       
-      const data = await getQuestionsByArea(subject);
       const list = document.getElementById('question-list');
       
-      if (data.length === 0) {
+      const questions = await fetchQuestionsFromDB(subject);
+      
+      if (questions.length === 0) {
         list.innerHTML = '<p class="text-soft">No hay preguntas para esta área.</p>';
         return;
       }
       
-      data.sort((a, b) => a.id - b.id);
+      questions.sort((a, b) => a.id - b.id);
       
-      data.forEach(q => {
+      const questionsToShow = questions.slice(0, 15);
+      
+      questionsToShow.forEach(function(q) {
         const item = document.createElement('a');
         item.href = 'justification.html?id=' + q.id + '&area=' + areaUrl;
         item.className = 'question-list-item';
@@ -118,9 +133,7 @@
         item.innerHTML = '<span class="qli-id">#' + q.id + '</span><p class="qli-text">' + truncate(qtext, 80) + '</p><span class="qli-arrow">→</span>';
         list.appendChild(item);
       });
-    }
-    
-    init();
+    })();
   </script>
 </body>
 </html>

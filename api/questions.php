@@ -88,7 +88,6 @@ function transformQuestion($row) {
     
     return [
         'id' => (int) $row['id'],
-        'simulators' => [1, 3],
         'subject' => $row['subject'],
         'context' => $row['context'] ?? '',
         'contextImg' => $row['context_img'] ?? '',

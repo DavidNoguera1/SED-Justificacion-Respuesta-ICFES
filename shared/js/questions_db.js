@@ -1,4 +1,4 @@
-const API_BASE = '/api/questions.php';
+const API_BASE = '/SED-Justificacion-Respuesta-ICFES/api/questions.php';
 let PREGUNTAS = [];
 let loaded = false;
 
