@@ -57,7 +57,7 @@ const renderNotFound = () => {
     <div class="explanation-card">
       <h2>Pregunta no encontrada</h2>
       <p>La pregunta solicitada no existe o ha sido eliminada.</p>
-      <a href="index.html" class="btn btn-primary">Volver al inicio</a>
+      <a href="index.php" class="btn btn-primary">Volver al inicio</a>
     </div>
   `;
 };

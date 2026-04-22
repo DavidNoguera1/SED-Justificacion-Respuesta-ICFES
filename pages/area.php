@@ -16,7 +16,7 @@
 
   <header class="site-header">
     <div class="container">
-      <a href="../index.html" style="text-decoration:none;">
+      <a href="../index.php" style="text-decoration:none;">
         <h1 class="site-title">Apoyo ICFES</h1>
       </a>
       <p class="site-subtitle">Entiende el <em>por qué</em> de cada respuesta</p>
@@ -24,7 +24,7 @@
   </header>
 
   <nav class="breadcrumb container" aria-label="Navegación">
-    <a href="../index.html">Inicio</a>
+    <a href="../index.php">Inicio</a>
     <span aria-hidden="true">›</span>
     <span id="breadcrumb-area">Área</span>
   </nav>
@@ -127,7 +127,7 @@
       
       questionsToShow.forEach(function(q) {
         const item = document.createElement('a');
-        item.href = 'justification.html?id=' + q.id + '&area=' + areaUrl;
+        item.href = 'justification.php?id=' + q.id + '&area=' + areaUrl;
         item.className = 'question-list-item';
         const qtext = q.text || 'Pregunta #' + q.id;
         item.innerHTML = '<span class="qli-id">#' + q.id + '</span><p class="qli-text">' + truncate(qtext, 80) + '</p><span class="qli-arrow">→</span>';

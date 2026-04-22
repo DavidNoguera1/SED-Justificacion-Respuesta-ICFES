@@ -43,7 +43,7 @@
       <p class="section-subtitle">Cada área contiene explicaciones detalladas para que entiendas la lógica detrás de cada respuesta.</p>
       
       <div class="areas-grid">
-        <a class="area-card" href="pages/area.html?area=mat" data-area="mat">
+        <a class="area-card" href="pages/area.php?area=mat" data-area="mat">
           <div class="area-card__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M4 6h16M4 12h16M4 18h10"/>
@@ -54,7 +54,7 @@
           <span class="area-card__cta">Explorar →</span>
         </a>
 
-        <a class="area-card" href="pages/area.html?area=lc" data-area="lc">
+        <a class="area-card" href="pages/area.php?area=lc" data-area="lc">
           <div class="area-card__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
@@ -65,7 +65,7 @@
           <span class="area-card__cta">Explorar →</span>
         </a>
 
-        <a class="area-card" href="pages/area.html?area=cn" data-area="cn">
+        <a class="area-card" href="pages/area.php?area=cn" data-area="cn">
           <div class="area-card__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
@@ -76,7 +76,7 @@
           <span class="area-card__cta">Explorar →</span>
         </a>
 
-        <a class="area-card" href="pages/area.html?area=cc" data-area="cc">
+        <a class="area-card" href="pages/area.php?area=cc" data-area="cc">
           <div class="area-card__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H8m8 0v-2a3 3 0 00-5.356-1.857M17 20H8m8 0v-2a3 3 0 00-5.356-1.857M12 9a3 3 0 00-3 3v1m0 0V9a3 3 0 013-3m0 3c1.657 0 3-1.343 3-3s-1.343-3-3-3m0 3v1m0 0V9c1.657 0 3-1.343 3-3s-1.343-3-3-3m-3 9h.01"/>
@@ -87,7 +87,7 @@
           <span class="area-card__cta">Explorar →</span>
         </a>
 
-        <a class="area-card" href="pages/area.html?area=en" data-area="en">
+        <a class="area-card" href="pages/area.php?area=en" data-area="en">
           <div class="area-card__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M3 5h12M4 9h9M5 13h7M3 17h12M4 21h9"/>
