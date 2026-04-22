@@ -409,6 +409,36 @@
   color: #333;
 }
 
+.filter-input {
+  padding: 10px 14px;
+  border: 2px solid var(--area-primary);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--area-text);
+  font-size: 0.875rem;
+  font-family: var(--font-body);
+  min-width: 200px;
+  max-width: 200px;
+  width: 200px;
+  transition: all 0.2s;
+  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.15);
+}
+
+.filter-input:hover {
+  border-color: var(--area-accent);
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.25);
+}
+
+.filter-input:focus {
+  outline: none;
+  border-color: var(--area-accent);
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2), 0 4px 12px rgba(52, 152, 219, 0.25);
+}
+
+.filter-input::placeholder {
+  color: #999;
+}
+
 .filter-clear-btn {
   display: flex;
   align-items: center;

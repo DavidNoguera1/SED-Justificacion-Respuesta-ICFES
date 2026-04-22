@@ -16,7 +16,7 @@ Proyecto de refuerzo pedagógico interactivo para la prueba Saber 11.
 3. **Accede al proyecto:**
    
    ```
-   http://localhost/SED-Justificacion-Respuesta-ICFES/
+   http://localhost/SED-Justificacion-Respuesta-ICFES/index.php
    ```
 
 ## Estructura del proyecto

@@ -39,6 +39,10 @@
           </svg>
           Filtrar por
         </span>
+        <div class="filter-group" id="fg-search">
+          <label for="filter-search">Buscar</label>
+          <input type="text" id="filter-search" class="filter-input" placeholder="Texto de pregunta...">
+        </div>
         <div class="filter-group" id="fg-competency" style="display:none;">
           <label for="filter-competency">Competencia</label>
           <select id="filter-competency" class="filter-select">
@@ -108,6 +112,16 @@
       return str.substring(0, len).trim() + '...';
     }
     
+    function removeAccents(str) {
+      if (!str) return '';
+      return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
+    
+    function normalizeText(str) {
+      if (!str) return '';
+      return removeAccents(str).toLowerCase();
+    }
+    
     function spawnBackgroundIcons(area) {
       const canvas = document.querySelector('.bg-canvas');
       if (!canvas) return;
@@ -124,7 +138,8 @@
     
     async function fetchFromAPI(url) {
       try {
-        const response = await fetch(url);
+        const separator = url.includes('?') ? '&' : '?';
+        const response = await fetch(url + separator + '_=' + Date.now());
         if (!response.ok) throw new Error('API Error');
         return await response.json();
       } catch (e) {
@@ -170,21 +185,24 @@
     let currentSubject = 'mat';
     let allQuestions = [];
     
-    async function applyFilters() {
+    function applyFilters() {
       const competency = document.getElementById('filter-competency').value;
       const level = document.getElementById('filter-level').value;
       const component = document.getElementById('filter-component').value;
       
-      const params = new URLSearchParams();
-      params.append('subject', currentSubject);
-      if (competency) params.append('competency', competency);
-      if (level) params.append('level', level);
-      if (component) params.append('component', component);
+      const searchTerm = normalizeText(document.getElementById('filter-search').value.trim());
       
-      const filtered = await fetchFromAPI('../api/questions.php?' + params.toString());
-      if (filtered !== null) {
-        renderQuestions(filtered);
-      }
+      const filtered = allQuestions.filter(q => {
+        if (searchTerm && !normalizeText(q.text || '').includes(searchTerm)) {
+          return false;
+        }
+        if (competency && q.competency !== competency) return false;
+        if (level && q.level !== level) return false;
+        if (component && q.component !== component) return false;
+        return true;
+      });
+      
+      renderQuestions(filtered);
     }
     
     async function loadUniqueValues() {
@@ -205,6 +223,7 @@
         }
       });
       
+      document.getElementById('fg-search').style.display = '';
       document.getElementById('filter-bar').style.display = hasFilters ? '' : 'none';
       document.getElementById('clear-filters').style.display = hasFilters ? '' : 'none';
     }
@@ -231,11 +250,13 @@
       document.getElementById('filter-competency').addEventListener('change', applyFilters);
       document.getElementById('filter-level').addEventListener('change', applyFilters);
       document.getElementById('filter-component').addEventListener('change', applyFilters);
+      document.getElementById('filter-search').addEventListener('input', applyFilters);
       
       document.getElementById('clear-filters').addEventListener('click', function() {
         document.getElementById('filter-competency').value = '';
         document.getElementById('filter-level').value = '';
         document.getElementById('filter-component').value = '';
+        document.getElementById('filter-search').value = '';
         applyFilters();
       });
     })();
