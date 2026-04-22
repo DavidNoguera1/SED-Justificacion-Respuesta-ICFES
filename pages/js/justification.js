@@ -106,30 +106,6 @@ function detectContentConfig(q) {
 }
 
 // ============================================================
-// RENDERIZAR OPCIÓN CORRECTA
-// ============================================================
-
-function renderCorrectOption(letter, text, textImg, justification, hasImg) {
-  const justText = justification || 'Esta es la respuesta correcta.';
-  return `
-    <div class="option-card bg-white rounded-xl border-2 border-green-500 shadow-md overflow-hidden flex flex-col relative">
-      <div class="absolute top-0 right-0 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">RESPUESTA CORRECTA</div>
-      <div class="bg-green-50 p-4 border-b border-green-200 flex items-start flex-wrap gap-4 pt-6">
-        <div class="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shrink-0 shadow">${letter}</div>
-        <div class="flex-1">
-          <p class="text-gray-900 font-semibold">${text}</p>
-          ${hasImg && textImg ? `<img src="/shared/img/questions/${textImg}.png" alt="Opción ${letter}" class="mt-2 max-w-[150px] rounded">` : ''}
-        </div>
-      </div>
-      <div class="p-5 bg-white flex-grow">
-        <h4 class="text-green-600 font-bold text-sm mb-2 uppercase tracking-wide flex items-center"><i class="fas fa-check-circle mr-1"></i> Justificación</h4>
-        <p class="text-gray-700 text-sm">${justText}</p>
-      </div>
-    </div>
-  `;
-}
-
-// ============================================================
 // RENDERIZAR OPCIÓN INCORRECTA
 // ============================================================
 
@@ -231,140 +207,199 @@ function parseInvalidOptions(invalidText, optionsCount) {
 }
 
 // ============================================================
-// RENDERIZAR PREGUNTA
-// ============================================================
+  // RENDERIZAR PREGUNTA
+  // ============================================================
 
-function renderQuestion(q, area) {
-  const config = AREA_CONFIG[area] || AREA_CONFIG.mat;
-  const content = document.getElementById('questionContent');
-  const badge = document.getElementById('areaBadge');
-  const title = document.getElementById('mainTitle');
+  function renderQuestion(q, area) {
+    const config = AREA_CONFIG[area] || AREA_CONFIG.mat;
+    const content = document.getElementById('questionContent');
+    const badge = document.getElementById('areaBadge');
+    const title = document.getElementById('mainTitle');
 
-  badge.textContent = config.name + ' - ID: ' + q.id;
-  title.textContent = 'Pregunta #' + q.id;
+    badge.textContent = config.name + ' - ID: ' + q.id;
+    title.textContent = 'Pregunta #' + q.id;
 
-  const conf = detectContentConfig(q);
-  const options = q.options || [];
-  const optionsImg = q.optionsImg || [];
-  const correctIdx = q.correct !== undefined ? q.correct : 0;
+    const conf = detectContentConfig(q);
+    const options = q.options || [];
+    const optionsImg = q.optionsImg || [];
+    const correctIdx = q.correct !== undefined ? q.correct : 0;
+    const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
 
-  let html = '';
+    let html = '';
 
-  // SECCIÓN 1: CONTEXTO
-  if (q.context) {
+    // SECCIÓN 1: CONTEXTO (abierta por defecto)
+    if (q.context) {
+      html += `
+        <section class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-${config.color} collapse-section" data-opened="true">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-bold text-${config.color}-dark flex items-center">
+              <i class="fas fa-book-open mr-2"></i> Contexto
+            </h2>
+            <button class="collapse-btn text-xs text-gray-400 hover:text-gray-600 flex items-center gap-1" onclick="toggleCollapse(this)">
+              <span>Click para ocultar</span> <i class="fas fa-chevron-up"></i>
+            </button>
+          </div>
+          <div class="collapse-content prose text-gray-700 max-w-none">${q.context}</div>
+        </section>
+      `;
+    }
+
+    // SECCIÓN 2: PREGUNTA (abierta por defecto)
+    if (conf.hasQuestionImg) {
+      html += `
+        <section class="bg-white rounded-xl shadow-sm p-8 border-l-4 border-${config.color}-light collapse-section" data-opened="true">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-bold text-gray-800">Pregunta</h2>
+            <button class="collapse-btn text-xs text-gray-400 hover:text-gray-600 flex items-center gap-1" onclick="toggleCollapse(this)">
+              <span>Click para ocultar</span> <i class="fas fa-chevron-up"></i>
+            </button>
+          </div>
+          <div class="collapse-content">
+            <div class="prose text-gray-700 mb-4">${q.text || ''}</div>
+            <div class="flex justify-center">${extractImages(q.text).map(src => `<img src="${src}" alt="Pregunta" class="max-w-full h-auto rounded-lg">`).join('')}</div>
+          </div>
+        </section>
+      `;
+    } else {
+      html += `
+        <section class="bg-white rounded-xl shadow-sm p-8 border-l-4 border-${config.color} collapse-section" data-opened="true">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-bold text-gray-800">Pregunta</h2>
+            <button class="collapse-btn text-xs text-gray-400 hover:text-gray-600 flex items-center gap-1" onclick="toggleCollapse(this)">
+              <span>Click para ocultar</span> <i class="fas fa-chevron-up"></i>
+            </button>
+          </div>
+          <div class="collapse-content">
+            <p class="text-lg text-gray-700 font-medium">${q.text || ''}</p>
+          </div>
+        </section>
+      `;
+    }
+
+    // SECCIÓN 3: RESPUESTA CORRECTA (abierta por defecto, con título dentro)
+    const correctOption = options[correctIdx] || '';
+    const correctImg = optionsImg[correctIdx] || '';
+
     html += `
-      <section class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-${config.color}">
-        <h2 class="text-xl font-bold text-${config.color}-dark mb-4 flex items-center">
-          <i class="fas fa-book-open mr-2"></i> Contexto
-        </h2>
-        <div class="prose text-gray-700 max-w-none">${q.context}</div>
-      </section>
-    `;
-  }
-
-  // SECCIÓN 2: PREGUNTA
-  if (conf.hasQuestionImg) {
-    html += `
-      <section class="bg-white rounded-xl shadow-sm p-8 border-l-4 border-${config.color}-light">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">Pregunta</h2>
-        <div class="prose text-gray-700 mb-4">${q.text || ''}</div>
-        <div class="flex justify-center">${extractImages(q.text).map(src => `<img src="${src}" alt="Pregunta" class="max-w-full h-auto rounded-lg">`).join('')}</div>
-      </section>
-    `;
-  } else {
-    html += `
-      <section class="bg-white rounded-xl shadow-sm p-8 border-l-4 border-${config.color}">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">Pregunta</h2>
-        <p class="text-lg text-gray-700 font-medium">${q.text || ''}</p>
-      </section>
-    `;
-  }
-
-  // SECCIÓN 3: RESPUESTA CORRECTA
-  const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
-  const correctOption = options[correctIdx] || '';
-  const correctImg = optionsImg[correctIdx] || '';
-
-  html += `<section>
-    <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-      <i class="fas fa-check-circle text-green-600 mr-3"></i> Respuesta Correcta
-    </h2>
-    <div class="mb-6">`;
-
-  html += renderCorrectOption(letters[correctIdx], correctOption, correctImg, q.justification, conf.hasOptionsImg);
-
-  html += '</div></section>';
-
-  // SECCIÓN 3B: ¿POR QUÉ LAS OTRAS SON INCORRECTAS?
-  if (q.invalidOptions) {
-    html += `
-      <section class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-red-400">
-        <h3 class="text-lg font-bold text-red-700 mb-4 flex items-center">
-          <i class="fas fa-times-circle mr-2"></i> ¿Por qué las otras opciones son incorrectas?
-        </h3>
-        <div class="bg-red-50 rounded-lg p-4">
-          <p class="text-gray-700 text-sm">${q.invalidOptions}</p>
+      <section class="bg-white rounded-xl shadow-sm collapse-section p-6 border-l-4 border-green-500" data-opened="true">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-bold text-green-700 flex items-center">
+            <i class="fas fa-check-circle mr-2"></i> Respuesta Correcta
+          </h2>
+          <button class="collapse-btn text-xs text-gray-400 hover:text-gray-600 flex items-center gap-1" onclick="toggleCollapse(this)">
+            <span>Click para ocultar</span> <i class="fas fa-chevron-up"></i>
+          </button>
+        </div>
+        <div class="collapse-content">
+          <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+            <span class="bg-green-500 text-white text-xs font-bold px-2 py-0.5 rounded mb-2 inline-block">RESPUESTA CORRECTA</span>
+            <div class="flex items-start flex-wrap gap-3 mt-2">
+              <div class="bg-green-500 text-white rounded-full w-7 h-7 flex items-center justify-center font-bold shrink-0">${letters[correctIdx]}</div>
+              <div class="flex-1">
+                <p class="text-gray-900 font-medium">${correctOption}</p>
+                ${conf.hasOptionsImg && correctImg ? `<img src="/shared/img/questions/${correctImg}.png" alt="Opción ${letters[correctIdx]}" class="mt-2 max-w-[150px] rounded">` : ''}
+              </div>
+            </div>
+          </div>
+          <div class="bg-white border border-green-200 rounded-lg p-4">
+            <h4 class="text-green-600 font-bold text-sm mb-2 uppercase tracking-wide flex items-center"><i class="fas fa-check-circle mr-1"></i> Justificación</h4>
+            <p class="text-gray-700 text-sm">${q.justification || 'Esta es la respuesta correcta.'}</p>
+          </div>
         </div>
       </section>
     `;
-  }
 
-  // SECCIÓN 3C: LISTA DE OPCIONES INCORRECTAS
-  const wrongOptions = options.filter((_, idx) => idx !== correctIdx);
+    // SECCIÓN 3B: ¿POR QUÉ LAS OTRAS SON INCORRECTAS?
+    if (q.invalidOptions) {
+      html += `
+        <section class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-red-400 collapse-section" data-opened="false">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold text-red-700 flex items-center">
+              <i class="fas fa-times-circle mr-2"></i> ¿Por qué las otras opciones son incorrectas?
+            </h3>
+            <button class="collapse-btn text-xs text-blue-500 hover:text-blue-700 flex items-center gap-1" onclick="toggleCollapse(this)">
+              <span>Click para abrir</span> <i class="fas fa-chevron-down"></i>
+            </button>
+          </div>
+          <div class="collapse-content hidden">
+            <div class="bg-red-50 rounded-lg p-4">
+              <p class="text-gray-700 text-sm">${q.invalidOptions}</p>
+            </div>
+          </div>
+        </section>
+      `;
+    }
 
-  if (wrongOptions.length > 0) {
+    // SECCIÓN 3C: LISTA DE OPCIONES INCORRECTAS
+    const wrongOptions = options.filter((_, idx) => idx !== correctIdx);
+
+    if (wrongOptions.length > 0) {
+      html += `
+        <section class="bg-white rounded-xl shadow-sm collapse-section border-l-4 border-red-400 p-6" data-opened="false">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold text-red-700 flex items-center">
+              <i class="fas fa-times-circle mr-2"></i> Opciones Incorrectas
+            </h3>
+            <button class="collapse-btn text-xs text-blue-500 hover:text-blue-700 flex items-center gap-1" onclick="toggleCollapse(this)">
+              <span>Click para abrir</span> <i class="fas fa-chevron-down"></i>
+            </button>
+          </div>
+          <div class="collapse-content hidden">
+            <ul class="space-y-2">`;
+
+      options.forEach((opt, idx) => {
+        if (idx !== correctIdx) {
+          const optLetter = letters[idx];
+          html += `
+            <li class="bg-white border border-red-200 rounded-lg p-3 flex items-start gap-3">
+              <span class="bg-red-100 text-red-600 rounded-full w-7 h-7 flex items-center justify-center font-bold text-sm shrink-0">${optLetter}</span>
+              <span class="text-gray-700 text-sm">${opt}</span>
+            </li>`;
+        }
+      });
+
+      html += '</ul></div></section>';
+    }
+
+    // SECCIÓN 4: INFORMACIÓN PEDAGÓGICA (cerrada por defecto)
     html += `
-      <section class="mt-6">
-        <h3 class="text-lg font-bold text-gray-700 mb-4 flex items-center">
-          <i class="fas fa-list mr-2"></i> Opciones Incorrectas
-        </h3>
-        <ul class="space-y-2">`;
-
-    options.forEach((opt, idx) => {
-      if (idx !== correctIdx) {
-        const optLetter = letters[idx];
-        html += `
-          <li class="bg-gray-50 rounded-lg p-3 flex items-start gap-3">
-            <span class="bg-red-100 text-red-600 rounded-full w-6 h-6 flex items-center justify-center font-bold text-xs shrink-0">${optLetter}</span>
-            <span class="text-gray-600 text-sm">${opt}</span>
-          </li>`;
-      }
-    });
-
-    html += '</ul></section>';
-  }
-
-  // SECCIÓN 4: INFORMACIÓN PEDAGÓGICA
-  html += `
-    <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="md:col-span-2 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100 shadow-sm">
-        <h3 class="text-lg font-bold text-indigo-800 mb-3"><i class="fas fa-microscope mr-2"></i> Concepto Clave</h3>
-        <p class="text-sm text-indigo-900">${q.competency || 'Análisis de la pregunta ICFES'}</p>
-      </div>
-      <div class="bg-gray-800 rounded-xl p-6 text-white shadow-sm flex flex-col justify-between">
-        <div>
-          <h3 class="text-lg font-bold text-gray-100 mb-4 border-b border-gray-600 pb-2"><i class="fas fa-tags mr-2"></i> Ficha Técnica</h3>
-          <div class="space-y-3 text-xs">
-            <div>
-              <span class="text-gray-400 block uppercase tracking-wider">Competencia</span>
-              <span class="font-medium text-blue-300">${q.competency || '-'}</span>
-            </div>
-            <div>
-              <span class="text-gray-400 block uppercase tracking-wider">Componente</span>
-              <span class="font-medium">${q.component || '-'}</span>
-            </div>
-            <div>
-              <span class="text-gray-400 block uppercase tracking-wider">Criterio</span>
-              <span class="font-medium text-gray-300">${q.evaluationCriteria || '-'}</span>
+      <section class="grid grid-cols-1 md:grid-cols-3 gap-6 collapse-section" data-opened="false">
+        <div class="flex items-center justify-between mb-4 md:hidden">
+          <h3 class="text-lg font-bold text-indigo-800 flex items-center">
+            <i class="fas fa-info-circle mr-2"></i> Información Pedagógica
+          </h3>
+          <button class="collapse-btn text-xs text-blue-500 hover:text-blue-700 flex items-center gap-1" onclick="toggleCollapse(this)">
+            <span>Click para abrir</span> <i class="fas fa-chevron-down"></i>
+          </button>
+        </div>
+        <div class="md:col-span-2 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100 shadow-sm collapse-content hidden">
+          <h3 class="text-lg font-bold text-indigo-800 mb-3"><i class="fas fa-microscope mr-2"></i> Concepto Clave</h3>
+          <p class="text-sm text-indigo-900">${q.competency || 'Análisis de la pregunta ICFES'}</p>
+        </div>
+        <div class="bg-gray-800 rounded-xl p-6 text-white shadow-sm flex flex-col justify-between collapse-content hidden">
+          <div>
+            <h3 class="text-lg font-bold text-gray-100 mb-4 border-b border-gray-600 pb-2"><i class="fas fa-tags mr-2"></i> Ficha Técnica</h3>
+            <div class="space-y-3 text-xs">
+              <div>
+                <span class="text-gray-400 block uppercase tracking-wider">Competencia</span>
+                <span class="font-medium text-blue-300">${q.competency || '-'}</span>
+              </div>
+              <div>
+                <span class="text-gray-400 block uppercase tracking-wider">Componente</span>
+                <span class="font-medium">${q.component || '-'}</span>
+              </div>
+              <div>
+                <span class="text-gray-400 block uppercase tracking-wider">Criterio</span>
+                <span class="font-medium text-gray-300">${q.evaluationCriteria || '-'}</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
-  `;
+      </section>
+    `;
 
-  content.innerHTML = html;
-}
+    content.innerHTML = html;
+  }
 
 // ============================================================
 // NAVEGACIÓN
@@ -438,7 +473,29 @@ async function setupNavigation(area, currentId, subject) {
 }
 
 // ============================================================
-// INICIALIZAR EN DOM READY
-// ============================================================
+  // INICIALIZAR EN DOM READY
+  // ============================================================
 
-document.addEventListener('DOMContentLoaded', initJustification);
+  document.addEventListener('DOMContentLoaded', initJustification);
+
+  // ============================================================
+  // COLLAPSE (PLEGABLE)
+  // ============================================================
+
+  function toggleCollapse(btn) {
+    const section = btn.closest('.collapse-section');
+    const content = section.querySelector('.collapse-content');
+    const isOpen = section.getAttribute('data-opened') === 'true';
+
+    if (isOpen) {
+      content.classList.add('hidden');
+      section.setAttribute('data-opened', 'false');
+      btn.querySelector('span').textContent = 'Click para abrir';
+      btn.querySelector('i').className = 'fas fa-chevron-down';
+    } else {
+      content.classList.remove('hidden');
+      section.setAttribute('data-opened', 'true');
+      btn.querySelector('span').textContent = 'Click para ocultar';
+      btn.querySelector('i').className = 'fas fa-chevron-up';
+    }
+  }
