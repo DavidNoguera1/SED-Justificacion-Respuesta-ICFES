@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="../shared/css/variables.css">
   <link rel="stylesheet" href="../shared/css/base.css">
   <link rel="stylesheet" href="../shared/css/layout.css">
-  <link rel="stylesheet" href="../shared/css/components.css">
+  <link rel="stylesheet" href="../shared/css/components.css?v=3">
   <link rel="stylesheet" href="../shared/css/backgrounds.css">
 </head>
 <body>
