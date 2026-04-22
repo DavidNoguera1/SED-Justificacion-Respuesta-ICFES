@@ -116,6 +116,31 @@ function detectContentConfig(q) {
     return IMG_BASE_PATH + imgName + '.png';
   }
 
+  function processHtmlImages(html) {
+    if (!html) return '';
+    return html.replace(/src=["']([^"']+\.png)["']/gi, (match, src) => {
+      if (src.startsWith('http') || src.startsWith('/') || src.startsWith('../')) {
+        return match;
+      }
+      return 'src="' + IMG_BASE_PATH + src + '"';
+    });
+  }
+
+  function extractImages(html) {
+    if (!html) return [];
+    const imgRegex = /<img[^>]+src=["']([^"']+)["'][^>]*>/gi;
+    const images = [];
+    let match;
+    while ((match = imgRegex.exec(html)) !== null) {
+      let src = match[1];
+      if (!src.startsWith('http') && !src.startsWith('/') && !src.startsWith('../')) {
+        src = IMG_BASE_PATH + src;
+      }
+      images.push(src);
+    }
+    return images;
+  }
+
 // ============================================================
 // PARSEAR INVALID OPTIONS
 // ============================================================
@@ -217,7 +242,7 @@ function parseInvalidOptions(invalidText, optionsCount) {
               <span>Click para ocultar</span> <i class="fas fa-chevron-up"></i>
             </button>
           </div>
-          <div class="collapse-content prose text-gray-700 max-w-none">${q.context}</div>
+          <div class="collapse-content prose text-gray-700 max-w-none">${processHtmlImages(q.context)}</div>
         </section>
       `;
     }
@@ -233,7 +258,7 @@ function parseInvalidOptions(invalidText, optionsCount) {
             </button>
           </div>
           <div class="collapse-content">
-            <div class="prose text-gray-700 mb-4">${q.text || ''}</div>
+            <div class="prose text-gray-700 mb-4">${processHtmlImages(q.text || '')}</div>
             <div class="flex justify-center">${extractImages(q.text).map(src => `<img src="${src}" alt="Pregunta" class="max-w-full h-auto rounded-lg">`).join('')}</div>
           </div>
         </section>
@@ -248,7 +273,7 @@ function parseInvalidOptions(invalidText, optionsCount) {
             </button>
           </div>
           <div class="collapse-content">
-            <p class="text-lg text-gray-700 font-medium">${q.text || ''}</p>
+            <p class="text-lg text-gray-700 font-medium">${processHtmlImages(q.text || '')}</p>
           </div>
         </section>
       `;
