@@ -43,30 +43,32 @@
   <nav class="bg-gray-50 border-b border-gray-200 py-3">
     <div class="max-w-5xl mx-auto px-6">
       <div class="flex items-center justify-between flex-wrap gap-3">
-        <a href="../index.php" class="px-3 py-1.5 bg-gray-200 rounded-lg hover:bg-gray-300 transition flex items-center gap-2 text-sm">
-          <i class="fas fa-home"></i> Inicio
-        </a>
-        <a id="navArea" href="#" class="px-3 py-1.5 text-gray-600 hover:text-gray-800 hover:bg-gray-200 rounded-lg transition flex items-center gap-2 text-sm">
-          <i class="fas fa-folder"></i> Área
-        </a>
+        <div class="flex gap-2">
+          <a href="../index.php" class="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition flex items-center gap-2 text-sm font-medium">
+            <i class="fas fa-home"></i> Inicio
+          </a>
+          <a id="navArea" href="#" class="px-3 py-2 bg-blue-100 text-blue-700 border border-blue-300 rounded-lg hover:bg-blue-200 transition flex items-center gap-2 text-sm font-medium">
+            <i class="fas fa-folder"></i> Área
+          </a>
+        </div>
         
-        <div class="flex gap-1.5 items-center">
-          <a id="navPrev" href="#" class="px-2 py-1.5 bg-gray-200 rounded-lg hover:bg-gray-300 transition text-sm">
+        <div class="flex gap-2 items-center">
+          <a id="navPrev" href="#" class="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition text-sm">
             <i class="fas fa-chevron-left"></i>
           </a>
-          <div id="quickNav" class="flex gap-1 flex-wrap justify-center max-w-[400px]">
+          <div id="quickNav" class="flex gap-1.5 flex-wrap justify-center max-w-[450px]">
             <!-- Quick nav pills se cargan dinámicamente -->
           </div>
-          <a id="navNext" href="#" class="px-2 py-1.5 bg-gray-200 rounded-lg hover:bg-gray-300 transition text-sm">
+          <a id="navNext" href="#" class="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition text-sm">
             <i class="fas fa-chevron-right"></i>
           </a>
         </div>
         
-        <div class="flex gap-1.5">
-          <a id="navPrev远" href="#" class="px-3 py-1.5 bg-gray-100 rounded-lg hover:bg-gray-200 transition flex items-center gap-2 text-sm">
+        <div class="flex gap-2">
+          <a id="navPrev远" href="#" class="px-3 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition flex items-center gap-2 text-sm">
             <i class="fas fa-arrow-left"></i>
           </a>
-          <a id="navNext远" href="#" class="px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2 text-sm">
+          <a id="navNext远" href="#" class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2 text-sm">
             <i class="fas fa-arrow-right"></i>
           </a>
         </div>
