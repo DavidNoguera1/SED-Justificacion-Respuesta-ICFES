@@ -15,6 +15,22 @@ function getVal(id) {
   return el ? el.value : '';
 }
 
+function getIdFromUrl() {
+  var params = new URLSearchParams(window.location.search);
+  return params.get('id');
+}
+
+function setIdInUrl(id) {
+  var url = new URL(window.location.href);
+  url.searchParams.set('id', id);
+  window.history.replaceState({}, '', url);
+}
+
+function reloadWithId(id) {
+  setIdInUrl(id);
+  window.location.reload();
+}
+
 function showToast(message, isError) {
   var toast = get('toast');
   toast.textContent = message;
@@ -41,6 +57,7 @@ async function cargarPregunta() {
 
   get('idPregunta').value = id;
   get('linkVerPregunta').href = 'justification.php?area=mat&id=' + id;
+  setIdInUrl(id);
 
   try {
     var r = await fetch(API_QUESTION + '?id=' + id);
@@ -102,6 +119,7 @@ async function guardarCambios() {
 
     if (result.success) {
       showToast('Cambios guardados correctamente', false);
+      reloadWithId(id);
     } else {
       showToast('Error al guardar cambios', true);
     }
@@ -280,11 +298,28 @@ async function procesarImportacion(data, scriptEl) {
 
   document.head.removeChild(scriptEl);
 
+  var currentId = getVal('idPregunta');
+  if (currentId) {
+    setIdInUrl(currentId);
+  }
+
   if (errores.length === 0) {
     showToast('Importación exitosa: ' + exitos + ' pregunta(s) procesada(s)', false);
   } else {
     showToast('Importación parcial: ' + exitos + ' OK, ' + errores.length + ' errores (IDs: ' + errores.join(', ') + ')', true);
   }
+
+  if (currentId) {
+    setTimeout(function() {
+      cargarPregunta();
+    }, 1500);
+  }
 }
 
-window.addEventListener('DOMContentLoaded', cargarPregunta);
+window.addEventListener('DOMContentLoaded', function() {
+  var urlId = getIdFromUrl();
+  if (urlId) {
+    setVal('inputId', urlId);
+  }
+  cargarPregunta();
+});

@@ -72,7 +72,7 @@
         <i class="fas fa-hashtag mr-1"></i>ID de pregunta a editar:
       </label>
       <div class="flex gap-3">
-        <input type="number" id="inputId" value="1" min="1"
+        <input type="number" id="inputId" value="" min="1"
           class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary w-32"
           onkeypress="if(event.key==='Enter')cargarPregunta()">
         <button onclick="cargarPregunta()" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition font-medium">
