@@ -20,6 +20,7 @@
     <div class="navbar-links">
       <a href="#heroHeader" class="nav-link">Inicio</a>
       <a href="#areasSection" class="nav-link">Áreas</a>
+      <a href="pages/justificaciones_crud.php" class="nav-link">CRUD</a>
     </div>
   </nav>
 
