@@ -36,6 +36,37 @@
 
   <main class="max-w-5xl mx-auto px-6 mt-6 space-y-6">
 
+    <div class="bg-white rounded-xl shadow-sm p-6 space-y-4">
+      <div class="flex items-center justify-between flex-wrap gap-3">
+        <label class="block text-sm font-bold text-gray-700">
+          <i class="fas fa-file-import mr-1"></i>Importar desde archivo JS:
+        </label>
+        <div class="flex gap-2">
+          <button type="button" onclick="guardarCambios()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm font-medium">
+            <i class="fas fa-save mr-1"></i>Guardar cambios
+          </button>
+          <button onclick="toggleImportPanel()" class="px-3 py-2 bg-indigo-100 text-indigo-700 rounded-lg hover:bg-indigo-200 transition text-sm font-medium">
+            <i class="fas fa-upload mr-1"></i>Importar JS
+          </button>
+        </div>
+      </div>
+      
+      <div id="importPanel" class="hidden border-t border-gray-200 pt-4">
+        <div class="flex flex-col sm:flex-row gap-3">
+          <button onclick="descargarPlantilla()" class="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition text-sm font-medium">
+            <i class="fas fa-download mr-1"></i>Descargar Plantilla
+          </button>
+          <div class="flex-1">
+            <input type="file" id="fileImport" accept=".js" onchange="handleFileImport(this)" 
+              class="block w-full text-sm text-gray-500 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+          </div>
+        </div>
+        <p class="text-xs text-gray-500 mt-2">
+          El archivo debe definir una variable <code class="bg-gray-100 px-1 rounded">JUSTIFICACIONES_IMPORT</code> con un array de objetos.
+        </p>
+      </div>
+    </div>
+
     <div class="bg-white rounded-xl shadow-sm p-6">
       <label class="block text-sm font-bold text-gray-700 mb-2">
         <i class="fas fa-hashtag mr-1"></i>ID de pregunta a editar:
@@ -85,10 +116,10 @@
       </div>
 
       <div>
-        <label class="block text-sm font-bold text-gray-700 mb-2">Glosario de terminos (JSON)</label>
+        <label class="block text-sm font-bold text-gray-700 mb-2">Glosario de terminos</label>
         <textarea id="glosarioItems" rows="4"
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary font-mono text-sm"
-          placeholder='{"termino": "definicion", ...}'></textarea>
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
+          placeholder="Termino: definicion (uno por linea)..."></textarea>
       </div>
 
       <div>
@@ -105,130 +136,12 @@
           placeholder="Errores frecuentes que cometen los estudiantes..."></textarea>
       </div>
 
-      <div class="flex gap-3 pt-4 border-t border-gray-200">
-        <button type="button" onclick="guardarCambios()" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium">
-          <i class="fas fa-save mr-1"></i>Guardar cambios
-        </button>
-      </div>
-
-      <div id="mensaje" class="hidden p-4 rounded-lg"></div>
     </form>
 
   </main>
 
-  <script>
-    var API_QUESTION = '../api/questions.php';
-    var API_JUSTIFICACIONES = '../api/justificaciones.php';
+  <div id="toast" class="fixed bottom-4 right-4 px-4 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50"></div>
 
-    function get(id) {
-      return document.getElementById(id);
-    }
-
-    function setVal(id, val) {
-      var el = get(id);
-      if (el) el.value = (val === null || val === undefined) ? '' : val;
-    }
-
-    function getVal(id) {
-      var el = get(id);
-      return el ? el.value : '';
-    }
-
-    async function cargarPregunta() {
-      var inp = get('inputId');
-      if (!inp) return;
-      var id = parseInt(inp.value);
-      if (!id || id < 1) return;
-
-      get('idPregunta').value = id;
-      get('linkVerPregunta').href = 'justification.php?area=mat&id=' + id;
-
-      try {
-        var r = await fetch(API_QUESTION + '?id=' + id);
-        var q = await r.json();
-        if (q.error) {
-          get('questionRef').innerHTML = '<p class="text-red-600">Pregunta no encontrada</p>';
-        } else {
-          get('questionRef').innerHTML =
-            '<div class="space-y-3">' +
-            '<div><strong>Area:</strong> ' + (q.subject || '') + '</div>' +
-            '<div><strong>Contexto:</strong> ' + (q.context || 'Sin contexto') + '</div>' +
-            '<div><strong>Pregunta:</strong> ' + (q.text || '') + '</div>' +
-            '<div><strong>Respuesta correcta:</strong> ' + (q.options ? q.options[q.correct] : '') + '</div>' +
-            '<div><strong>Justificacion:</strong> ' + (q.justification || 'Sin justificacion') + '</div>' +
-            '</div>';
-        }
-      } catch (e) {
-        get('questionRef').innerHTML = '<p class="text-red-600">Error al cargar pregunta</p>';
-      }
-
-      try {
-        var r2 = await fetch(API_JUSTIFICACIONES + '?id=' + id);
-        var j = await r2.json();
-
-        setVal('nombrePregunta', j.nombrePregunta || '');
-        setVal('descripcionExtendida', j.descripcionExtendida || '');
-        setVal('mediaInteractiva', j.mediaInteractiva || '');
-        setVal('glosarioItems', j.glosario_items || '');
-        setVal('datoCurioso', j.datoCurioso || '');
-        setVal('errorComunFeedback', j.errorComunFeedback || '');
-      } catch (e) {
-      }
-    }
-
-    async function guardarCambios() {
-      var id = parseInt(get('idPregunta').value);
-      if (!id) return alert('ID no valido');
-
-      var data = {
-        idPregunta: id,
-        nombrePregunta: getVal('nombrePregunta'),
-        descripcionExtendida: getVal('descripcionExtendida'),
-        mediaInteractiva: getVal('mediaInteractiva'),
-        glosarioItems: getVal('glosarioItems'),
-        datoCurioso: getVal('datoCurioso'),
-        errorComunFeedback: getVal('errorComunFeedback')
-      };
-
-      try {
-        var r = await fetch(API_JUSTIFICACIONES, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
-        var result = await r.json();
-
-        var msg = get('mensaje');
-        msg.classList.remove('hidden');
-
-        if (result.success) {
-          msg.className = 'p-4 rounded-lg bg-green-100 text-green-700 border border-green-300';
-          msg.innerHTML = '<i class="fas fa-check-circle mr-1"></i>Cambios guardados correctamente';
-        } else {
-          msg.className = 'p-4 rounded-lg bg-red-100 text-red-700 border border-red-300';
-          msg.innerHTML = '<i class="fas fa-times-circle mr-1"></i>Error al guardar cambios';
-        }
-      } catch (e) {
-        var msg = get('mensaje');
-        msg.classList.remove('hidden');
-        msg.className = 'p-4 rounded-lg bg-red-100 text-red-700 border border-red-300';
-        msg.innerHTML = '<i class="fas fa-times-circle mr-1"></i>Error de conexion';
-      }
-    }
-
-    function toggleRef() {
-      var el = get('refContent');
-      var icon = get('iconToggle');
-      if (el.classList.contains('hidden')) {
-        el.classList.remove('hidden');
-        icon.className = 'fas fa-chevron-up';
-      } else {
-        el.classList.add('hidden');
-        icon.className = 'fas fa-chevron-down';
-      }
-    }
-
-    window.addEventListener('DOMContentLoaded', cargarPregunta);
-  </script>
+  <script src="js/justificaciones_crud.js"></script>
 </body>
 </html>
