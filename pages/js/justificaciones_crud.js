@@ -213,27 +213,30 @@ function handleFileImport(input) {
 
 async function procesarImportacion(data, scriptEl) {
   var idsExistentes = [];
-  var idsNuevos = [];
+  var idsVerificados = {};
 
-  for (var item of data) {
-    if (!item.idPregunta) continue;
+  for (var i = 0; i < data.length; i++) {
+    var item = data[i];
+    if (!item.idPregunta || idsVerificados[item.idPregunta]) continue;
+    idsVerificados[item.idPregunta] = true;
 
     try {
       var r = await fetch(API_JUSTIFICACIONES + '?id=' + item.idPregunta);
       var j = await r.json();
       if (j && j.existe === false) {
-        idsNuevos.push(item.idPregunta);
       } else {
         idsExistentes.push(item.idPregunta);
       }
     } catch (e) {
-      idsNuevos.push(item.idPregunta);
     }
   }
 
   if (idsExistentes.length > 0) {
+    var listaIds = idsExistentes.length > 10 
+      ? idsExistentes.slice(0, 10).join(', ') + '... (' + idsExistentes.length + ' total)'
+      : idsExistentes.join(', ');
     var confirmar = confirm(
-      'Se cargará información a las preguntas con ID: [' + idsExistentes.join(', ') + ']\n\n' +
+      'Se cargará información a las preguntas con ID: [' + listaIds + ']\n\n' +
       '¿Desea proseguir? Se reescribirá toda información previamente existente.'
     );
     if (!confirmar) {
