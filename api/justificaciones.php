@@ -28,7 +28,7 @@ function getJustificacionExpandida($idPregunta) {
             'nombrePregunta' => $row['nombre_pregunta'],
             'descripcionExtendida' => $row['descripcion_extendida'] ?? '',
             'mediaInteractiva' => $row['media_interactiva'] ?? '',
-            'glosarioItems' => $row['glosario_items'] ?? '',
+            'glosario_items' => $row['glosario_items'] ?? '',
             'datoCurioso' => $row['dato_curioso'] ?? '',
             'errorComunFeedback' => $row['error_comun_feedback'] ?? ''
         ];

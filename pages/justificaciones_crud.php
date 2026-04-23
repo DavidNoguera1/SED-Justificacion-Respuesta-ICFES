@@ -6,6 +6,12 @@
   <title>CRUD - Justificaciones Expandidas</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    .bg-primary { background-color: #2F6EB5 !important; }
+    .bg-primary-dark { background-color: #1a4a7a !important; }
+    .text-primary { color: #2F6EB5 !important; }
+    .ring-primary { --tw-ring-color: #2F6EB5 !important; }
+  </style>
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans antialiased">
 
@@ -84,7 +90,8 @@
       <div>
         <label class="block text-sm font-bold text-gray-700 mb-2">Glosario de términos (JSON)</label>
         <textarea id="glosarioItems" rows="4"
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary font-mono text-sm"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary font-mono text-sm !visible"
+          style="display:block !important; visibility:visible !important; opacity:1 !important;"
           placeholder='{"término": "definición", ...}'></textarea>
       </div>
 
@@ -162,10 +169,11 @@
         $('questionRef').innerHTML = '<p class="text-red-600">Error al cargar pregunta</p>';
       }
 
-      // Cargar justificación expandida
+// Cargar justificación expandida
       try {
         var res = await fetch(API_JUSTIFICACIONES + '?id=' + id);
         var j = await res.json();
+        console.log('API response:', JSON.stringify(j));
 
         if (j && j.existe === false) {
           setValue('nombrePregunta', '');
@@ -175,12 +183,12 @@
           setValue('datoCurioso', '');
           setValue('errorComunFeedback', '');
         } else if (j) {
-          setValue('nombrePregunta', j.nombrePregunta);
-          setValue('descripcionExtendida', j.descripcionExtendida);
-          setValue('mediaInteractiva', j.mediaInteractiva);
-          setValue('glosarioItems', j.glosarioItems);
-          setValue('datoCurioso', j.datoCurioso);
-          setValue('errorComunFeedback', j.errorComunFeedback);
+          setValue('nombrePregunta', j.nombrePregunta || '');
+          setValue('descripcionExtendida', j.descripcionExtendida || '');
+          setValue('mediaInteractiva', j.mediaInteractiva || '');
+          setValue('glosarioItems', j.glosario_items || '');
+          setValue('datoCurioso', j.datoCurioso || '');
+          setValue('errorComunFeedback', j.errorComunFeedback || '');
         }
       } catch (e) {
         console.error('Error loading:', e);
