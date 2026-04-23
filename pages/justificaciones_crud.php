@@ -6,12 +6,7 @@
   <title>CRUD - Justificaciones Expandidas</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <style>
-    .bg-primary { background-color: #2F6EB5 !important; }
-    .bg-primary-dark { background-color: #1a4a7a !important; }
-    .text-primary { color: #2F6EB5 !important; }
-    .ring-primary { --tw-ring-color: #2F6EB5 !important; }
-  </style>
+  <link rel="stylesheet" href="css/justificaciones_crud.css">
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans antialiased">
 
@@ -81,18 +76,18 @@
       </div>
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-      <button onclick="toggleRef()" class="w-full px-6 py-3 bg-gray-100 hover:bg-gray-200 transition flex items-center justify-between text-left">
-        <span class="font-bold text-gray-700"><i class="fas fa-eye mr-2"></i>Ver contenido de la pregunta (referencia)</span>
-        <i id="iconToggle" class="fas fa-chevron-down"></i>
-      </button>
-      <div id="refContent" class="hidden px-6 pb-6">
-        <div id="questionRef" class="text-sm text-gray-600"></div>
+    <div class="bg-white rounded-xl shadow-sm p-6">
+      <div id="questionRef" class="text-sm text-gray-600">
+        <p class="text-gray-400 text-center py-4">Carga una pregunta para ver su contenido de referencia</p>
       </div>
     </div>
 
     <form id="formEdit" class="bg-white rounded-xl shadow-sm p-6 space-y-6">
-      <input type="hidden" id="idPregunta" value="1">
+      <div class="flex items-center justify-between pb-4 border-b border-gray-200">
+        <h2 class="text-lg font-bold text-gray-700">Editar Justificación</h2>
+        <span id="currentQuestionId" class="px-3 py-1 bg-primary text-white text-sm font-medium rounded-full">ID: -</span>
+      </div>
+      <input type="hidden" id="idPregunta" value="">
 
       <div>
         <label class="block text-sm font-bold text-gray-700 mb-2">Nombre de pregunta</label>
@@ -140,7 +135,7 @@
 
   </main>
 
-  <div id="toast" class="fixed bottom-4 right-4 px-4 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50"></div>
+  <div id="toast" class="fixed bottom-4 right-4 px-4 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50 bg-green-600 text-white"></div>
 
   <script src="js/justificaciones_crud.js"></script>
 </body>
