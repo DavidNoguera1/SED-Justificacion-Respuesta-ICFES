@@ -14,7 +14,6 @@ require_once __DIR__ . '/db.php';
 
 function getJustificacionExpandida($idPregunta) {
     $conn = getConnection();
-    
     $stmt = $conn->prepare("SELECT * FROM justificaciones_expandidas WHERE idPregunta = ?");
     $stmt->bind_param('i', $idPregunta);
     $stmt->execute();
@@ -99,7 +98,7 @@ $idPregunta = $_GET['id'] ?? null;
 // GET para obtener justificacion expandida
 if ($idPregunta !== null) {
     $justificacion = getJustificacionExpandida((int) $idPregunta);
-    if ($justificacion) {
+    if ($justificacion && isset($justificacion['id'])) {
         echo json_encode($justificacion);
     } else {
         echo json_encode(['existe' => false]);

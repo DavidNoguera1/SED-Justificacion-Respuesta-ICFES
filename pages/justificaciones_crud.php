@@ -35,14 +35,13 @@
   </nav>
 
   <main class="max-w-5xl mx-auto px-6 mt-6 space-y-6">
-    
-    <!-- Selector de pregunta -->
+
     <div class="bg-white rounded-xl shadow-sm p-6">
       <label class="block text-sm font-bold text-gray-700 mb-2">
         <i class="fas fa-hashtag mr-1"></i>ID de pregunta a editar:
       </label>
       <div class="flex gap-3">
-        <input type="number" id="inputId" value="1" min="1" 
+        <input type="number" id="inputId" value="1" min="1"
           class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary w-32"
           onkeypress="if(event.key==='Enter')cargarPregunta()">
         <button onclick="cargarPregunta()" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition font-medium">
@@ -51,7 +50,6 @@
       </div>
     </div>
 
-    <!-- Referencia de pregunta (ocultable) -->
     <div class="bg-white rounded-xl shadow-sm overflow-hidden">
       <button onclick="toggleRef()" class="w-full px-6 py-3 bg-gray-100 hover:bg-gray-200 transition flex items-center justify-between text-left">
         <span class="font-bold text-gray-700"><i class="fas fa-eye mr-2"></i>Ver contenido de la pregunta (referencia)</span>
@@ -62,37 +60,35 @@
       </div>
     </div>
 
-    <!-- Formulario de edición -->
     <form id="formEdit" class="bg-white rounded-xl shadow-sm p-6 space-y-6">
       <input type="hidden" id="idPregunta" value="1">
-      
+
       <div>
         <label class="block text-sm font-bold text-gray-700 mb-2">Nombre de pregunta</label>
-        <input type="text" id="nombrePregunta" 
+        <input type="text" id="nombrePregunta"
           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
-          placeholder="Título descriptivo...">
+          placeholder="Titulo descriptivo...">
       </div>
 
       <div>
-        <label class="block text-sm font-bold text-gray-700 mb-2">Descripción extendida</label>
+        <label class="block text-sm font-bold text-gray-700 mb-2">Descripcion extendida</label>
         <textarea id="descripcionExtendida" rows="4"
           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
-          placeholder="Explicación detallada..."></textarea>
+          placeholder="Explicacion detallada..."></textarea>
       </div>
 
       <div>
-        <label class="block text-sm font-bold text-gray-700 mb-2">Media interactiva (código HTML)</label>
+        <label class="block text-sm font-bold text-gray-700 mb-2">Media interactiva (codigo HTML)</label>
         <textarea id="mediaInteractiva" rows="3"
           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary font-mono text-sm"
-          placeholder="<iframe>...</textarea>
+          placeholder="<iframe>..."></textarea>
       </div>
 
       <div>
-        <label class="block text-sm font-bold text-gray-700 mb-2">Glosario de términos (JSON)</label>
+        <label class="block text-sm font-bold text-gray-700 mb-2">Glosario de terminos (JSON)</label>
         <textarea id="glosarioItems" rows="4"
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary font-mono text-sm !visible"
-          style="display:block !important; visibility:visible !important; opacity:1 !important;"
-          placeholder='{"término": "definición", ...}'></textarea>
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary font-mono text-sm"
+          placeholder='{"termino": "definicion", ...}'></textarea>
       </div>
 
       <div>
@@ -121,105 +117,90 @@
   </main>
 
   <script>
-    const API_QUESTION = '../api/questions.php';
-    const API_JUSTIFICACIONES = '../api/justificaciones.php';
+    var API_QUESTION = '../api/questions.php';
+    var API_JUSTIFICACIONES = '../api/justificaciones.php';
 
-    function $(id) {
+    function get(id) {
       return document.getElementById(id);
     }
 
-    function setValue(id, val) {
-      var el = $(id);
-      if (el) el.value = val || '';
+    function setVal(id, val) {
+      var el = get(id);
+      if (el) el.value = (val === null || val === undefined) ? '' : val;
     }
 
-    function getValue(id) {
-      var el = $(id);
+    function getVal(id) {
+      var el = get(id);
       return el ? el.value : '';
     }
 
     async function cargarPregunta() {
-      var inputEl = $('inputId');
-      if (!inputEl) return alert('inputId not found');
-      
-      var id = parseInt(inputEl.value);
+      var inp = get('inputId');
+      if (!inp) return;
+      var id = parseInt(inp.value);
       if (!id || id < 1) return;
 
-      $('idPregunta').value = id;
-      $('linkVerPregunta').href = 'justification.php?area=mat&id=' + id;
+      get('idPregunta').value = id;
+      get('linkVerPregunta').href = 'justification.php?area=mat&id=' + id;
 
-      // Cargar pregunta original
       try {
-        var res = await fetch(API_QUESTION + '?id=' + id);
-        var q = await res.json();
-        
+        var r = await fetch(API_QUESTION + '?id=' + id);
+        var q = await r.json();
         if (q.error) {
-          $('questionRef').innerHTML = '<p class="text-red-600">Pregunta no encontrada</p>';
+          get('questionRef').innerHTML = '<p class="text-red-600">Pregunta no encontrada</p>';
         } else {
-          $('questionRef').innerHTML = 
+          get('questionRef').innerHTML =
             '<div class="space-y-3">' +
-            '<div><strong>Área:</strong> ' + (q.subject || '') + '</div>' +
+            '<div><strong>Area:</strong> ' + (q.subject || '') + '</div>' +
             '<div><strong>Contexto:</strong> ' + (q.context || 'Sin contexto') + '</div>' +
             '<div><strong>Pregunta:</strong> ' + (q.text || '') + '</div>' +
             '<div><strong>Respuesta correcta:</strong> ' + (q.options ? q.options[q.correct] : '') + '</div>' +
-            '<div><strong>Justificación:</strong> ' + (q.justification || 'Sin justificación') + '</div>' +
+            '<div><strong>Justificacion:</strong> ' + (q.justification || 'Sin justificacion') + '</div>' +
             '</div>';
         }
       } catch (e) {
-        $('questionRef').innerHTML = '<p class="text-red-600">Error al cargar pregunta</p>';
+        get('questionRef').innerHTML = '<p class="text-red-600">Error al cargar pregunta</p>';
       }
 
-// Cargar justificación expandida
       try {
-        var res = await fetch(API_JUSTIFICACIONES + '?id=' + id);
-        var j = await res.json();
-        console.log('API response:', JSON.stringify(j));
+        var r2 = await fetch(API_JUSTIFICACIONES + '?id=' + id);
+        var j = await r2.json();
 
-        if (j && j.existe === false) {
-          setValue('nombrePregunta', '');
-          setValue('descripcionExtendida', '');
-          setValue('mediaInteractiva', '');
-          setValue('glosarioItems', '');
-          setValue('datoCurioso', '');
-          setValue('errorComunFeedback', '');
-        } else if (j) {
-          setValue('nombrePregunta', j.nombrePregunta || '');
-          setValue('descripcionExtendida', j.descripcionExtendida || '');
-          setValue('mediaInteractiva', j.mediaInteractiva || '');
-          setValue('glosarioItems', j.glosario_items || '');
-          setValue('datoCurioso', j.datoCurioso || '');
-          setValue('errorComunFeedback', j.errorComunFeedback || '');
-        }
+        setVal('nombrePregunta', j.nombrePregunta || '');
+        setVal('descripcionExtendida', j.descripcionExtendida || '');
+        setVal('mediaInteractiva', j.mediaInteractiva || '');
+        setVal('glosarioItems', j.glosario_items || '');
+        setVal('datoCurioso', j.datoCurioso || '');
+        setVal('errorComunFeedback', j.errorComunFeedback || '');
       } catch (e) {
-        console.error('Error loading:', e);
       }
     }
 
     async function guardarCambios() {
-      var id = parseInt($('idPregunta').value);
-      if (!id) return alert('ID no válido');
+      var id = parseInt(get('idPregunta').value);
+      if (!id) return alert('ID no valido');
 
       var data = {
         idPregunta: id,
-        nombrePregunta: getValue('nombrePregunta'),
-        descripcionExtendida: getValue('descripcionExtendida'),
-        mediaInteractiva: getValue('mediaInteractiva'),
-        glosarioItems: getValue('glosarioItems'),
-        datoCurioso: getValue('datoCurioso'),
-        errorComunFeedback: getValue('errorComunFeedback')
+        nombrePregunta: getVal('nombrePregunta'),
+        descripcionExtendida: getVal('descripcionExtendida'),
+        mediaInteractiva: getVal('mediaInteractiva'),
+        glosarioItems: getVal('glosarioItems'),
+        datoCurioso: getVal('datoCurioso'),
+        errorComunFeedback: getVal('errorComunFeedback')
       };
 
       try {
-        var res = await fetch(API_JUSTIFICACIONES, {
+        var r = await fetch(API_JUSTIFICACIONES, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
         });
-        var result = await res.json();
+        var result = await r.json();
 
-        var msg = $('mensaje');
+        var msg = get('mensaje');
         msg.classList.remove('hidden');
-        
+
         if (result.success) {
           msg.className = 'p-4 rounded-lg bg-green-100 text-green-700 border border-green-300';
           msg.innerHTML = '<i class="fas fa-check-circle mr-1"></i>Cambios guardados correctamente';
@@ -228,16 +209,16 @@
           msg.innerHTML = '<i class="fas fa-times-circle mr-1"></i>Error al guardar cambios';
         }
       } catch (e) {
-        var msg = $('mensaje');
+        var msg = get('mensaje');
         msg.classList.remove('hidden');
         msg.className = 'p-4 rounded-lg bg-red-100 text-red-700 border border-red-300';
-        msg.innerHTML = '<i class="fas fa-times-circle mr-1"></i>Error de conexión';
+        msg.innerHTML = '<i class="fas fa-times-circle mr-1"></i>Error de conexion';
       }
     }
 
     function toggleRef() {
-      var el = $('refContent');
-      var icon = $('iconToggle');
+      var el = get('refContent');
+      var icon = get('iconToggle');
       if (el.classList.contains('hidden')) {
         el.classList.remove('hidden');
         icon.className = 'fas fa-chevron-up';
