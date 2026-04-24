@@ -12,11 +12,11 @@
       theme: {
         extend: {
           colors: {
-            mat: { light: '#E8F2FB', DEFAULT: '#2F6EB5', dark: '#1A3A5C' },
-            lc: { light: '#FEF0EF', DEFAULT: '#C0392B', dark: '#6B1A1A' },
-            cn: { light: '#EBF8EF', DEFAULT: '#1E8449', dark: '#1A4D2E' },
-            cc: { light: '#FEF6EC', DEFAULT: '#D4680B', dark: '#6B3800' },
-            en: { light: '#F2EAF9', DEFAULT: '#7B2D8B', dark: '#3B1259' }
+            mat: { light: '#e8eef5', DEFAULT: '#1a3a5c', dark: '#1a3a5c' },
+            lc: { light: '#ede8ff', DEFAULT: '#5b3fa0', dark: '#5b3fa0' },
+            cn: { light: '#d4f0e2', DEFAULT: '#1e8a4a', dark: '#1e8a4a' },
+            soc: { light: '#fef3d7', DEFAULT: '#e8a020', dark: '#e8a020' },
+            ing: { light: '#fde8e6', DEFAULT: '#c0392b', dark: '#c0392b' }
           }
         }
       }

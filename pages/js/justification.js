@@ -15,8 +15,8 @@ const AREA_CONFIG = {
   mat: { name: 'Matemáticas', icon: 'fa-calculator', color: 'mat' },
   lc: { name: 'Lectura Crítica', icon: 'fa-book-reader', color: 'lc' },
   cn: { name: 'Ciencias Naturales', icon: 'fa-flask', color: 'cn' },
-  cc: { name: 'Competencias Ciudadanas', icon: 'fa-users', color: 'cc' },
-  soc: { name: 'Competencias Ciudadanas', icon: 'fa-users', color: 'cc' },
+  cc: { name: 'Competencias Ciudadanas', icon: 'fa-users', color: 'soc' },
+  soc: { name: 'Competencias Ciudadanas', icon: 'fa-users', color: 'soc' },
   en: { name: 'Inglés', icon: 'fa-language', color: 'en' }
 };
 
@@ -26,7 +26,7 @@ const AREA_ICONS = {
   cn: 'fa-flask',
   cc: 'fa-users',
   soc: 'fa-users',
-  en: 'fa-language'
+  ing: 'fa-language'
 };
 
 // ============================================================

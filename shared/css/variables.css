@@ -10,25 +10,25 @@
   --color-white:     #FFFFFF;
   --color-shadow:    rgba(0, 0, 0, 0.08);
 
-  /* MATEMÁTICAS — Azul pastel */
-  --mat-primary: #BDD7EE;  --mat-accent: #2F6EB5;
-  --mat-light:   #E8F2FB;  --mat-text:   #1A3A5C;  --mat-icon-op: 0.08;
+  /* MATEMÁTICAS */
+  --mat-primary: #C4D4E8;  --mat-accent: #1a3a5c;
+  --mat-light:   #e8eef5;  --mat-text:   #1a3a5c;  --mat-icon-op: 0.08;
 
-  /* LECTURA CRÍTICA — Rojo/Rosa pastel */
-  --lc-primary:  #F4CCCC;  --lc-accent:  #C0392B;
-  --lc-light:    #FEF0EF;  --lc-text:    #6B1A1A;  --lc-icon-op: 0.07;
+  /* LECTURA CRÍTICA */
+  --lc-primary:  #C4B0E6;  --lc-accent:  #5b3fa0;
+  --lc-light:    #ede8ff;  --lc-text:    #5b3fa0;  --lc-icon-op: 0.07;
 
-  /* CIENCIAS NATURALES — Verde pastel */
-  --cn-primary:  #C6EFCE;  --cn-accent:  #1E8449;
-  --cn-light:    #EBF8EF;  --cn-text:    #1A4D2E;  --cn-icon-op: 0.08;
+  /* CIENCIAS NATURALES */
+  --cn-primary:  #A8D8B9;  --cn-accent:  #1e8a4a;
+  --cn-light:    #d4f0e2;  --cn-text:    #1e8a4a;  --cn-icon-op: 0.08;
 
-  /* COMPETENCIAS CIUDADANAS — Naranja/Amarillo pastel */
-  --cc-primary:  #FCE4C2;  --cc-accent:  #D4680A;
-  --cc-light:    #FEF6EC;  --cc-text:    #6B3800;  --cc-icon-op: 0.08;
+  /* COMPETENCIAS CIUDADANAS */
+  --cc-primary:  #F5D08A;  --cc-accent:  #e8a020;
+  --cc-light:    #fef3d7;  --cc-text:    #8B5A00;  --cc-icon-op: 0.08;
 
-  /* INGLÉS — Púrpura pastel */
-  --en-primary:  #D9C9F0;  --en-accent:  #7B2D8B;
-  --en-light:    #F2EAF9;  --en-text:    #3B1259;  --en-icon-op: 0.07;
+  /* INGLÉS */
+  --en-primary:  #F4B8B5;  --en-accent:  #c0392b;
+  --en-light:    #fde8e6;  --en-text:    #c0392b;  --en-icon-op: 0.07;
 
   /* Estados */
   --color-correct: #1E8449;
