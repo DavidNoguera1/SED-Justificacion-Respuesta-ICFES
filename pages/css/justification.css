@@ -272,3 +272,67 @@
   visibility: visible;
   transform: translateX(-50%) scale(1);
 }
+
+/* ============================================================
+ * SIDEBAR DE NAVEGACIÓN
+ * ============================================================ */
+
+#questionSidebar {
+  width: 18rem;
+}
+
+#mainContent {
+  margin-left: 18rem;
+  transition: margin-left 0.3s ease;
+}
+
+.sidebar-collapsed #questionSidebar {
+  width: 4rem;
+}
+
+.sidebar-collapsed #questionSidebar .sidebar-text,
+.sidebar-collapsed #questionSidebar .sidebar-full-content {
+  display: none;
+}
+
+.sidebar-collapsed #questionSidebar #sidebarFull {
+  display: none;
+}
+
+.sidebar-collapsed #questionSidebar #sidebarIconCollapsed {
+  display: block !important;
+}
+
+.sidebar-collapsed #questionSidebar .flex.items-start {
+  flex-direction: column;
+}
+
+.sidebar-collapsed #questionSidebar .flex.items-end {
+  align-items: flex-start;
+}
+
+.sidebar-collapsed #questionSidebar a {
+  justify-content: center;
+  padding: 0.625rem;
+}
+
+.sidebar-collapsed #questionSidebar #toggleCollapse {
+  padding: 0.5rem;
+}
+
+.sidebar-collapsed #mainContent {
+  margin-left: 4rem;
+}
+
+#sidebarQuestions::-webkit-scrollbar {
+  width: 4px;
+}
+
+#sidebarQuestions::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#sidebarQuestions::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 2px;
+}

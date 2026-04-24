@@ -26,60 +26,72 @@
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans antialiased" data-area="mat">
 
-  <!-- Header dinámico según área -->
-  <header id="headerArea" class="bg-mat-dark text-white py-6 shadow-md transition-colors duration-300">
-    <div class="max-w-5xl mx-auto px-6">
-      <div class="flex items-center justify-between">
-        <div>
-          <span id="areaBadge" class="bg-white/20 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">Matemáticas - ID: 0</span>
-          <h1 id="mainTitle" class="text-3xl font-extrabold mt-2">Análisis de Pregunta</h1>
-        </div>
-        <i id="areaIcon" class="fas fa-calculator text-4xl opacity-80"></i>
-      </div>
-    </div>
-  </header>
-
-  <!-- Navegación superior -->
-  <nav class="bg-gray-50 border-b border-gray-200 py-3">
-    <div class="max-w-5xl mx-auto px-6">
-      <div class="flex items-center justify-between flex-wrap gap-3">
-        <div class="flex gap-2">
-          <a href="../index.php" class="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition flex items-center gap-2 text-sm font-medium">
-            <i class="fas fa-home"></i> Inicio
-          </a>
-          <a id="navArea" href="#" class="px-3 py-2 bg-blue-100 text-blue-700 border border-blue-300 rounded-lg hover:bg-blue-200 transition flex items-center gap-2 text-sm font-medium">
-            <i class="fas fa-folder"></i> Área
-          </a>
-        </div>
-        
-        <div class="flex gap-2 items-center">
-          <a id="navPrev" href="#" class="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition text-sm">
-            <i class="fas fa-chevron-left"></i>
-          </a>
-          <div id="quickNav" class="flex gap-1.5 flex-wrap justify-center max-w-[450px]">
-            <!-- Quick nav pills se cargan dinámicamente -->
+  <!-- Sidebar de navegación izquierda -->
+  <aside id="questionSidebar" class="fixed top-0 left-0 h-full w-72 flex flex-col z-30 transition-all duration-300">
+    <div class="flex flex-col h-full">
+      <!-- Header de área -->
+      <div id="sidebarHeader" class="p-5 text-white bg-mat-dark transition-colors duration-300">
+        <div class="flex items-start justify-between">
+          <div id="sidebarFull" class="transition-all duration-300">
+            <i id="sidebarIcon" class="fas fa-calculator text-3xl opacity-90 mb-3 block"></i>
+            <span id="sidebarAreaName" class="text-xs font-bold uppercase tracking-wider opacity-80">Matemáticas</span>
+            <h2 class="text-lg font-extrabold mt-1">Análisis ICFES</h2>
           </div>
-          <a id="navNext" href="#" class="px-3 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition text-sm">
-            <i class="fas fa-chevron-right"></i>
-          </a>
+          <div class="flex flex-col items-end gap-4">
+            <i id="sidebarIconCollapsed" class="fas fa-calculator text-2xl opacity-90 hidden"></i>
+            <button id="toggleCollapse" class="p-2 rounded-lg hover:bg-white/20 transition text-white/80 hover:text-white" title="Colapsar">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+          </div>
         </div>
-        
-        <div class="flex gap-2">
-          <a id="navPrev远" href="#" class="px-3 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition flex items-center gap-2 text-sm">
-            <i class="fas fa-arrow-left"></i>
+        <div class="space-y-2 mt-4">
+          <a href="../index.php" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/20 transition text-sm font-medium">
+            <i class="fas fa-home w-5 text-center"></i>
+            <span class="sidebar-text">Inicio</span>
           </a>
-          <a id="navNext远" href="#" class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2 text-sm">
-            <i class="fas fa-arrow-right"></i>
+          <a id="navArea" href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/20 transition text-sm font-medium">
+            <i class="fas fa-folder w-5 text-center"></i>
+            <span class="sidebar-text">Ver Área</span>
           </a>
         </div>
       </div>
+      
+      <!-- Lista de preguntas -->
+      <div id="sidebarQuestionsWrapper" class="flex-1 overflow-y-auto bg-gray-50 p-3 transition-all duration-300">
+        <div class="sidebar-full-content transition-all duration-300">
+          <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
+            <i class="fas fa-list-ol mr-1"></i> <span class="sidebar-text">Preguntas</span>
+          </div>
+          <div class="px-2 mb-3">
+            <input type="text" id="sidebarSearch" class="w-full text-xs px-2 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" placeholder="Buscar...">
+          </div>
+        </div>
+        <div id="sidebarQuestions" class="space-y-1">
+        </div>
+      </div>
     </div>
-  </nav>
+  </aside>
 
-  <main class="max-w-5xl mx-auto px-6 mt-6 mb-16 space-y-8" id="questionContent">
-    <!-- Contenido se carga dinámicamente aquí -->
-  </main>
+  <!-- Contenido principal -->
+  <div id="mainContent" class="ml-72 transition-all duration-300">
+    <!-- Header dinámico según área -->
+    <header id="headerArea" class="bg-mat-dark text-white py-6 shadow-md transition-colors duration-300">
+      <div class="max-w-4xl mx-auto px-8">
+        <div class="flex items-center justify-between">
+          <div>
+            <span id="areaBadge" class="bg-white/20 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">Matemáticas - ID: 0</span>
+            <h1 id="mainTitle" class="text-3xl font-extrabold mt-2">Análisis de Pregunta</h1>
+          </div>
+          <i id="areaIcon" class="fas fa-calculator text-4xl opacity-80"></i>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-8 py-8 mb-16 space-y-8" id="questionContent">
+      <!-- Contenido se carga dinámicamente aquí -->
+    </main>
+  </div>
 
 <script src="js/justification.js"></script>
-  </body>
+</body>
 </html>

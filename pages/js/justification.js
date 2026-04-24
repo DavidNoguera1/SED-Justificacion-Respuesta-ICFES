@@ -76,13 +76,19 @@ function configureArea(area) {
 
   const config = AREA_CONFIG[configArea] || AREA_CONFIG.mat;
   const header = document.getElementById('headerArea');
+  const sidebar = document.getElementById('questionSidebar');
+  const sidebarHeader = document.getElementById('sidebarHeader');
   const badge = document.getElementById('areaBadge');
   const icon = document.getElementById('areaIcon');
+  const sidebarIcon = document.getElementById('sidebarIcon');
+  const sidebarAreaName = document.getElementById('sidebarAreaName');
 
-  // Actualizar clases del header
   header.className = 'bg-' + config.color + '-dark text-white py-6 shadow-md transition-colors duration-300';
+  sidebarHeader.className = 'p-5 text-white bg-' + config.color + '-dark transition-colors duration-300';
   badge.textContent = config.name + ' - ID: 0';
   icon.className = 'fas ' + config.icon + ' text-4xl opacity-80';
+  sidebarIcon.className = 'fas ' + config.icon + ' text-3xl opacity-90 mb-3 block';
+  sidebarAreaName.textContent = config.name;
 
   document.body.dataset.area = area;
 }
@@ -430,6 +436,85 @@ function parseInvalidOptions(invalidText, optionsCount) {
   }
 
 // ============================================================
+// SIDEBAR DE NAVEGACIÓN
+// ============================================================
+
+let sidebarQuestions = [];
+let sidebarFiltered = [];
+let sidebarCollapsed = false;
+
+function normalizeText(str) {
+  if (!str) return '';
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+}
+
+function filterSidebarQuestions(searchTerm) {
+  const term = normalizeText(searchTerm.trim());
+  
+  if (!term) {
+    sidebarFiltered = [...sidebarQuestions];
+  } else {
+    sidebarFiltered = sidebarQuestions.filter(q => {
+      const searchFields = [
+        q.text || '',
+        q.context || '',
+        q.justification || '',
+        ...(q.options || [])
+      ].join(' ');
+      return normalizeText(searchFields).includes(term);
+    });
+  }
+  
+  const params = new URLSearchParams(location.search);
+  const currentId = parseInt(params.get('id'));
+  renderSidebar(sidebarFiltered, currentId, params.get('area') || 'mat');
+}
+
+function toggleSidebarCollapse() {
+  const sidebar = document.getElementById('questionSidebar');
+  const toggleBtn = document.getElementById('toggleCollapse');
+  
+  sidebarCollapsed = !sidebarCollapsed;
+  
+  if (sidebarCollapsed) {
+    document.body.classList.add('sidebar-collapsed');
+    toggleBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+    toggleBtn.title = 'Expandir';
+  } else {
+    document.body.classList.remove('sidebar-collapsed');
+    toggleBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+    toggleBtn.title = 'Colapsar';
+  }
+}
+
+document.getElementById('toggleCollapse').addEventListener('click', toggleSidebarCollapse);
+
+function renderSidebar(questions, currentId, area) {
+  const container = document.getElementById('sidebarQuestions');
+  if (!container) return;
+  
+  const areaColor = getAreaColorClass(area);
+  
+  container.innerHTML = questions.map(q => {
+    const isActive = q.id === currentId;
+    const preview = q.text ? q.text.replace(/<[^>]+>/g, '').trim().substring(0, 70) : 'Sin texto';
+    const truncated = preview.length >= 70 ? preview + '...' : preview;
+    return `
+      <a href="justification.php?area=${area}&id=${q.id}" 
+         class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition text-sm ${isActive ? 'bg-' + areaColor + ' text-white font-semibold shadow-sm' : 'text-gray-700 hover:bg-' + areaColor + '/10 hover:text-' + areaColor}">
+        <span class="text-xs ${isActive ? 'opacity-80' : 'text-gray-400'} font-mono">#${q.id}</span>
+        <span class="line-clamp-2 text-xs sidebar-full-content">${truncated}</span>
+      </a>
+    `;
+  }).join('');
+}
+
+function getAreaColorClass(area) {
+  const colorMap = { mat: 'mat', lc: 'lc', cn: 'cn', cc: 'soc', soc: 'soc', ing: 'ing' };
+  return colorMap[area] || 'mat';
+}
+
+// ============================================================
 // NAVEGACIÓN
 // ============================================================
 
@@ -443,61 +528,22 @@ async function setupNavigation(area, currentId, subject) {
 
     const idx = questions.findIndex(q => q.id === currentId);
 
-    // Botones anterior/siguiente (flechas)
-    const prevBtn = document.getElementById('navPrev');
-    const nextBtn = document.getElementById('navNext');
-
-    if (idx > 0) {
-      prevBtn.href = 'justification.php?area=' + area + '&id=' + questions[idx - 1].id;
-    } else {
-      prevBtn.classList.add('opacity-40', 'pointer-events-none');
-    }
-
-    if (idx < questions.length - 1) {
-      nextBtn.href = 'justification.php?area=' + area + '&id=' + questions[idx + 1].id;
-    } else {
-      nextBtn.classList.add('opacity-40', 'pointer-events-none');
-    }
-
-    // Botones anterior/siguiente (texto)
-    const prevBtn远 = document.getElementById('navPrev远');
-    const nextBtn远 = document.getElementById('navNext远');
-
-    if (idx > 0) {
-      prevBtn远.href = 'justification.php?area=' + area + '&id=' + questions[idx - 1].id;
-    } else {
-      prevBtn远.classList.add('opacity-40', 'pointer-events-none');
-    }
-
-    if (idx < questions.length - 1) {
-      nextBtn远.href = 'justification.php?area=' + area + '&id=' + questions[idx + 1].id;
-    } else {
-      nextBtn远.classList.add('opacity-40', 'pointer-events-none');
-    }
-
     // Botón área
     const navArea = document.getElementById('navArea');
     navArea.href = 'area.php?area=' + area;
 
-    // Quick nav pills con tooltip
-    const quickNav = document.getElementById('quickNav');
-    const start = Math.max(0, idx - 4);
-    const end = Math.min(questions.length, idx + 6);
-
-    let pillsHtml = '';
-    for (let i = start; i < end; i++) {
-      const q = questions[i];
-      const isActive = q.id === currentId;
-      const questionText = q.text ? q.text.replace(/<[^>]+>/g, '').trim().substring(0, 100) : 'Pregunta sin texto';
-      const truncatedText = questionText.length > 80 ? questionText.substring(0, 80) + '...' : questionText;
-      pillsHtml +=
-        '<a href="justification.php?area=' + area + '&id=' + q.id + '" ' +
-        'class="px-2.5 py-1 rounded-lg text-xs font-medium transition relative ' + (isActive ? 'bg-blue-600 text-white' : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-100') + '">' +
-        q.id +
-        '<span class="quick-nav-tooltip">' + truncatedText.replace(/"/g, '&quot;') + '</span>' +
-        '</a>';
+    // Renderizar sidebar con todas las preguntas
+    sidebarQuestions = questions;
+    sidebarFiltered = [...questions];
+    renderSidebar(sidebarFiltered, currentId, area);
+    
+    // Event listener para búsqueda
+    const searchInput = document.getElementById('sidebarSearch');
+    if (searchInput) {
+      searchInput.addEventListener('input', function() {
+        filterSidebarQuestions(this.value);
+      });
     }
-    quickNav.innerHTML = pillsHtml;
   } catch (e) {
     console.error('Navigation error:', e);
   }

@@ -194,7 +194,12 @@
       const searchTerm = normalizeText(document.getElementById('filter-search').value.trim());
       
       const filtered = allQuestions.filter(q => {
-        if (searchTerm && !normalizeText(q.text || '').includes(searchTerm)) {
+        const searchFields = [
+          q.text || '',
+          q.context || '',
+          ...(q.options || [])
+        ].join(' ');
+        if (searchTerm && !normalizeText(searchFields).includes(searchTerm)) {
           return false;
         }
         if (competency && q.competency !== competency) return false;
