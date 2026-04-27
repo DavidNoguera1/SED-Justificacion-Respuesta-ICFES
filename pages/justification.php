@@ -23,8 +23,30 @@
     }
   </script>
   <link rel="stylesheet" href="css/justification.css">
+  <link rel="stylesheet" href="../shared/css/backgrounds.css">
+  <style>
+    body { position: relative; }
+    .bg-canvas { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+    .hero-bg-item {
+      position: absolute;
+      opacity: 0.06;
+      color: var(--area-accent);
+      font-family: var(--font-display);
+      font-weight: 700;
+      animation: float-icon 15s ease-in-out infinite;
+      user-select: none;
+    }
+    @keyframes float-icon {
+      0%   { transform: translateY(0px)   rotate(0deg);  }
+      33%  { transform: translateY(-16px) rotate(4deg);  }
+      66%  { transform: translateY(-6px)  rotate(-3deg); }
+      100% { transform: translateY(0px)   rotate(0deg);  }
+    }
+    #mainContent { position: relative; z-index: 1; }
+  </style>
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans antialiased" data-area="mat">
+  <div class="bg-canvas" aria-hidden="true"></div>
 
   <!-- Sidebar de navegación izquierda -->
   <aside id="questionSidebar" class="fixed top-0 left-0 h-full w-72 flex flex-col z-30 transition-all duration-300">
@@ -76,7 +98,7 @@
   <div id="mainContent" class="ml-72 transition-all duration-300">
     <!-- Header dinámico según área -->
     <header id="headerArea" class="bg-mat-dark text-white py-6 shadow-md transition-colors duration-300">
-      <div class="max-w-4xl mx-auto px-8">
+      <div class="max-w-7xl mx-auto px-8">
         <div class="flex items-center justify-between">
           <div>
             <span id="areaBadge" class="bg-white/20 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">Matemáticas - ID: 0</span>
@@ -87,7 +109,7 @@
       </div>
     </header>
 
-    <main class="max-w-4xl mx-auto px-8 py-8 mb-16 space-y-8" id="questionContent">
+    <main class="max-w-7xl mx-auto px-8 py-8 mb-16" id="questionContent">
       <!-- Contenido se carga dinámicamente aquí -->
     </main>
   </div>

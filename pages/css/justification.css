@@ -336,3 +336,357 @@
   background: #d1d5db;
   border-radius: 2px;
 }
+
+/* ============================================================
+ * LEARNING CANVAS - Vista enriquecida de justificacion
+ * ============================================================ */
+
+body {
+  font-family: var(--font-body);
+}
+
+.learning-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 20rem;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.learning-main,
+.learning-aside {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.learning-card {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-left: 4px solid var(--area-accent);
+  border-radius: 1rem;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.06);
+  padding: 1.5rem;
+}
+
+.learning-card--soft {
+  background: linear-gradient(135deg, rgba(255,255,255,0.96), var(--area-light));
+}
+
+.learning-card--question {
+  background: linear-gradient(135deg, var(--area-accent), color-mix(in srgb, var(--area-accent) 82%, #000 18%));
+  border-color: color-mix(in srgb, var(--area-accent) 78%, #000 22%);
+  color: #fff;
+}
+
+.learning-card--question .chip {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.22);
+  color: #fff;
+}
+
+.learning-card--success {
+  border-left-color: #16a34a;
+}
+
+.learning-card--danger {
+  border-left-color: #dc2626;
+}
+
+.learning-card--success .learning-section-title {
+  color: #15803d;
+}
+
+.learning-card--success .chip {
+  background: #dcfce7;
+  border-color: #bbf7d0;
+  color: #15803d;
+}
+
+.learning-card--danger .learning-section-title {
+  color: #b91c1c;
+}
+
+.learning-eyebrow {
+  color: var(--area-accent);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.learning-title {
+  color: var(--area-accent);
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.learning-section-title {
+  color: var(--area-accent);
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.learning-prose {
+  color: #374151;
+  font-size: 1rem;
+  line-height: 1.72;
+}
+
+.learning-prose p + p {
+  margin-top: 0.85rem;
+}
+
+.learning-prose img {
+  border-radius: 0.75rem;
+  display: block;
+  margin: 1rem auto;
+  max-width: 100%;
+}
+
+.objective-card {
+  align-items: flex-start;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid color-mix(in srgb, var(--area-accent) 22%, #fff 78%);
+  border-radius: 0.9rem;
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.objective-icon,
+.aside-icon {
+  align-items: center;
+  background: var(--area-light);
+  border-radius: 999px;
+  color: var(--area-accent);
+  display: inline-flex;
+  flex: 0 0 auto;
+  height: 2.5rem;
+  justify-content: center;
+  width: 2.5rem;
+}
+
+.answer-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.answer-option {
+  align-items: flex-start;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.9rem;
+  display: flex;
+  gap: 0.85rem;
+  padding: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.answer-option:hover {
+  border-color: color-mix(in srgb, var(--area-accent) 35%, #e5e7eb 65%);
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.07);
+  transform: translateY(-1px);
+}
+
+.answer-option--correct {
+  background: #f0fdf4;
+  border-color: #86efac;
+}
+
+.answer-option--wrong {
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.answer-letter {
+  align-items: center;
+  background: #f3f4f6;
+  border-radius: 999px;
+  color: #4b5563;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-weight: 800;
+  height: 2rem;
+  justify-content: center;
+  width: 2rem;
+}
+
+.answer-option--correct .answer-letter {
+  background: #16a34a;
+  color: #fff;
+}
+
+.answer-letter--correct {
+  background: #16a34a;
+  color: #fff;
+}
+
+.answer-option--wrong .answer-letter {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.side-card {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: 1rem;
+  box-shadow: 0 14px 35px rgba(15, 23, 42, 0.05);
+  padding: 1.25rem;
+}
+
+.side-card--media {
+  background: linear-gradient(145deg, #f8fafc, var(--area-light));
+}
+
+.side-card.learning-card--danger {
+  border-left: 4px solid #dc2626;
+}
+
+.placeholder-box {
+  background: repeating-linear-gradient(
+    135deg,
+    rgba(148, 163, 184, 0.11),
+    rgba(148, 163, 184, 0.11) 10px,
+    rgba(255, 255, 255, 0.45) 10px,
+    rgba(255, 255, 255, 0.45) 20px
+  );
+  border: 1px dashed #94a3b8;
+  border-radius: 0.85rem;
+  color: #64748b;
+  padding: 1rem;
+}
+
+.media-frame {
+  aspect-ratio: 16 / 9;
+  background: #e2e8f0;
+  border-radius: 0.85rem;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+
+.media-frame iframe,
+.media-frame img,
+.media-frame video {
+  border: 0;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.glossary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.glossary-term {
+  color: var(--area-accent);
+  display: block;
+  font-weight: 800;
+  margin-bottom: 0.2rem;
+}
+
+.glossary-tooltip {
+  cursor: help;
+  position: relative;
+}
+
+.glossary-tooltip::after {
+  border-bottom: 2px dotted var(--area-accent);
+  bottom: -0.1rem;
+  content: "";
+  left: 0;
+  position: absolute;
+  width: 100%;
+}
+
+.glossary-tooltip__content {
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.75rem;
+  bottom: calc(100% + 0.65rem);
+  box-shadow: 0 18px 35px rgba(15, 23, 42, 0.12);
+  color: #334155;
+  font-weight: 600;
+  left: 0;
+  line-height: 1.45;
+  min-width: 14rem;
+  opacity: 0;
+  padding: 0.75rem;
+  pointer-events: none;
+  position: absolute;
+  transform: translateY(0.3rem);
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
+  visibility: hidden;
+  z-index: 20;
+}
+
+.glossary-tooltip:hover .glossary-tooltip__content {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
+
+.chip {
+  background: var(--area-light);
+  border: 1px solid color-mix(in srgb, var(--area-accent) 24%, #fff 76%);
+  border-radius: 999px;
+  color: var(--area-accent);
+  display: inline-flex;
+  font-size: 0.75rem;
+  font-weight: 800;
+  gap: 0.35rem;
+  letter-spacing: 0.03em;
+  padding: 0.35rem 0.75rem;
+  text-transform: uppercase;
+}
+
+.empty-note {
+  color: #64748b;
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+@media (max-width: 1100px) {
+  .learning-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .learning-aside {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  #questionSidebar {
+    width: 4rem;
+  }
+
+  #questionSidebar .sidebar-text,
+  #questionSidebar .sidebar-full-content,
+  #questionSidebar #sidebarFull {
+    display: none;
+  }
+
+  #mainContent {
+    margin-left: 4rem;
+  }
+
+  #questionContent {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .learning-aside {
+    grid-template-columns: 1fr;
+  }
+}

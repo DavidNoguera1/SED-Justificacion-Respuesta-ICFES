@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cálculo de Áreas en Geometría Plana - Saber 11</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800;900&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "on-tertiary-fixed-variant": "#5f410c",
+                            "on-secondary-fixed": "#410004",
+                            "on-surface": "#191c1d",
+                            "on-tertiary-fixed": "#291800",
+                            "surface-container-low": "#f3f4f5",
+                            "on-tertiary-container": "#c49b5f",
+                            "outline-variant": "#c3c6cf",
+                            "inverse-surface": "#2e3132",
+                            "background": "#f8f9fa",
+                            "inverse-on-surface": "#f0f1f2",
+                            "on-tertiary": "#ffffff",
+                            "on-error-container": "#93000a",
+                            "surface-container-lowest": "#ffffff",
+                            "surface-container": "#edeeef",
+                            "inverse-primary": "#abc9f2",
+                            "on-secondary-fixed-variant": "#7f2927",
+                            "on-primary-fixed-variant": "#2a486b",
+                            "secondary": "#9e403c",
+                            "on-background": "#191c1d",
+                            "primary-fixed": "#d2e4ff",
+                            "surface-tint": "#436084",
+                            "surface-dim": "#d9dadb",
+                            "on-primary": "#ffffff",
+                            "outline": "#73777f",
+                            "tertiary-fixed": "#ffddb1",
+                            "secondary-fixed-dim": "#ffb3ae",
+                            "error": "#ba1a1a",
+                            "secondary-fixed": "#ffdad7",
+                            "surface-bright": "#f8f9fa",
+                            "on-error": "#ffffff",
+                            "secondary-container": "#fe8a83",
+                            "error-container": "#ffdad6",
+                            "tertiary": "#331f00",
+                            "on-secondary-container": "#752221",
+                            "primary": "#002444",
+                            "surface-variant": "#e1e3e4",
+                            "primary-container": "#1a3a5c",
+                            "on-surface-variant": "#43474e",
+                            "tertiary-container": "#4f3300",
+                            "on-primary-container": "#87a4cc",
+                            "surface-container-high": "#e7e8e9",
+                            "tertiary-fixed-dim": "#ecbf80",
+                            "primary-fixed-dim": "#abc9f2",
+                            "on-secondary": "#ffffff",
+                            "surface": "#f8f9fa",
+                            "on-primary-fixed": "#001c37",
+                            "surface-container-highest": "#e1e3e4"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "0.125rem",
+                            "lg": "0.25rem",
+                            "xl": "0.5rem",
+                            "full": "0.75rem"
+                    },
+                    "spacing": {
+                            "gutter": "24px",
+                            "prose-gap": "1.5rem",
+                            "unit": "4px",
+                            "margin": "32px",
+                            "container-max": "800px"
+                    },
+                    "fontFamily": {
+                            "h3": ["Lexend"],
+                            "label-caps": ["Inter"],
+                            "h1": ["Lexend"],
+                            "body-lg": ["Inter"],
+                            "h2": ["Lexend"],
+                            "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                            "h3": ["1.5rem", {"lineHeight": "1.4", "fontWeight": "500"}],
+                            "label-caps": ["0.75rem", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                            "h1": ["2.5rem", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                            "body-lg": ["1.125rem", {"lineHeight": "1.7", "fontWeight": "400"}],
+                            "h2": ["1.875rem", {"lineHeight": "1.3", "fontWeight": "500"}],
+                            "body-md": ["1rem", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .tooltip-trigger { position: relative; display: inline-block; cursor: help; border-bottom: 2px dotted theme('colors.primary-container'); }
+        .tooltip-content {
+            visibility: hidden; width: 240px; background-color: white; color: theme('colors.on-surface');
+            text-align: left; padding: 12px; border-radius: theme('borderRadius.lg'); border: 1px solid theme('colors.outline-variant');
+            position: absolute; z-index: 10; bottom: 125%; left: 50%; margin-left: -120px;
+            opacity: 0; transition: opacity 0.3s; box-shadow: 0 4px 12px rgba(26,58,92,0.1);
+        }
+        .tooltip-content::after {
+            content: ""; position: absolute; top: 100%; left: 50%; margin-left: -5px;
+            border-width: 5px; border-style: solid; border-color: white transparent transparent transparent;
+        }
+        .tooltip-trigger:hover .tooltip-content { visibility: visible; opacity: 1; }
+        
+        .learning-card {
+            background-color: theme('colors.surface-container-lowest');
+            border-left: 4px solid theme('colors.primary-container');
+            border-top: 1px solid theme('colors.surface-variant');
+            border-right: 1px solid theme('colors.surface-variant');
+            border-bottom: 1px solid theme('colors.surface-variant');
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border-radius: theme('borderRadius.lg');
+            padding: 24px;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-white dark:bg-slate-900 font-lexend antialiased docked full-width top-0 z-50 border-b border-slate-200 dark:border-slate-800 shadow-[0_4px_12px_rgba(26,58,92,0.03)] sticky">
+<div class="flex items-center justify-between px-6 py-3 w-full max-w-[1440px] mx-auto">
+<div class="flex items-center gap-8">
+<div class="text-xl font-bold text-[#1A3A5C] dark:text-white tracking-tight">Saber 11 Encyclopedia</div>
+<nav class="hidden md:flex gap-6">
+<a class="text-[#1A3A5C] border-b-2 border-[#1A3A5C] pb-1 font-semibold dark:text-white dark:border-white hover:bg-slate-50 dark:hover:bg-slate-800 transition-all" href="#">Library</a>
+<a class="text-slate-500 hover:text-[#1A3A5C] transition-colors dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all pb-1 border-b-2 border-transparent" href="#">Subjects</a>
+<a class="text-slate-500 hover:text-[#1A3A5C] transition-colors dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all pb-1 border-b-2 border-transparent" href="#">Mock Exams</a>
+<a class="text-slate-500 hover:text-[#1A3A5C] transition-colors dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all pb-1 border-b-2 border-transparent" href="#">Analytics</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full text-body-md font-body-md focus:ring-2 focus:ring-primary-container w-64" placeholder="Search..." type="text"/>
+</div>
+<button class="p-2 text-[#1A3A5C] dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all rounded-full"><span class="material-symbols-outlined">notifications</span></button>
+<button class="p-2 text-[#1A3A5C] dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all rounded-full"><span class="material-symbols-outlined">account_circle</span></button>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow w-full max-w-[1440px] mx-auto px-6 py-8 flex flex-col lg:flex-row gap-8">
+<!-- Left/Center Column (Content Canvas) -->
+<div class="w-full lg:max-w-[800px] flex flex-col gap-[1.5rem]">
+<!-- Header Area -->
+<div class="mb-4">
+<span class="inline-block bg-primary-fixed text-on-primary-fixed-variant font-label-caps text-label-caps px-3 py-1 rounded-full mb-4">Mathematics</span>
+<h1 class="font-h1 text-h1 text-primary mb-6">Cálculo de Áreas en Geometría Plana</h1>
+<!-- Objectives -->
+<div class="bg-surface-container-low p-4 rounded-lg border border-surface-variant flex gap-4 items-start">
+<span class="material-symbols-outlined text-primary-container mt-1">target</span>
+<div>
+<h4 class="font-label-caps text-label-caps text-on-surface-variant mb-1 uppercase tracking-wider">¿Qué evalúa la pregunta?</h4>
+<p class="font-body-md text-body-md text-on-surface">Capacidad para identificar y aplicar fórmulas de área en figuras compuestas, requiriendo descomposición de polígonos y comprensión de relaciones espaciales básicas.</p>
+</div>
+</div>
+</div>
+<!-- Contexto -->
+<div class="learning-card">
+<h3 class="font-h3 text-h3 text-primary mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined">article</span> Contexto de la Pregunta
+                </h3>
+<div class="prose font-body-md text-body-md text-on-surface space-y-4">
+<p>Un arquitecto está diseñando un parque urbano que tiene la forma de un trapecio rectángulo compuesto por un rectángulo central y dos triángulos rectángulos en los extremos. El parque estará cubierto de césped, y se necesita calcular el área total para comprar los rollos de pasto. El rectángulo central mide 20 m de base por 15 m de altura. Los triángulos tienen bases de 5 m y 10 m respectivamente.</p>
+<figure class="my-6 border border-surface-variant rounded p-4 bg-surface-container-low flex flex-col items-center">
+<div class="w-full h-48 bg-outline-variant rounded flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-4xl">image</span>
+<span class="ml-2 font-label-caps text-label-caps">(Diagrama del parque trapecial)</span>
+</div>
+<figcaption class="mt-2 font-body-md text-body-md text-sm text-on-surface-variant italic">Figura 1: Plano simplificado del parque mostrando las subdivisiones geométricas.</figcaption>
+</figure>
+</div>
+</div>
+<!-- La Pregunta -->
+<div class="bg-primary-container text-on-primary-container p-6 rounded-lg shadow-[0_4px_12px_rgba(26,58,92,0.1)] border border-primary">
+<h3 class="font-h3 text-h3 text-on-primary mb-3">Pregunta</h3>
+<p class="font-body-lg text-body-lg text-white font-medium">¿Cuál es el área total del terreno que el arquitecto debe cubrir con césped?</p>
+</div>
+<!-- Opciones -->
+<div class="flex flex-col gap-3">
+<h4 class="font-label-caps text-label-caps text-outline uppercase tracking-wider ml-1">Opciones de Respuesta</h4>
+<label class="flex items-center p-4 border border-surface-variant rounded-lg hover:bg-surface-container-low cursor-pointer transition-colors bg-white">
+<input class="text-primary focus:ring-primary h-5 w-5 border-outline" name="answer" type="radio"/>
+<span class="ml-4 font-body-md text-body-md text-on-surface"><strong class="mr-2">A.</strong> 300 m²</span>
+</label>
+<label class="flex items-center p-4 border-2 border-secondary-container bg-error-container rounded-lg hover:bg-error-container/80 cursor-pointer transition-colors">
+<input class="text-secondary focus:ring-secondary h-5 w-5 border-secondary" name="answer" type="radio"/>
+<span class="ml-4 font-body-md text-body-md text-on-error-container"><strong class="mr-2">B.</strong> 350 m²</span>
+<span class="ml-auto material-symbols-outlined text-secondary">cancel</span>
+</label>
+<label class="flex items-center p-4 border-2 border-primary bg-primary-fixed/30 rounded-lg cursor-pointer transition-colors">
+<input checked="" class="text-primary focus:ring-primary h-5 w-5 border-primary" name="answer" type="radio"/>
+<span class="ml-4 font-body-md text-body-md text-primary-fixed-variant"><strong class="mr-2">C.</strong> 412.5 m²</span>
+<span class="ml-auto material-symbols-outlined text-primary">check_circle</span>
+</label>
+<label class="flex items-center p-4 border border-surface-variant rounded-lg hover:bg-surface-container-low cursor-pointer transition-colors bg-white">
+<input class="text-primary focus:ring-primary h-5 w-5 border-outline" name="answer" type="radio"/>
+<span class="ml-4 font-body-md text-body-md text-on-surface"><strong class="mr-2">D.</strong> 450 m²</span>
+</label>
+</div>
+<!-- Deep Learning: Respuesta Correcta -->
+<div class="learning-card mt-4">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-primary bg-primary-fixed p-2 rounded-full">school</span>
+<h3 class="font-h3 text-h3 text-primary">Análisis de la Respuesta Correcta</h3>
+</div>
+<div class="bg-surface-container-low p-4 rounded mb-4">
+<p class="font-body-md text-body-md text-on-surface"><strong>La opción correcta es la C (412.5 m²).</strong> Para hallar el área total, descomponemos la figura en sus partes fundamentales: un rectángulo y dos triángulos rectángulos, y sumamos sus áreas.</p>
+</div>
+<div class="font-body-md text-body-md text-on-surface space-y-4 pl-4 border-l-2 border-outline-variant ml-2">
+<p><strong>Paso 1: Área del Rectángulo</strong><br/>
+                    Fórmula: Base × Altura<br/>
+                    Área = 20 m × 15 m = 300 m²</p>
+<p><strong>Paso 2: Área del Triángulo 1</strong><br/>
+                    Fórmula: (Base × Altura) / 2<br/>
+                    Área = (5 m × 15 m) / 2 = 75 / 2 = 37.5 m²</p>
+<p><strong>Paso 3: Área del Triángulo 2</strong><br/>
+                    Fórmula: (Base × Altura) / 2<br/>
+                    Área = (10 m × 15 m) / 2 = 150 / 2 = 75 m²</p>
+<p><strong>Paso 4: Área Total</strong><br/>
+                    Suma = 300 + 37.5 + 75 = 412.5 m²</p>
+</div>
+</div>
+<!-- Guía Extendida -->
+<div class="learning-card mt-2">
+<h3 class="font-h3 text-h3 text-primary mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined">menu_book</span> Guía Teórica Extendida
+                </h3>
+<div class="prose font-body-md text-body-md text-on-surface space-y-4">
+<p>La estrategia más efectiva para calcular áreas de figuras irregulares o compuestas es el <strong>Método de Descomposición</strong>. Este método consiste en dividir la figura principal en polígonos más simples cuyas fórmulas de área conocemos (rectángulos, cuadrados, triángulos, etc.).</p>
+<p>Es vital recordar que en un trapecio rectángulo, o en figuras compuestas por rectángulos y triángulos adyacentes, la altura del rectángulo a menudo sirve como la altura para los triángulos conectados, como se observó en este ejercicio. Si los triángulos fueran un tipo específico, como un <span class="tooltip-trigger font-medium">triángulo isósceles<span class="tooltip-content font-body-md text-sm font-normal">Un triángulo que tiene al menos dos lados de igual longitud y, por lo tanto, dos ángulos interiores iguales.</span></span>, tendríamos propiedades adicionales que podríamos aprovechar.</p>
+<table class="w-full mt-4 text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-high text-on-surface">
+<th class="p-3 font-body-md font-semibold border-b border-outline-variant">Figura</th>
+<th class="p-3 font-body-md font-semibold border-b border-outline-variant">Fórmula de Área</th>
+</tr>
+</thead>
+<tbody>
+<tr class="hover:bg-surface-container-lowest border-b border-surface-variant">
+<td class="p-3">Rectángulo</td>
+<td class="p-3">b × h</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest border-b border-surface-variant bg-surface-container-lowest">
+<td class="p-3">Triángulo</td>
+<td class="p-3">(b × h) / 2</td>
+</tr>
+<tr class="hover:bg-surface-container-lowest">
+<td class="p-3">Trapecio</td>
+<td class="p-3">((B + b) × h) / 2</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Right Sidebar (Context & Interactivity) -->
+<aside class="w-full lg:w-80 flex flex-col gap-6">
+<!-- Technical Data -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-lg p-5 shadow-[0_4px_12px_rgba(0,0,0,0.02)]">
+<h4 class="font-label-caps text-label-caps text-outline uppercase tracking-wider mb-4 border-b border-surface-variant pb-2">Ficha Técnica</h4>
+<ul class="space-y-3 font-body-md text-sm text-on-surface">
+<li class="flex justify-between">
+<span class="text-on-surface-variant">Dificultad</span>
+<span class="font-medium text-primary-container flex items-center gap-1">Media <span class="material-symbols-outlined text-sm">signal_cellular_alt</span></span>
+</li>
+<li class="flex justify-between">
+<span class="text-on-surface-variant">Tiempo Promedio</span>
+<span class="font-medium">1 min 45 seg</span>
+</li>
+<li class="flex justify-between">
+<span class="text-on-surface-variant">Competencia</span>
+<span class="font-medium text-right">Formulación y Ejecución</span>
+</li>
+</ul>
+</div>
+<!-- Media / Simulator -->
+<div class="bg-surface-variant rounded-lg p-2 overflow-hidden">
+<div class="bg-[#F1F5F9] aspect-video w-full rounded flex items-center justify-center relative cursor-pointer group">
+<span class="material-symbols-outlined text-4xl text-primary absolute z-10 group-hover:scale-110 transition-transform">play_circle</span>
+<div class="absolute inset-0 bg-surface-tint opacity-10"></div>
+<span class="font-label-caps text-xs text-on-surface-variant absolute bottom-2 right-2">Simulador Geogebra</span>
+</div>
+<p class="font-label-caps text-center text-on-surface-variant mt-2 text-xs">Descomposición Interactiva</p>
+</div>
+<!-- Common Error -->
+<div class="bg-error-container border-l-4 border-error rounded-r-lg p-4 shadow-[0_4px_12px_rgba(0,0,0,0.03)]">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-error">warning</span>
+<h4 class="font-h3 text-base font-semibold text-on-error-container">Error Común</h4>
+</div>
+<p class="font-body-md text-sm text-on-error-container">
+<strong>La trampa del distractor B (350 m²).</strong> Muchos estudiantes olvidan dividir entre 2 al calcular el área de los triángulos. Si calculas (5×15) + (10×15) sin dividir, obtienes 225 m², que sumado a los 300 m² del rectángulo da un valor incorrecto, pero cercano a distractores comunes.
+                </p>
+</div>
+<!-- Curious Fact -->
+<div class="bg-primary-fixed border-l-4 border-primary rounded-r-lg p-4 shadow-[0_4px_12px_rgba(0,0,0,0.03)]">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary">lightbulb</span>
+<h4 class="font-h3 text-base font-semibold text-primary">Dato Curioso</h4>
+</div>
+<p class="font-body-md text-sm text-primary-fixed-variant">
+                    Los antiguos egipcios utilizaban métodos de descomposición similares hace más de 3000 años para recalcular las áreas de los terrenos agrícolas después de las inundaciones anuales del río Nilo, sentando las bases de la geometría práctica.
+                </p>
+</div>
+<!-- Glossary Quick Links -->
+<div class="bg-surface-container-lowest border border-surface-variant rounded-lg p-5 shadow-[0_4px_12px_rgba(0,0,0,0.02)]">
+<h4 class="font-label-caps text-label-caps text-outline uppercase tracking-wider mb-4 border-b border-surface-variant pb-2 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">spellcheck</span> Glosario Rápido
+                </h4>
+<ul class="space-y-4 font-body-md text-sm text-on-surface">
+<li>
+<strong class="text-primary-container block mb-1">Polígono Compuesto</strong>
+<span class="text-on-surface-variant leading-tight block">Figura formada por la unión de dos o más polígonos básicos.</span>
+</li>
+<li>
+<strong class="text-primary-container block mb-1">Área</strong>
+<span class="text-on-surface-variant leading-tight block">Medida de la extensión de una superficie bidimensional.</span>
+</li>
+</ul>
+</div>
+</aside>
+</main>
+<!-- Footer -->
+<footer class="bg-white dark:bg-slate-900 font-lexend text-xs full-width py-12 border-t border-slate-100 dark:border-slate-800 flat">
+<div class="w-full max-w-7xl mx-auto px-8 flex flex-col md:flex-row justify-between items-center">
+<div class="font-bold text-slate-900 dark:text-white mb-4 md:mb-0">© 2024 Saber 11 Distinguished Mentor. Academic Rigor &amp; Excellence.</div>
+<nav class="flex gap-4">
+<a class="text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors" href="#">Terms of Service</a>
+<a class="text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors" href="#">Privacy Policy</a>
+<a class="text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors" href="#">Institutional Access</a>
+<a class="text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors" href="#">Support</a>
+</nav>
+</div>
+</footer>
+</body></html>
