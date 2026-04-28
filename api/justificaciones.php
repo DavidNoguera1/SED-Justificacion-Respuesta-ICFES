@@ -11,6 +11,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS
 }
 
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/cache.php';
 
 if (function_exists('mysqli_report')) {
     mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
@@ -158,6 +159,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['idPregunta'])) {
     ];
     
     $success = saveJustificacionExpandida((int) $_POST['idPregunta'], $data);
+    if ($success) {
+        apiCacheClearAll();
+    }
     echo json_encode(['success' => $success]);
     exit;
 }
@@ -177,6 +181,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($input)) {
         ];
         
         $success = saveJustificacionExpandida((int) $json['idPregunta'], $data);
+        if ($success) {
+            apiCacheClearAll();
+        }
         echo json_encode(['success' => $success]);
         exit;
     }

@@ -11,32 +11,48 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS
 }
 
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/cache.php';
 
-function getQuestions($subject = null, $activeOnly = true, $filters = []) {
+function getQuestions($subject = null, $activeOnly = true, $filters = [], $summary = false) {
     $conn = getConnection();
     
-    $sql = "SELECT 
-                id,
-                subject,
-                context,
-                context_img,
-                question_img,
-                text_content,
-                options,
-                options_img,
-                correct_index,
-                competency,
-                level,
-                assertion,
-                evidence,
-                component,
-                standard,
-                skill,
-                evaluation_criteria,
-                justification,
-                invalid_options
-            FROM questions
-            WHERE 1=1";
+    if ($summary) {
+        $sql = "SELECT 
+                    id,
+                    subject,
+                    context,
+                    text_content,
+                    options,
+                    competency,
+                    level,
+                    component,
+                    skill
+                FROM questions
+                WHERE 1=1";
+    } else {
+        $sql = "SELECT 
+                    id,
+                    subject,
+                    context,
+                    context_img,
+                    question_img,
+                    text_content,
+                    options,
+                    options_img,
+                    correct_index,
+                    competency,
+                    level,
+                    assertion,
+                    evidence,
+                    component,
+                    standard,
+                    skill,
+                    evaluation_criteria,
+                    justification,
+                    invalid_options
+                FROM questions
+                WHERE 1=1";
+    }
     
     $params = [];
     $types = '';
@@ -88,12 +104,36 @@ function getQuestions($subject = null, $activeOnly = true, $filters = []) {
     
     $questions = [];
     while ($row = $result->fetch_assoc()) {
-        $questions[] = transformQuestion($row);
+        $questions[] = $summary ? transformQuestionSummary($row) : transformQuestion($row);
     }
     
     $stmt->close();
     
     return $questions;
+}
+
+function transformQuestionSummary($row) {
+    $options = json_decode($row['options'] ?? '[]', true);
+    if (!is_array($options)) {
+        $options = [];
+    }
+
+    $searchText = trim(implode(' ', [
+        $row['text_content'] ?? '',
+        $row['context'] ?? '',
+        implode(' ', $options),
+    ]));
+
+    return [
+        'id' => (int) $row['id'],
+        'subject' => $row['subject'],
+        'text' => $row['text_content'] ?? '',
+        'competency' => $row['competency'] ?? '',
+        'level' => $row['level'] ?? '',
+        'component' => $row['component'] ?? '',
+        'skill' => $row['skill'] ?? '',
+        'searchText' => $searchText,
+    ];
 }
 
 function getUniqueFieldValues($subject) {
@@ -211,6 +251,8 @@ $subject = $_GET['subject'] ?? null;
 $id = $_GET['id'] ?? null;
 $subjects = $_GET['subjects'] ?? false;
 $uniqueFields = $_GET['uniqueFields'] ?? false;
+$summary = $_GET['summary'] ?? false;
+$withFields = $_GET['withFields'] ?? false;
 $competency = $_GET['competency'] ?? null;
 $level = $_GET['level'] ?? null;
 $component = $_GET['component'] ?? null;
@@ -222,8 +264,15 @@ if ($subjects) {
 }
 
 if ($uniqueFields) {
-    echo json_encode(getUniqueFieldValues($subject));
-    exit;
+    $cacheKey = apiCacheKey('questions_unique_fields', ['subject' => $subject]);
+    $cached = apiCacheGet($cacheKey);
+    if ($cached !== null) {
+        apiJsonResponse($cached, true);
+    }
+
+    $payload = getUniqueFieldValues($subject);
+    apiCacheSet($cacheKey, $payload);
+    apiJsonResponse($payload, false);
 }
 
 if ($id !== null) {
@@ -242,5 +291,26 @@ if ($competency) $filters['competency'] = $competency;
 if ($level) $filters['level'] = $level;
 if ($component) $filters['component'] = $component;
 if ($skill) $filters['skill'] = $skill;
+
+if ($summary) {
+    $cacheKey = apiCacheKey('questions_summary', [
+        'subject' => $subject,
+        'filters' => $filters,
+        'withFields' => (bool) $withFields,
+    ]);
+    $cached = apiCacheGet($cacheKey);
+    if ($cached !== null) {
+        apiJsonResponse($cached, true);
+    }
+
+    $questions = getQuestions($subject, true, $filters, true);
+    $payload = $withFields ? [
+        'questions' => $questions,
+        'uniqueFields' => getUniqueFieldValues($subject),
+    ] : $questions;
+
+    apiCacheSet($cacheKey, $payload);
+    apiJsonResponse($payload, false);
+}
 
 echo json_encode(getQuestions($subject, true, $filters));

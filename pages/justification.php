@@ -4,9 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Análisis de Pregunta</title>
+  <link rel="preconnect" href="https://cdn.tailwindcss.com">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="../shared/css/variables.css?v=20260428_perf_1">
+  <link rel="stylesheet" href="css/justification.css?v=20260428_perf_1">
+  <link rel="stylesheet" href="../shared/css/backgrounds.css?v=20260428_perf_1">
+  <style>
+    body { position: relative; }
+    .bg-canvas { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+    .hero-bg-item { position: absolute; opacity: 0.06; color: var(--area-accent); font-family: var(--font-display); font-weight: 700; animation: float-icon 15s ease-in-out infinite; user-select: none; }
+    @keyframes float-icon { 0% { transform: translateY(0px) rotate(0deg); } 33% { transform: translateY(-16px) rotate(4deg); } 66% { transform: translateY(-6px) rotate(-3deg); } 100% { transform: translateY(0px) rotate(0deg); } }
+    #mainContent { position: relative; z-index: 1; }
+    /* Critical inline styles for fast first paint */
+    #questionContent { min-height: 50vh; }
+    .loading-skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+  </style>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="../shared/css/variables.css">
   <script>
     tailwind.config = {
       theme: {
@@ -22,28 +37,6 @@
       }
     }
   </script>
-  <link rel="stylesheet" href="css/justification.css">
-  <link rel="stylesheet" href="../shared/css/backgrounds.css">
-  <style>
-    body { position: relative; }
-    .bg-canvas { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
-    .hero-bg-item {
-      position: absolute;
-      opacity: 0.06;
-      color: var(--area-accent);
-      font-family: var(--font-display);
-      font-weight: 700;
-      animation: float-icon 15s ease-in-out infinite;
-      user-select: none;
-    }
-    @keyframes float-icon {
-      0%   { transform: translateY(0px)   rotate(0deg);  }
-      33%  { transform: translateY(-16px) rotate(4deg);  }
-      66%  { transform: translateY(-6px)  rotate(-3deg); }
-      100% { transform: translateY(0px)   rotate(0deg);  }
-    }
-    #mainContent { position: relative; z-index: 1; }
-  </style>
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans antialiased" data-area="mat">
   <div class="bg-canvas" aria-hidden="true"></div>
@@ -104,17 +97,34 @@
             <span id="areaBadge" class="bg-white/20 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">Matemáticas - ID: 0</span>
             <h1 id="mainTitle" class="text-3xl font-extrabold mt-2">Análisis de Pregunta</h1>
           </div>
-          <i id="areaIcon" class="fas fa-calculator text-4xl opacity-80"></i>
+          <div class="flex items-center gap-3">
+            <span id="cacheStatus" class="text-xs px-2 py-1 rounded bg-yellow-500/20 text-yellow-200 hidden">
+              <i class="fas fa-database mr-1"></i>En caché
+            </span>
+            <i id="areaIcon" class="fas fa-calculator text-4xl opacity-80"></i>
+          </div>
         </div>
       </div>
     </header>
 
     <main class="max-w-7xl mx-auto px-8 py-8 mb-16" id="questionContent">
-      <!-- Contenido se carga dinámicamente aquí -->
+      <div class="learning-shell">
+        <div class="learning-main space-y-4">
+          <div class="learning-card learning-card--soft loading-skeleton h-20"></div>
+          <div class="learning-card loading-skeleton h-32"></div>
+          <div class="learning-card learning-card--question loading-skeleton h-40"></div>
+          <div class="learning-card loading-skeleton h-64"></div>
+        </div>
+        <aside class="learning-aside space-y-4">
+          <div class="side-card loading-skeleton h-32"></div>
+          <div class="side-card loading-skeleton h-32"></div>
+          <div class="side-card loading-skeleton h-32"></div>
+          <div class="side-card loading-skeleton h-32"></div>
+        </aside>
+      </div>
     </main>
   </div>
 
-<script src="js/justification.js"></script>
 
 <!-- Modal para Guía Teórica y Opciones Incorrectas -->
 <div id="infoModal" class="fixed inset-0 z-50 hidden">
@@ -134,5 +144,13 @@
     </div>
   </div>
 </div>
+<script src="js/justification/config.js?v=20260428_perf_1"></script>
+<script src="js/justification/area.js?v=20260428_perf_1"></script>
+<script src="js/justification/content-utils.js?v=20260428_perf_1"></script>
+<script src="js/justification/render-helpers.js?v=20260428_perf_1"></script>
+<script src="js/justification/question-renderer.js?v=20260428_perf_1"></script>
+<script src="js/justification/sidebar.js?v=20260428_perf_1"></script>
+<script src="js/justification/api.js?v=20260428_perf_1"></script>
+<script src="js/justification/interactions.js?v=20260428_perf_1"></script>
 </body>
 </html>

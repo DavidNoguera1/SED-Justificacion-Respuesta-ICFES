@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Área — Apoyo ICFES</title>
-  <link rel="stylesheet" href="../shared/css/variables.css">
-  <link rel="stylesheet" href="../shared/css/base.css">
-  <link rel="stylesheet" href="../shared/css/layout.css">
-  <link rel="stylesheet" href="../shared/css/components.css?v=4">
-  <link rel="stylesheet" href="../shared/css/backgrounds.css">
-  <link rel="stylesheet" href="css/area.css">
+  <link rel="stylesheet" href="../shared/css/variables.css?v=20260428_perf_1">
+  <link rel="stylesheet" href="../shared/css/base.css?v=20260428_perf_1">
+  <link rel="stylesheet" href="../shared/css/layout.css?v=20260428_perf_1">
+  <link rel="stylesheet" href="../shared/css/components.css?v=20260428_perf_1">
+  <link rel="stylesheet" href="../shared/css/backgrounds.css?v=20260428_perf_1">
+  <link rel="stylesheet" href="css/area.css?v=20260428_perf_1">
 </head>
 <body>
 
@@ -73,6 +73,17 @@
       <div class="question-list" id="question-list">
         <p class="text-soft">Cargando...</p>
       </div>
+      <div class="pagination" id="pagination" style="display:none;">
+        <button id="prev-page" class="pagination-btn" disabled>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          Anterior
+        </button>
+        <span id="page-info" class="pagination-info">Página 1 de 1</span>
+        <button id="next-page" class="pagination-btn" disabled>
+          Siguiente
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+      </div>
     </section>
   </main>
 
@@ -81,6 +92,14 @@
   </footer>
 
   <script>
+    const ITEMS_PER_PAGE = 15;
+    let currentPage = 1;
+    let totalPages = 1;
+    let filteredQuestions = [];
+    const APP_VERSION = '20260428_perf_1';
+    const AREA_CACHE_PREFIX = 'area_summary_v2_';
+    const AREA_CACHE_TTL = 1000 * 60 * 5;
+    
     const AREA_NAMES = {
       mat: 'Matemáticas',
       lc: 'Lectura Crítica',
@@ -126,6 +145,11 @@
     function spawnBackgroundIcons(area) {
       const canvas = document.querySelector('.bg-canvas');
       if (!canvas) return;
+      const cached = sessionStorage.getItem('bg_icons_' + area);
+      if (cached) {
+        canvas.innerHTML = cached;
+        return;
+      }
       canvas.innerHTML = '';
       const icons = AREA_ICONS[area] || AREA_ICONS.mat;
       for (let i = 0; i < 18; i++) {
@@ -135,12 +159,13 @@
         el.style.cssText = 'top: ' + (Math.random() * 90 + 5) + '%; left: ' + (Math.random() * 90 + 5) + '%; font-size: ' + (35 + Math.random() * 55) + 'px; animation-delay: ' + (Math.random() * 5) + 's; animation-duration: ' + (12 + Math.random() * 12) + 's;';
         canvas.appendChild(el);
       }
+      try { sessionStorage.setItem('bg_icons_' + area, canvas.innerHTML); } catch(e) {}
     }
     
     async function fetchFromAPI(url) {
       try {
         const separator = url.includes('?') ? '&' : '?';
-        const response = await fetch(url + separator + '_=' + Date.now());
+        const response = await fetch(url + separator + 'v=' + encodeURIComponent(APP_VERSION), { cache: 'no-cache' });
         if (!response.ok) throw new Error('API Error');
         return await response.json();
       } catch (e) {
@@ -159,28 +184,111 @@
         select.appendChild(opt);
       });
     }
+
+    function getAreaCacheKey(subject) {
+      return AREA_CACHE_PREFIX + subject;
+    }
+
+    function getCachedAreaData(subject) {
+      try {
+        const raw = localStorage.getItem(getAreaCacheKey(subject));
+        if (!raw) return null;
+        const cached = JSON.parse(raw);
+        if (!cached.expiry || Date.now() > cached.expiry) {
+          localStorage.removeItem(getAreaCacheKey(subject));
+          return null;
+        }
+        return cached.payload;
+      } catch (e) {
+        localStorage.removeItem(getAreaCacheKey(subject));
+        return null;
+      }
+    }
+
+    function setCachedAreaData(subject, payload) {
+      try {
+        localStorage.setItem(getAreaCacheKey(subject), JSON.stringify({
+          payload,
+          expiry: Date.now() + AREA_CACHE_TTL
+        }));
+      } catch (e) {}
+    }
+
+    function normalizeAreaPayload(data) {
+      if (!data) {
+        return { questions: [], uniqueFields: null };
+      }
+      if (Array.isArray(data)) {
+        return { questions: data, uniqueFields: null };
+      }
+      return {
+        questions: Array.isArray(data.questions) ? data.questions : [],
+        uniqueFields: data.uniqueFields || null
+      };
+    }
     
-    function renderQuestions(questions) {
+    function renderQuestions(page, onComplete) {
       const list = document.getElementById('question-list');
-      list.innerHTML = '';
       
-      if (questions.length === 0) {
+      if (filteredQuestions.length === 0) {
         list.innerHTML = '<p class="text-soft">No hay preguntas para esta área.</p>';
+        updatePagination();
+        if (onComplete) onComplete();
         return;
       }
       
-      questions.sort((a, b) => a.id - b.id);
-      const questionsToShow = questions.slice(0, 15);
+      filteredQuestions.sort((a, b) => a.id - b.id);
+      totalPages = Math.ceil(filteredQuestions.length / ITEMS_PER_PAGE) || 1;
+      currentPage = Math.min(page, totalPages);
       
-      questionsToShow.forEach(function(q) {
+      const start = (currentPage - 1) * ITEMS_PER_PAGE;
+      const end = start + ITEMS_PER_PAGE;
+      const pageQuestions = filteredQuestions.slice(start, end);
+      
+      const fragment = document.createDocumentFragment();
+      
+      pageQuestions.forEach(function(q) {
         const item = document.createElement('a');
         item.href = 'justification.php?id=' + q.id + '&area=' + currentArea;
         item.className = 'question-list-item';
         const qtext = q.text || 'Pregunta #' + q.id;
         item.innerHTML = '<span class="qli-id">#' + q.id + '</span><p class="qli-text">' + truncate(qtext, 80) + '</p><span class="qli-arrow">→</span>';
-        list.appendChild(item);
+        fragment.appendChild(item);
       });
+      
+      list.innerHTML = '';
+      list.appendChild(fragment);
+      
+      updatePagination();
+      if (onComplete) onComplete();
     }
+    
+    function updatePagination() {
+      const pagination = document.getElementById('pagination');
+      const prevBtn = document.getElementById('prev-page');
+      const nextBtn = document.getElementById('next-page');
+      const pageInfo = document.getElementById('page-info');
+      
+      if (totalPages <= 1) {
+        pagination.style.display = 'none';
+        return;
+      }
+      
+      pagination.style.display = 'flex';
+      const start = (currentPage - 1) * ITEMS_PER_PAGE + 1;
+      const end = Math.min(currentPage * ITEMS_PER_PAGE, filteredQuestions.length);
+      pageInfo.textContent = 'Página ' + currentPage + ' de ' + totalPages + ' (' + start + '-' + end + ' de ' + filteredQuestions.length + ' preguntas)';
+      prevBtn.disabled = currentPage <= 1;
+      nextBtn.disabled = currentPage >= totalPages;
+    }
+    
+    function goToPage(page) {
+      currentPage = page;
+      renderQuestions(currentPage);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    window.goToPage = goToPage;
     
     let currentArea = 'mat';
     let currentSubject = 'mat';
@@ -193,12 +301,8 @@
       
       const searchTerm = normalizeText(document.getElementById('filter-search').value.trim());
       
-      const filtered = allQuestions.filter(q => {
-        const searchFields = [
-          q.text || '',
-          q.context || '',
-          ...(q.options || [])
-        ].join(' ');
+      filteredQuestions = allQuestions.filter(q => {
+        const searchFields = q.searchText || [q.text || '', q.context || '', ...(q.options || [])].join(' ');
         if (searchTerm && !normalizeText(searchFields).includes(searchTerm)) {
           return false;
         }
@@ -208,11 +312,12 @@
         return true;
       });
       
-      renderQuestions(filtered);
+      currentPage = 1;
+      renderQuestions(currentPage);
     }
     
-    async function loadUniqueValues() {
-      const data = await fetchFromAPI('../api/questions.php?subject=' + currentSubject + '&uniqueFields=1');
+    async function loadUniqueValues(uniqueFields) {
+      const data = uniqueFields || await fetchFromAPI('../api/questions.php?subject=' + currentSubject + '&uniqueFields=1');
       if (!data) return;
       
       const fields = ['competency', 'level', 'component'];
@@ -233,6 +338,19 @@
       document.getElementById('filter-bar').style.display = hasFilters ? '' : 'none';
       document.getElementById('clear-filters').style.display = hasFilters ? '' : 'none';
     }
+
+    async function hydrateAreaData(payload, fromCache) {
+      allQuestions = payload.questions;
+      filteredQuestions = allQuestions;
+      
+      renderQuestions(currentPage, function() {
+        if (payload.uniqueFields) {
+          loadUniqueValues(payload.uniqueFields);
+        } else if (!fromCache) {
+          loadUniqueValues();
+        }
+      });
+    }
     
     (async function() {
       const params = new URLSearchParams(location.search);
@@ -245,10 +363,17 @@
       
       spawnBackgroundIcons(currentArea);
       
-      allQuestions = await fetchFromAPI('../api/questions.php?subject=' + currentSubject);
-      if (allQuestions !== null) {
-        renderQuestions(allQuestions);
-        await loadUniqueValues();
+      const cachedAreaData = getCachedAreaData(currentSubject);
+      if (cachedAreaData) {
+        await hydrateAreaData(cachedAreaData, true);
+      }
+
+      const apiPayload = normalizeAreaPayload(await fetchFromAPI('../api/questions.php?subject=' + currentSubject + '&summary=1&withFields=1'));
+      if (apiPayload.questions.length > 0 || cachedAreaData) {
+        if (apiPayload.questions.length > 0) {
+          setCachedAreaData(currentSubject, apiPayload);
+          await hydrateAreaData(apiPayload, false);
+        }
       } else {
         document.getElementById('question-list').innerHTML = '<p class="text-soft">Error al cargar preguntas.</p>';
       }
@@ -257,6 +382,13 @@
       document.getElementById('filter-level').addEventListener('change', applyFilters);
       document.getElementById('filter-component').addEventListener('change', applyFilters);
       document.getElementById('filter-search').addEventListener('input', applyFilters);
+      
+      document.getElementById('prev-page').addEventListener('click', function() {
+        if (currentPage > 1) goToPage(currentPage - 1);
+      });
+      document.getElementById('next-page').addEventListener('click', function() {
+        if (currentPage < totalPages) goToPage(currentPage + 1);
+      });
       
       document.getElementById('clear-filters').addEventListener('click', function() {
         document.getElementById('filter-competency').value = '';

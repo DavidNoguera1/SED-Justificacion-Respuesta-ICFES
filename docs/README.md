@@ -32,7 +32,15 @@ Proyecto de refuerzo pedagógico interactivo para la prueba Saber 11.
 │   ├── css/            # Estilos específicos de páginas
 │   │   └── justification.css
 │   └── js/            # JavaScript específico de páginas
-│       └── justification.js
+│       └── justification/
+│           ├── config.js
+│           ├── area.js
+│           ├── content-utils.js
+│           ├── render-helpers.js
+│           ├── question-renderer.js
+│           ├── sidebar.js
+│           ├── api.js
+│           └── interactions.js
 ├── shared/            # Recursos compartidos
 │   ├── css/
 │   │   ├── variables.css   # Variables CSS y colores por área
@@ -51,18 +59,17 @@ Página de análisis de pregunta ha sido refactorizada:
 
 - **justification.php** (82 líneas) - HTML + estructura
 - **css/justification.css** (222 líneas) - Estilos específicos
-- **js/justification.js** (443 líneas) - Lógica JavaScript
+- **js/justification/** - Lógica JavaScript separada por responsabilidad
 
-**Funciones JavaScript disponibles:**
-- `initJustification()` - Inicializa la página
-- `configureArea(area)` - Configura coloresdinámicos por área
-- `detectContentConfig(q)` - Detecta tipo de contenido
-- `renderQuestion(q, area)` - Renderiza la pregunta completa
-- `renderCorrectOption()` - Renderiza opción correcta
-- `renderWrongOption()` - Renderiza opción incorrecta
-- `extractImages(html)` - Extrae imágenes del HTML
-- `parseInvalidOptions(text, count)` - Pars invalid options
-- `setupNavigation(area, id, subject)` - Configura navegación
+**Archivos JavaScript principales:**
+- `config.js` - Constantes de areas, API y recursos.
+- `area.js` - Configuracion visual del area y fondo decorativo.
+- `content-utils.js` - Helpers de contenido, imagenes y texto.
+- `render-helpers.js` - Renderizadores reutilizables.
+- `question-renderer.js` - Render principal de la pregunta.
+- `sidebar.js` - Busqueda y navegacion lateral.
+- `api.js` - Carga inicial de datos.
+- `interactions.js` - Plegables, modal e inicializacion.
 
 ## Áreas disponibles
 
