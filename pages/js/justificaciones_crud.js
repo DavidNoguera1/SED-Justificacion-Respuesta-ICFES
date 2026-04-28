@@ -246,7 +246,24 @@ function showToast(message, isError) {
   
   setTimeout(function() {
     toast.classList.add('translate-y-20', 'opacity-0');
-  }, 3000);
+  }, isError ? 6500 : 3000);
+}
+
+async function parseJsonResponse(response) {
+  var text = await response.text();
+  var data = null;
+
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch (e) {
+    throw new Error('Respuesta invalida del servidor.');
+  }
+
+  if (!response.ok || data.success === false) {
+    throw new Error(data.error || 'Error al guardar cambios');
+  }
+
+  return data;
 }
 
 async function cargarPregunta() {
@@ -309,16 +326,16 @@ async function guardarCambios() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     });
-    var result = await r.json();
+    var result = await parseJsonResponse(r);
 
     if (result.success) {
       showToast('Cambios guardados correctamente', false);
       setTimeout(function() { reloadWithId(id); }, 1500);
     } else {
-      showToast('Error al guardar cambios', true);
+      showToast(result.error || 'Error al guardar cambios', true);
     }
   } catch (e) {
-    showToast('Error de conexión', true);
+    showToast(e.message || 'Error de conexion', true);
   }
 }
 
@@ -467,7 +484,7 @@ async function procesarImportacion(data, scriptEl) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-      var result = await r.json();
+      var result = await parseJsonResponse(r);
       if (result.success) {
         exitos++;
       } else {

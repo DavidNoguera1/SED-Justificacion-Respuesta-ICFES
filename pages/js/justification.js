@@ -494,6 +494,113 @@ function escapeHtml(value) {
     .replace(/'/g, '&#039;');
 }
 
+const WORD_LIMIT = 180;
+
+function stripHtml(html) {
+  if (!html) return '';
+  return html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function countWords(text) {
+  const clean = stripHtml(text);
+  return clean.split(/\s+/).filter(w => w.length > 0).length;
+}
+
+function truncateText(html, wordLimit = WORD_LIMIT) {
+  if (!html) return { truncated: '', full: '', needsTruncation: false };
+  
+  const words = stripHtml(html).split(/\s+/).filter(w => w.length > 0);
+  
+  if (words.length <= wordLimit) {
+    return { truncated: html, full: html, needsTruncation: false };
+  }
+  
+  const limitedWords = words.slice(0, wordLimit).join(' ');
+  const truncated = limitedWords + '...';
+  
+  return { 
+    truncated: truncated, 
+    full: html, 
+    needsTruncation: true 
+  };
+}
+
+function renderTruncatedText(html, wordLimit = WORD_LIMIT, label = 'Ver más') {
+  if (!hasValue(html)) {
+    return `
+      <div class="placeholder-box">
+        <span class="chip"><i class="fas fa-hourglass-half"></i> Placeholder</span>
+        <p class="empty-note mt-2">No hay contenido disponible</p>
+      </div>
+    `;
+  }
+  
+  const words = stripHtml(html).split(/\s+/).filter(w => w.length > 0);
+  
+  if (words.length <= wordLimit) {
+    return `<div class="learning-prose">${processHtmlImages(html)}</div>`;
+  }
+  
+  const limitedWords = words.slice(0, wordLimit).join(' ');
+  const truncated = limitedWords + '...';
+  
+  return `
+    <div class="truncated-content" data-full="${escapeHtml(html)}">
+      <div class="truncated-preview learning-prose">${processHtmlImages(truncated)}<div class="truncate-fade"></div></div>
+      <button class="truncate-toggle" data-label="${label}" onclick="toggleTruncate(this)">
+        <i class="fas fa-chevron-down"></i> ${label}
+      </button>
+    </div>
+  `;
+}
+
+window.toggleTruncate = function(btn) {
+  const container = btn.closest('.truncated-content');
+  const preview = container.querySelector('.truncated-preview');
+  const fullContent = container.dataset.full;
+  const originalLabel = btn.dataset.label || 'Ver más';
+  const isExpanded = container.classList.contains('truncated-expanded');
+  
+  if (isExpanded) {
+    const result = truncateText(fullContent, WORD_LIMIT);
+    if (result.needsTruncation) {
+      preview.innerHTML = processHtmlImages(result.truncated) + '<div class="truncate-fade"></div>';
+    } else {
+      preview.innerHTML = processHtmlImages(result.truncated);
+    }
+    container.classList.remove('truncated-expanded');
+    btn.innerHTML = '<i class="fas fa-chevron-down"></i> ' + originalLabel;
+  } else {
+    preview.innerHTML = processHtmlImages(fullContent);
+    container.classList.add('truncated-expanded');
+    btn.innerHTML = '<i class="fas fa-chevron-up"></i> Ver menos';
+  }
+};
+
+function renderTruncatedProse(html, wordLimit = WORD_LIMIT, label = 'Ver más') {
+  if (!hasValue(html)) {
+    return placeholder('Sin contenido', 'No hay contenido disponible.');
+  }
+  
+  const words = stripHtml(html).split(/\s+/).filter(w => w.length > 0);
+  
+  if (words.length <= wordLimit) {
+    return `<div class="learning-prose">${processHtmlImages(html)}</div>`;
+  }
+  
+  const limitedWords = words.slice(0, wordLimit).join(' ');
+  const truncated = limitedWords + '...';
+  
+  return `
+    <div class="truncated-content learning-prose" data-full="${escapeHtml(html)}">
+      <div class="truncated-preview">${processHtmlImages(truncated)}<div class="truncate-fade"></div></div>
+      <button class="truncate-toggle" data-label="${label}" onclick="toggleTruncate(this)">
+        <i class="fas fa-chevron-down"></i> ${label}
+      </button>
+    </div>
+  `;
+}
+
 function fieldValue(source, keys) {
   if (!source) return '';
   for (const key of keys) {
@@ -674,6 +781,35 @@ function renderQuestion(q, area, expanded) {
   const glossaryItems = fieldValue(expanded, ['glosario_items', 'glosarioItems']);
   const datoCurioso = fieldValue(expanded, ['datoCurioso', 'dato_curioso']);
   const errorComun = fieldValue(expanded, ['errorComunFeedback', 'error_comun_feedback']);
+  const hasWrongOptions = options.filter((_, idx) => idx !== correctIdx).length > 0;
+
+  // Guardar contenido para los modales
+  window._modalContent = {
+    guide: processHtmlImages(extendedDescription || 'No hay guia teorica extendida disponible.'),
+    wrong: `
+      <div class="modal-prose mb-6">
+        ${hasValue(q.invalidOptions) ? processHtmlImages(q.invalidOptions) : '<p>No hay justificacion detallada para los distractores.</p>'}
+      </div>
+      ${hasWrongOptions ? `
+        <h4 class="text-lg font-bold mt-6 mb-3"><i class="fas fa-list mr-2"></i> Lista de opciones</h4>
+        <div class="answer-list">
+          ${options.map((opt, idx) => {
+            if (idx === correctIdx) return '';
+            const optImg = optionsImg[idx] || '';
+            return `
+              <div class="answer-option answer-option--wrong">
+                <span class="answer-letter">${letters[idx]}</span>
+                <div class="flex-1">
+                  <div class="learning-prose">${processHtmlImages(opt || '')}</div>
+                  ${conf.hasOptionsImg && optImg ? `<img src="${escapeHtml(getOptionImgSrc(optImg))}" alt="Opcion ${letters[idx]}" class="mt-3 max-w-[170px] rounded-lg border border-slate-200">` : ''}
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      ` : ''}
+    `
+  };
 
   content.innerHTML = `
     <div class="learning-shell">
@@ -700,11 +836,10 @@ function renderQuestion(q, area, expanded) {
           <h2 class="learning-section-title flex items-center gap-2 mb-4">
             <i class="fas fa-book-open"></i> Contexto de la pregunta
           </h2>
-          ${renderHtmlOrPlaceholder(
+          ${renderTruncatedText(
             q.context,
-            'Contexto pendiente',
-            'Aqui se mostrara el enunciado contextual, texto fuente, tabla o situacion problema.',
-            'learning-prose'
+            180,
+            'Ver contexto completo'
           )}
           ${renderQuestionImage(q.contextImg, 'Imagen del contexto')}
         </section>
@@ -738,45 +873,11 @@ function renderQuestion(q, area, expanded) {
               </div>
             </div>
           </div>
-          <div class="learning-prose">
-            ${processHtmlImages(q.justification || 'Esta es la respuesta correcta.')}
-          </div>
-        </section>
-
-        <section class="learning-card">
-          <h2 class="learning-section-title flex items-center gap-2 mb-4">
-            <i class="fas fa-route"></i> Guia teorica extendida
-          </h2>
-          ${renderHtmlOrPlaceholder(
-            extendedDescription,
-            'Descripcion extendida pendiente',
-            'Este espacio ampliara la justificacion con pasos, conceptos clave, metodos y conexiones tematicas.',
-            'learning-prose'
+          ${renderTruncatedText(
+            q.justification,
+            180,
+            'Ver justificacion completa'
           )}
-        </section>
-
-        <section class="learning-card learning-card--danger">
-          <h2 class="learning-section-title text-red-700 flex items-center gap-2 mb-4">
-            <i class="fas fa-triangle-exclamation"></i> Opciones incorrectas
-          </h2>
-          <div class="learning-prose mb-4">
-            ${processHtmlImages(q.invalidOptions || 'No hay justificacion detallada para los distractores en la base de datos actual.')}
-          </div>
-          <div class="answer-list">
-            ${options.map((opt, idx) => {
-              if (idx === correctIdx) return '';
-              const optImg = optionsImg[idx] || '';
-              return `
-                <div class="answer-option answer-option--wrong">
-                  <span class="answer-letter">${letters[idx]}</span>
-                  <div class="flex-1">
-                    <div class="learning-prose">${processHtmlImages(opt || '')}</div>
-                    ${conf.hasOptionsImg && optImg ? `<img src="${escapeHtml(getOptionImgSrc(optImg))}" alt="Opcion ${letters[idx]}" class="mt-3 max-w-[170px] rounded-lg border border-slate-200">` : ''}
-                  </div>
-                </div>
-              `;
-            }).join('')}
-          </div>
         </section>
       </div>
 
@@ -832,6 +933,54 @@ function renderQuestion(q, area, expanded) {
             'learning-prose text-sm'
           )}
         </section>
+
+        <!-- Burbujas interactivas para Guia Teorica y Opciones Incorrectas -->
+        <div class="bubbles-grid">
+          ${hasValue(extendedDescription) ? `
+            <div class="info-bubble" onclick="openModal('guide')">
+              <div class="info-bubble__icon">
+                <i class="fas fa-graduation-cap"></i>
+              </div>
+              <div class="info-bubble__content">
+                <div class="info-bubble__title">Guia Teorica</div>
+                <div class="info-bubble__preview">${escapeHtml(extendedDescription.substring(0, 60))}...</div>
+                <div class="info-bubble__cta"><i class="fas fa-arrow-right"></i> Ver guia completa</div>
+              </div>
+            </div>
+          ` : `
+            <div class="info-bubble info-bubble--empty">
+              <div class="info-bubble__icon">
+                <i class="fas fa-graduation-cap"></i>
+              </div>
+              <div class="info-bubble__content">
+                <div class="info-bubble__title">Guia Teorica</div>
+                <div class="info-bubble__preview">Sin contenido disponible</div>
+              </div>
+            </div>
+          `}
+          ${hasValue(q.invalidOptions) || hasWrongOptions ? `
+            <div class="info-bubble" onclick="openModal('wrong')">
+              <div class="info-bubble__icon">
+                <i class="fas fa-times-circle"></i>
+              </div>
+              <div class="info-bubble__content">
+                <div class="info-bubble__title">Opciones Incorrectas</div>
+                <div class="info-bubble__preview">${hasValue(q.invalidOptions) ? escapeHtml(q.invalidOptions.substring(0, 60)) + '...' : 'Ver analisis de distractores'}</div>
+                <div class="info-bubble__cta"><i class="fas fa-arrow-right"></i> Ver detalles</div>
+              </div>
+            </div>
+          ` : `
+            <div class="info-bubble info-bubble--empty">
+              <div class="info-bubble__icon">
+                <i class="fas fa-times-circle"></i>
+              </div>
+              <div class="info-bubble__content">
+                <div class="info-bubble__title">Opciones Incorrectas</div>
+                <div class="info-bubble__preview">Sin contenido disponible</div>
+              </div>
+            </div>
+          `}
+        </div>
       </aside>
     </div>
   `;
@@ -984,3 +1133,45 @@ async function setupNavigation(area, currentId, subject) {
       });
     }
   }
+
+  // ============================================================
+  // MODAL - Funciones para abrir/cerrar modal
+  // ============================================================
+
+  const MODAL_TITLES = {
+    guide: { icon: 'fa-book-open', text: 'Guia Teorica Extendida' },
+    wrong: { icon: 'fa-times-circle', text: 'Opciones Incorrectas' }
+  };
+
+  window.openModal = function(type) {
+    const modal = document.getElementById('infoModal');
+    const titleConfig = MODAL_TITLES[type];
+    const content = window._modalContent && window._modalContent[type];
+
+    if (!modal || !titleConfig || !content) return;
+
+    const icon = document.getElementById('modalIcon');
+    const titleText = document.getElementById('modalTitleText');
+    const modalContent = document.getElementById('modalContent');
+
+    icon.className = 'fas ' + titleConfig.icon;
+    titleText.textContent = titleConfig.text;
+    modalContent.innerHTML = content;
+    modal.classList.remove('hidden');
+
+    document.body.style.overflow = 'hidden';
+  };
+
+  window.closeModal = function() {
+    const modal = document.getElementById('infoModal');
+    if (modal) {
+      modal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+  };
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeModal();
+    }
+  });

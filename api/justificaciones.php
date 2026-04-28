@@ -12,6 +12,38 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS
 
 require_once __DIR__ . '/db.php';
 
+if (function_exists('mysqli_report')) {
+    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+}
+
+function sendJson($payload, $statusCode = 200) {
+    http_response_code($statusCode);
+    echo json_encode($payload, JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+function getFriendlyDbError($message) {
+    if (strpos($message, 'Data too long for column') !== false) {
+        $labels = [
+            'nombre_pregunta' => 'Nombre de pregunta',
+            'descripcion_extendida' => 'Descripcion extendida',
+            'media_interactiva' => 'Media interactiva',
+            'glosario_items' => 'Glosario de terminos',
+            'dato_curioso' => 'Dato curioso',
+            'error_comun_feedback' => 'Errores comunes y feedback'
+        ];
+
+        if (preg_match("/column '([^']+)'/", $message, $matches)) {
+            $field = $labels[$matches[1]] ?? $matches[1];
+            return 'El campo "' . $field . '" es demasiado largo para la base de datos.';
+        }
+
+        return 'Uno de los campos es demasiado largo para la base de datos.';
+    }
+
+    return 'No se pudo guardar en la base de datos: ' . $message;
+}
+
 function getJustificacionExpandida($idPregunta) {
     $conn = getConnection();
     $stmt = $conn->prepare("SELECT * FROM justificaciones_expandidas WHERE idPregunta = ?");
@@ -53,6 +85,13 @@ function saveJustificacionExpandida($idPregunta, $data) {
     $glosarioItems = $data['glosarioItems'] ?? '';
     $datoCurioso = $data['datoCurioso'] ?? '';
     $errorComunFeedback = $data['errorComunFeedback'] ?? '';
+    $nombrePreguntaLength = function_exists('mb_strlen')
+        ? mb_strlen($nombrePregunta, 'UTF-8')
+        : strlen($nombrePregunta);
+
+    if ($nombrePreguntaLength > 50) {
+        throw new InvalidArgumentException('El campo "Nombre de pregunta" permite maximo 50 caracteres.');
+    }
     
     if ($existe) {
         $stmt = $conn->prepare("UPDATE justificaciones_expandidas SET 
@@ -93,7 +132,8 @@ function saveJustificacionExpandida($idPregunta, $data) {
     return $success;
 }
 
-$idPregunta = $_GET['id'] ?? null;
+try {
+    $idPregunta = $_GET['id'] ?? null;
 
 // GET para obtener justificacion expandida
 if ($idPregunta !== null) {
@@ -142,4 +182,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($input)) {
     }
 }
 
-echo json_encode(['error' => 'Sin acción']);
+    sendJson(['success' => false, 'error' => 'Sin accion'], 400);
+} catch (InvalidArgumentException $e) {
+    sendJson(['success' => false, 'error' => $e->getMessage()], 400);
+} catch (mysqli_sql_exception $e) {
+    sendJson(['success' => false, 'error' => getFriendlyDbError($e->getMessage())], 500);
+} catch (Throwable $e) {
+    sendJson(['success' => false, 'error' => 'Error inesperado: ' . $e->getMessage()], 500);
+}

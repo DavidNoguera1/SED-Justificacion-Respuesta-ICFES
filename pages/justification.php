@@ -115,5 +115,24 @@
   </div>
 
 <script src="js/justification.js"></script>
+
+<!-- Modal para Guía Teórica y Opciones Incorrectas -->
+<div id="infoModal" class="fixed inset-0 z-50 hidden">
+  <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeModal()"></div>
+  <div class="absolute inset-4 md:inset-12 lg:inset-20 flex items-center justify-center">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-h-full flex flex-col overflow-hidden">
+      <div class="flex items-center justify-between p-5 border-b border-gray-200">
+        <h3 id="modalTitle" class="text-xl font-bold text-gray-800 flex items-center gap-3">
+          <i id="modalIcon" class="fas"></i>
+          <span id="modalTitleText"></span>
+        </h3>
+        <button onclick="closeModal()" class="p-2 hover:bg-gray-100 rounded-lg transition">
+          <i class="fas fa-times text-gray-500"></i>
+        </button>
+      </div>
+      <div id="modalContent" class="flex-1 overflow-y-auto p-6"></div>
+    </div>
+  </div>
+</div>
 </body>
 </html>

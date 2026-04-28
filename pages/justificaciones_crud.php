@@ -91,7 +91,7 @@
 
       <div>
         <label class="block text-sm font-bold text-gray-700 mb-2">Nombre de pregunta</label>
-        <input type="text" id="nombrePregunta"
+        <input type="text" id="nombrePregunta" maxlength="50"
           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
           placeholder="Titulo descriptivo...">
       </div>
