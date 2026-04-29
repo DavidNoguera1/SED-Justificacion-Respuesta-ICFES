@@ -155,7 +155,7 @@ function renderGlossary(raw) {
 function renderMedia(value) {
   if (!hasValue(value)) {
     return `
-      <div class="media-frame items-center justify-center">
+      <div class="media-frame items-center justify-center" style="min-height:120px;">
         <div class="text-center px-5">
           <i class="fas fa-play-circle text-4xl mb-3" style="color: var(--area-accent);"></i>
           <p class="font-bold text-slate-700">Recurso interactivo pendiente</p>

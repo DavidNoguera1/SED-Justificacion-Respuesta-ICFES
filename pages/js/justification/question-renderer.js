@@ -128,14 +128,12 @@ function renderQuestion(q, area, expanded) {
           )}
         </section>
 
-        ${hasValue(mediaInteractiva) ? `
         <section class="learning-card">
           <h2 class="learning-section-title flex items-center gap-2 mb-4">
             <i class="fas fa-play-circle"></i> Media interactiva
           </h2>
           ${renderMedia(mediaInteractiva)}
         </section>
-        ` : ''}
       </div>
 
       <aside class="learning-aside" id="learningAside">
