@@ -58,9 +58,12 @@ function renderQuestion(q, area, expanded) {
   };
 
   // Render main content immediately
+  const hasEvaluationCriteria = hasValue(q.evaluationCriteria);
+  
   content.innerHTML = `
     <div class="learning-shell">
       <div class="learning-main">
+        ${hasEvaluationCriteria ? `
         <section class="learning-card learning-card--soft">
           <div class="objective-card">
             <span class="objective-icon"><i class="fas fa-bullseye"></i></span>
@@ -75,6 +78,7 @@ function renderQuestion(q, area, expanded) {
             </div>
           </div>
         </section>
+        ` : ''}
 
         <section class="learning-card">
           <h2 class="learning-section-title flex items-center gap-2 mb-4">
@@ -123,6 +127,15 @@ function renderQuestion(q, area, expanded) {
             'Ver justificacion completa'
           )}
         </section>
+
+        ${hasValue(mediaInteractiva) ? `
+        <section class="learning-card">
+          <h2 class="learning-section-title flex items-center gap-2 mb-4">
+            <i class="fas fa-play-circle"></i> Media interactiva
+          </h2>
+          ${renderMedia(mediaInteractiva)}
+        </section>
+        ` : ''}
       </div>
 
       <aside class="learning-aside" id="learningAside">
@@ -155,24 +168,23 @@ function renderAsideContent(data) {
   const { extendedDescription, mediaInteractiva, glossaryItems, datoCurioso, errorComun,
           hasWrongOptions, q, options, optionsImg, correctIdx, conf, letters } = data;
 
+  const technicalFields = [];
+  if (q.competency && q.competency.trim() !== '') technicalFields.push({ label: 'Competencia', value: q.competency });
+  if (q.component && q.component.trim() !== '') technicalFields.push({ label: 'Componente', value: q.component });
+  if (q.level && q.level.trim() !== '') technicalFields.push({ label: 'Nivel', value: q.level });
+  if (q.skill && q.skill.trim() !== '') technicalFields.push({ label: 'Habilidad', value: q.skill });
+
+  const hasTechnicalFields = technicalFields.length > 0;
+
   aside.innerHTML = `
+    ${hasTechnicalFields ? `
     <section class="side-card">
       <h3 class="learning-eyebrow mb-4">Ficha tecnica</h3>
       <dl class="space-y-3 text-sm">
-        <div class="flex justify-between gap-4"><dt class="text-slate-500">Competencia</dt><dd class="font-bold text-right">${escapeHtml(q.competency || '-')}</dd></div>
-        <div class="flex justify-between gap-4"><dt class="text-slate-500">Componente</dt><dd class="font-bold text-right">${escapeHtml(q.component || '-')}</dd></div>
-        <div class="flex justify-between gap-4"><dt class="text-slate-500">Nivel</dt><dd class="font-bold text-right">${escapeHtml(q.level || '-')}</dd></div>
-        <div class="flex justify-between gap-4"><dt class="text-slate-500">Habilidad</dt><dd class="font-bold text-right">${escapeHtml(q.skill || '-')}</dd></div>
+        ${technicalFields.map(f => `<div class="flex justify-between gap-4"><dt class="text-slate-500">${f.label}</dt><dd class="font-bold text-right">${escapeHtml(f.value)}</dd></div>`).join('')}
       </dl>
     </section>
-
-    <section class="side-card side-card--media">
-      <div class="flex items-center gap-3 mb-4">
-        <span class="aside-icon"><i class="fas fa-photo-film"></i></span>
-        <h3 class="font-bold text-slate-800">Media interactiva</h3>
-      </div>
-      ${renderMedia(mediaInteractiva)}
-    </section>
+    ` : ''}
 
     <section class="side-card">
       <div class="flex items-center gap-3 mb-4">
