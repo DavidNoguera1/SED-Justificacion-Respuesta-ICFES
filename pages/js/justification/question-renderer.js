@@ -127,6 +127,19 @@ function renderQuestion(q, area, expanded) {
             'Ver justificacion completa'
           )}
         </section>
+
+        ${hasValue(q.invalidOptions) || hasWrongOptions ? `
+        <div class="info-bubble" onclick="openModal('wrong')">
+          <div class="info-bubble__icon">
+            <i class="fas fa-times-circle"></i>
+          </div>
+          <div class="info-bubble__content">
+            <div class="info-bubble__title">Opciones Incorrectas</div>
+            <div class="info-bubble__preview">${hasValue(q.invalidOptions) ? escapeHtml(q.invalidOptions.substring(0, 60)) + '...' : 'Ver analisis de distractores'}</div>
+            <div class="info-bubble__cta"><i class="fas fa-arrow-right"></i> Ver detalles</div>
+          </div>
+        </div>
+        ` : ''}
       </div>
 
       <aside class="learning-aside" id="learningAside">
@@ -203,7 +216,7 @@ function renderAsideContent(data) {
     <section class="side-card">
       <div class="flex items-center gap-3 mb-4">
         <span class="aside-icon"><i class="fas fa-spell-check"></i></span>
-        <h3 class="font-bold text-slate-800">Glosario rapido</h3>
+        <h3 class="font-bold text-slate-800">Glosario de palabras</h3>
       </div>
       ${renderGlossary(glossaryItems)}
     </section>
@@ -254,28 +267,6 @@ function renderAsideContent(data) {
           </div>
           <div class="info-bubble__content">
             <div class="info-bubble__title">Guia Teorica</div>
-            <div class="info-bubble__preview">Sin contenido disponible</div>
-          </div>
-        </div>
-      `}
-      ${hasValue(q.invalidOptions) || hasWrongOptions ? `
-        <div class="info-bubble" onclick="openModal('wrong')">
-          <div class="info-bubble__icon">
-            <i class="fas fa-times-circle"></i>
-          </div>
-          <div class="info-bubble__content">
-            <div class="info-bubble__title">Opciones Incorrectas</div>
-            <div class="info-bubble__preview">${hasValue(q.invalidOptions) ? escapeHtml(q.invalidOptions.substring(0, 60)) + '...' : 'Ver analisis de distractores'}</div>
-            <div class="info-bubble__cta"><i class="fas fa-arrow-right"></i> Ver detalles</div>
-          </div>
-        </div>
-      ` : `
-        <div class="info-bubble info-bubble--empty">
-          <div class="info-bubble__icon">
-            <i class="fas fa-times-circle"></i>
-          </div>
-          <div class="info-bubble__content">
-            <div class="info-bubble__title">Opciones Incorrectas</div>
             <div class="info-bubble__preview">Sin contenido disponible</div>
           </div>
         </div>
