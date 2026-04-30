@@ -70,19 +70,36 @@
           Limpiar
         </button>
       </div>
+      <div class="pagination" id="pagination-top" style="display:none;">
+        <span id="page-info-top" class="pagination-info">Página 1 de 1</span>
+        <div class="pagination-controls">
+          <button id="prev-page-top" class="pagination-btn" disabled>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            Anterior
+          </button>
+          <div id="page-numbers-top" class="page-numbers"></div>
+          <button id="next-page-top" class="pagination-btn" disabled>
+            Siguiente
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        </div>
+      </div>
       <div class="question-list" id="question-list">
         <p class="text-soft">Cargando...</p>
       </div>
-      <div class="pagination" id="pagination" style="display:none;">
-        <button id="prev-page" class="pagination-btn" disabled>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
-          Anterior
-        </button>
-        <span id="page-info" class="pagination-info">Página 1 de 1</span>
-        <button id="next-page" class="pagination-btn" disabled>
-          Siguiente
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </button>
+      <div class="pagination" id="pagination-bottom" style="display:none;">
+        <span id="page-info-bottom" class="pagination-info">Página 1 de 1</span>
+        <div class="pagination-controls">
+          <button id="prev-page-bottom" class="pagination-btn" disabled>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            Anterior
+          </button>
+          <div id="page-numbers-bottom" class="page-numbers"></div>
+          <button id="next-page-bottom" class="pagination-btn" disabled>
+            Siguiente
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        </div>
       </div>
     </section>
   </main>
@@ -264,22 +281,72 @@
     }
     
     function updatePagination() {
-      const pagination = document.getElementById('pagination');
-      const prevBtn = document.getElementById('prev-page');
-      const nextBtn = document.getElementById('next-page');
-      const pageInfo = document.getElementById('page-info');
+      const paginations = [
+        { top: true, bottom: false },
+        { top: false, bottom: true }
+      ];
       
       if (totalPages <= 1) {
-        pagination.style.display = 'none';
+        document.getElementById('pagination-top').style.display = 'none';
+        document.getElementById('pagination-bottom').style.display = 'none';
         return;
       }
       
-      pagination.style.display = 'flex';
       const start = (currentPage - 1) * ITEMS_PER_PAGE + 1;
       const end = Math.min(currentPage * ITEMS_PER_PAGE, filteredQuestions.length);
-      pageInfo.textContent = 'Página ' + currentPage + ' de ' + totalPages + ' (' + start + '-' + end + ' de ' + filteredQuestions.length + ' preguntas)';
-      prevBtn.disabled = currentPage <= 1;
-      nextBtn.disabled = currentPage >= totalPages;
+      const infoText = 'Página ' + currentPage + ' de ' + totalPages + ' (' + start + '-' + end + ' de ' + filteredQuestions.length + ' preguntas)';
+      
+      paginations.forEach(function(p) {
+        const prefix = p.top ? 'top' : 'bottom';
+        const pagination = document.getElementById('pagination-' + prefix);
+        const prevBtn = document.getElementById('prev-page-' + prefix);
+        const nextBtn = document.getElementById('next-page-' + prefix);
+        const pageInfo = document.getElementById('page-info-' + prefix);
+        const pageNumbers = document.getElementById('page-numbers-' + prefix);
+        
+        pagination.style.display = 'flex';
+        pageInfo.textContent = infoText;
+        prevBtn.disabled = currentPage <= 1;
+        nextBtn.disabled = currentPage >= totalPages;
+        
+        renderPageNumbers(pageNumbers, prefix);
+      });
+    }
+    
+    function renderPageNumbers(container, prefix) {
+      container.innerHTML = '';
+      const maxVisible = 7;
+      const pages = [];
+      
+      if (totalPages <= maxVisible) {
+        for (let i = 1; i <= totalPages; i++) pages.push(i);
+      } else {
+        pages.push(1);
+        if (currentPage > 3) pages.push('...');
+        
+        const start = Math.max(2, currentPage - 1);
+        const end = Math.min(totalPages - 1, currentPage + 1);
+        
+        for (let i = start; i <= end; i++) pages.push(i);
+        
+        if (currentPage < totalPages - 2) pages.push('...');
+        pages.push(totalPages);
+      }
+      
+      pages.forEach(function(p) {
+        if (p === '...') {
+          const ellipsis = document.createElement('span');
+          ellipsis.className = 'page-ellipsis';
+          ellipsis.textContent = '...';
+          container.appendChild(ellipsis);
+        } else {
+          const btn = document.createElement('button');
+          btn.className = 'page-number' + (p === currentPage ? ' active' : '');
+          btn.textContent = p;
+          btn.addEventListener('click', function() { goToPage(p); });
+          container.appendChild(btn);
+        }
+      });
     }
     
     function goToPage(page) {
@@ -383,10 +450,16 @@
       document.getElementById('filter-component').addEventListener('change', applyFilters);
       document.getElementById('filter-search').addEventListener('input', applyFilters);
       
-      document.getElementById('prev-page').addEventListener('click', function() {
+      document.getElementById('prev-page-top').addEventListener('click', function() {
         if (currentPage > 1) goToPage(currentPage - 1);
       });
-      document.getElementById('next-page').addEventListener('click', function() {
+      document.getElementById('next-page-top').addEventListener('click', function() {
+        if (currentPage < totalPages) goToPage(currentPage + 1);
+      });
+      document.getElementById('prev-page-bottom').addEventListener('click', function() {
+        if (currentPage > 1) goToPage(currentPage - 1);
+      });
+      document.getElementById('next-page-bottom').addEventListener('click', function() {
         if (currentPage < totalPages) goToPage(currentPage + 1);
       });
       
