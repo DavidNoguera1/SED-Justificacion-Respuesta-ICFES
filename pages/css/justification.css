@@ -574,13 +574,15 @@ body {
 
 .media-frame--small {
   min-height: 100px;
+  overflow: visible;
 }
 
 .media-frame--small .media-frame iframe,
 .media-frame--small .media-frame img,
 .media-frame--small .media-frame video {
   min-height: 100px;
-  max-height: 150px;
+  max-height: none;
+  height: auto;
 }
 
 .media-frame iframe,
