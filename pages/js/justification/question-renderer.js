@@ -171,8 +171,13 @@ function renderAsideContent(data) {
     ${hasTechnicalFields ? `
     <section class="side-card">
       <h3 class="learning-eyebrow mb-4">Ficha tecnica</h3>
-      <dl class="space-y-3 text-sm">
-        ${technicalFields.map(f => `<div class="flex justify-between gap-4"><dt class="text-slate-500">${f.label}</dt><dd class="font-bold text-right">${escapeHtml(f.value)}</dd></div>`).join('')}
+      <dl class="space-y-2 text-sm">
+        ${technicalFields.map(f => `
+          <div class="border-b border-slate-100 pb-2 last:border-0">
+            <dt class="font-bold text-slate-700 text-xs uppercase tracking-wide">${f.label}</dt>
+            <dd class="text-slate-600 mt-1 leading-relaxed">${escapeHtml(f.value)}</dd>
+          </div>
+        `).join('')}
       </dl>
     </section>
     ` : ''}
