@@ -3,6 +3,25 @@
  * Renderizadores pequenos reutilizados por la vista principal.
  */
 
+function toggleCollapsible(btn) {
+  const section = btn.closest('.collapsible-section');
+  const content = section.querySelector('.collapsible-content');
+  const icon = btn.querySelector('.collapsible-icon');
+  const isCollapsed = section.dataset.collapsed === 'true';
+  
+  if (isCollapsed) {
+    section.dataset.collapsed = 'false';
+    content.style.display = '';
+    icon.classList.remove('fa-chevron-down');
+    icon.classList.add('fa-chevron-up');
+  } else {
+    section.dataset.collapsed = 'true';
+    content.style.display = 'none';
+    icon.classList.remove('fa-chevron-up');
+    icon.classList.add('fa-chevron-down');
+  }
+}
+
 function renderTruncatedText(html, wordLimit = WORD_LIMIT, label = 'Ver más') {
   if (!hasValue(html)) {
     return `
@@ -131,25 +150,33 @@ function parseGlossaryItems(raw) {
 function renderGlossary(raw) {
   const items = parseGlossaryItems(raw);
   if (!items.length) {
-    return placeholder(
-      'Glosario pendiente',
-      'Aqui apareceran terminos tecnicos de la pregunta con definiciones breves para apoyar la lectura.'
-    );
+    return '';
   }
 
   return `
-    <div class="glossary-list">
-      ${items.map(item => `
-        <div>
-          <span class="glossary-term glossary-tooltip">
-            ${escapeHtml(item.term || 'Termino')}
-            <span class="glossary-tooltip__content">${escapeHtml(item.definition || 'Definicion pendiente.')}</span>
-          </span>
-          <span class="empty-note">${escapeHtml(item.definition || 'Definicion pendiente.')}</span>
+    <div class="collapsible-section" data-collapsed="false">
+      <div class="flex items-center justify-between">
+        <span class="text-sm text-slate-600">${items.length} término${items.length !== 1 ? 's' : ''}</span>
+        <button type="button" class="collapsible-btn" onclick="toggleCollapsible(this)">
+          <span class="collapsible-text">Ocultar</span>
+          <i class="collapsible-icon fas fa-chevron-up"></i>
+        </button>
+      </div>
+      <div class="collapsible-content">
+        <div class="glossary-list">
+          ${items.map(item => `
+            <div>
+              <span class="glossary-term glossary-tooltip">
+                ${escapeHtml(item.term || 'Término')}
+                <span class="glossary-tooltip__content">${escapeHtml(item.definition || 'Definición pendiente.')}</span>
+              </span>
+              <span class="empty-note">${escapeHtml(item.definition || 'Definición pendiente.')}</span>
+            </div>
+          `).join('')}
         </div>
-      `).join('')}
+      </div>
     </div>
-  `;
+`;
 }
 
 function renderMedia(value) {

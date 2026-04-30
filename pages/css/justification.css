@@ -1013,3 +1013,40 @@ body {
 .truncated-expanded .truncate-toggle i {
   transform: rotate(180deg);
 }
+
+/* ============================================================
+ * COLLAPSIBLE GLOSARY - Botón colapsable para glosario
+ * ============================================================ */
+
+.collapsible-section {
+  margin-bottom: 0.75rem;
+}
+
+.collapsible-btn {
+  align-items: center;
+  background: #dc2626;
+  border: none;
+  border-radius: 0.5rem;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.35rem 0.75rem;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+}
+
+.collapsible-btn:hover {
+  background: #b91c1c;
+  transform: translateY(-1px);
+}
+
+.collapsible-btn i {
+  transition: transform 0.2s ease;
+}
+
+.collapsible-section[data-collapsed="true"] .collapsible-btn i {
+  transform: rotate(180deg);
+}
