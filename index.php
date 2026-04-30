@@ -28,7 +28,7 @@
     <div class="hero-bg" id="heroBg"></div>
     <div class="hero-content">
       <div class="hero-badge">PREPARACIÓN SABER 11</div>
-      <h1 class="hero-title">Refuerzo Pedagógico<br>Interactivo</h1>
+      <h1 class="hero-title">Refuerzo Pedagógico<br></h1>
       <p class="hero-subtitle">Domina cada concepto, entiende cada respuesta. Más que memorizar — comprende el <em>por qué</em> detrás de cada pregunta del ICFES.</p>
       
       <div class="tips-carousel">
