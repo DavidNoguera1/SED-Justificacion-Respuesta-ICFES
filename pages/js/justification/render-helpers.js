@@ -7,6 +7,7 @@ function toggleCollapsible(btn) {
   const section = btn.closest('.collapsible-section');
   const content = section.querySelector('.collapsible-content');
   const icon = btn.querySelector('.collapsible-icon');
+  const text = btn.querySelector('.collapsible-text');
   const isCollapsed = section.dataset.collapsed === 'true';
   
   if (isCollapsed) {
@@ -14,11 +15,13 @@ function toggleCollapsible(btn) {
     content.style.display = '';
     icon.classList.remove('fa-chevron-down');
     icon.classList.add('fa-chevron-up');
+    if (text) text.textContent = 'Ocultar';
   } else {
     section.dataset.collapsed = 'true';
     content.style.display = 'none';
     icon.classList.remove('fa-chevron-up');
     icon.classList.add('fa-chevron-down');
+    if (text) text.textContent = 'Mostrar';
   }
 }
 

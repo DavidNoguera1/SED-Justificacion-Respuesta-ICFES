@@ -172,17 +172,25 @@ function renderAsideContent(data) {
 
   aside.innerHTML = `
     ${hasTechnicalFields ? `
-    <section class="side-card">
-      <h3 class="learning-eyebrow mb-4">Ficha tecnica</h3>
-      <dl class="space-y-2 text-sm">
-        ${technicalFields.map(f => `
-          <div class="border-b border-slate-100 pb-2 last:border-0">
-            <dt class="font-bold text-slate-700 text-xs uppercase tracking-wide">${f.label}</dt>
-            <dd class="text-slate-600 mt-1 leading-relaxed">${escapeHtml(f.value)}</dd>
-          </div>
-        `).join('')}
-      </dl>
-    </section>
+    <div class="collapsible-section" data-collapsed="false">
+      <section class="side-card">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="learning-eyebrow mb-0">Ficha tecnica</h3>
+          <button type="button" class="collapsible-btn" onclick="toggleCollapsible(this)">
+            <span class="collapsible-text">Ocultar</span>
+            <i class="fas fa-chevron-up collapsible-icon"></i>
+          </button>
+        </div>
+        <dl class="space-y-2 text-sm collapsible-content">
+          ${technicalFields.map(f => `
+            <div class="border-b border-slate-100 pb-2 last:border-0">
+              <dt class="font-bold text-slate-700 text-xs uppercase tracking-wide">${f.label}</dt>
+              <dd class="text-slate-600 mt-1 leading-relaxed">${escapeHtml(f.value)}</dd>
+            </div>
+          `).join('')}
+        </dl>
+      </section>
+    </div>
     ` : ''}
 
     ${hasValue(mediaInteractiva) ? `

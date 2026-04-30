@@ -1024,7 +1024,7 @@ body {
 
 .collapsible-btn {
   align-items: center;
-  background: #dc2626;
+  background: #4b5563;
   border: none;
   border-radius: 0.5rem;
   color: #fff;
@@ -1039,7 +1039,7 @@ body {
 }
 
 .collapsible-btn:hover {
-  background: #b91c1c;
+  background: #374151;
   transform: translateY(-1px);
 }
 
