@@ -572,6 +572,17 @@ body {
   width: 100%;
 }
 
+.media-frame--small {
+  min-height: 100px;
+}
+
+.media-frame--small .media-frame iframe,
+.media-frame--small .media-frame img,
+.media-frame--small .media-frame video {
+  min-height: 100px;
+  max-height: 150px;
+}
+
 .media-frame iframe,
 .media-frame img,
 .media-frame video {

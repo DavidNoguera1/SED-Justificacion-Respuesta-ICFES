@@ -127,13 +127,6 @@ function renderQuestion(q, area, expanded) {
             'Ver justificacion completa'
           )}
         </section>
-
-        <section class="learning-card">
-          <h2 class="learning-section-title flex items-center gap-2 mb-4">
-            <i class="fas fa-play-circle"></i> Media interactiva
-          </h2>
-          ${renderMedia(mediaInteractiva)}
-        </section>
       </div>
 
       <aside class="learning-aside" id="learningAside">
@@ -181,6 +174,13 @@ function renderAsideContent(data) {
       <dl class="space-y-3 text-sm">
         ${technicalFields.map(f => `<div class="flex justify-between gap-4"><dt class="text-slate-500">${f.label}</dt><dd class="font-bold text-right">${escapeHtml(f.value)}</dd></div>`).join('')}
       </dl>
+    </section>
+    ` : ''}
+
+    ${hasValue(mediaInteractiva) ? `
+    <section class="side-card">
+      <h3 class="learning-eyebrow mb-4">Media interactiva</h3>
+      <div class="media-frame media-frame--small">${renderMedia(mediaInteractiva)}</div>
     </section>
     ` : ''}
 
