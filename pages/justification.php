@@ -148,7 +148,7 @@
 <script src="js/justification/area.js?v=20260428_perf_1"></script>
 <script src="js/justification/content-utils.js?v=20260428_perf_1"></script>
 <script src="js/justification/render-helpers.js?v=20260428_perf_1"></script>
-<script src="js/justification/question-renderer.js?v=20260428_perf_1"></script>
+<script src="js/justification/question-renderer.js?v=20260430_tech_fields"></script>
 <script src="js/justification/sidebar.js?v=20260428_perf_1"></script>
 <script src="js/justification/api.js?v=20260428_perf_1"></script>
 <script src="js/justification/interactions.js?v=20260428_perf_1"></script>

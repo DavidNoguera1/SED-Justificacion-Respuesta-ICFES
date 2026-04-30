@@ -164,6 +164,9 @@ function renderAsideContent(data) {
   if (q.component && q.component.trim() !== '') technicalFields.push({ label: 'Componente', value: q.component });
   if (q.level && q.level.trim() !== '') technicalFields.push({ label: 'Nivel', value: q.level });
   if (q.skill && q.skill.trim() !== '') technicalFields.push({ label: 'Habilidad', value: q.skill });
+  if (q.assertion && q.assertion.trim() !== '') technicalFields.push({ label: 'Afirmación', value: q.assertion });
+  if (q.evidence && q.evidence.trim() !== '') technicalFields.push({ label: 'Evidencia', value: q.evidence });
+  if (q.standard && q.standard.trim() !== '') technicalFields.push({ label: 'Estándar', value: q.standard });
 
   const hasTechnicalFields = technicalFields.length > 0;
 

@@ -1,6 +1,6 @@
 <?php
 
-define('API_CACHE_VERSION', '20260428_perf_1');
+define('API_CACHE_VERSION', '20260430_tech_fields');
 define('API_CACHE_DIR', dirname(__DIR__) . DIRECTORY_SEPARATOR . '.cache' . DIRECTORY_SEPARATOR . 'api');
 define('API_CACHE_TTL', 300);
 
