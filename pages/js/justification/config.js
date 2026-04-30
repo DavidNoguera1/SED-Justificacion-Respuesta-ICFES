@@ -13,7 +13,7 @@ const AREA_CONFIG = {
   cn: { name: 'Ciencias Naturales', icon: 'fa-flask', color: 'cn' },
   cc: { name: 'Competencias Ciudadanas', icon: 'fa-users', color: 'soc' },
   soc: { name: 'Competencias Ciudadanas', icon: 'fa-users', color: 'soc' },
-  en: { name: 'Inglés', icon: 'fa-language', color: 'ing' }
+  ing: { name: 'Inglés', icon: 'fa-language', color: 'ing' }
 };
 
 const API_JUSTIFICACIONES = '../api/justificaciones.php';

@@ -85,7 +85,7 @@ function renderSidebar(questions, currentId, area) {
     const preview = q.text ? q.text.replace(/<[^>]+>/g, '').trim().substring(0, 70) : 'Sin texto';
     const truncated = preview.length >= 70 ? preview + '...' : preview;
     return `
-      <a href="justification.php?area=${area}&id=${q.id}" 
+      <a href="justification.php?id=${q.id}&area=${area}" 
          data-question-id="${q.id}"
          data-question-area="${area}"
          class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition text-sm ${isActive ? 'bg-' + areaColor + ' text-white font-semibold shadow-sm' : 'text-gray-700 hover:bg-' + areaColor + '/10 hover:text-' + areaColor}">
@@ -143,7 +143,7 @@ window.loadMoreSidebar = loadMoreSidebar;
 window.ensureQuestionVisible = ensureQuestionVisible;
 
 function getAreaColorClass(area) {
-  const colorMap = { mat: 'mat', lc: 'lc', cn: 'cn', cc: 'soc', soc: 'soc', en: 'ing' };
+  const colorMap = { mat: 'mat', lc: 'lc', cn: 'cn', cc: 'soc', soc: 'soc', ing: 'ing' };
   return colorMap[area] || 'mat';
 }
 

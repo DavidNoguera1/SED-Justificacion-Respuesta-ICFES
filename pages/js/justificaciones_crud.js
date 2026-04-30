@@ -21,9 +21,12 @@ function getIdFromUrl() {
   return params.get('id');
 }
 
-function setIdInUrl(id) {
+function setIdInUrl(id, area) {
   var url = new URL(window.location.href);
   url.searchParams.set('id', id);
+  if (area) {
+    url.searchParams.set('area', area);
+  }
   window.history.replaceState({}, '', url);
 }
 
@@ -273,9 +276,19 @@ async function cargarPregunta() {
   if (!id || id < 1) return;
 
   get('idPregunta').value = id;
-  get('linkVerPregunta').href = 'justification.php?area=mat&id=' + id;
   get('currentQuestionId').textContent = 'ID: ' + id;
-  setIdInUrl(id);
+
+  var area = 'mat';
+  try {
+    var rQ = await fetch(API_QUESTION + '?id=' + id);
+    var q = await rQ.json();
+    if (q && q.subject) {
+      area = q.subject;
+    }
+  } catch (e) {}
+  
+  get('linkVerPregunta').href = 'justification.php?id=' + id + '&area=' + area;
+  setIdInUrl(id, area);
 
   try {
     var r = await fetch(API_QUESTION + '?id=' + id);

@@ -27,8 +27,8 @@
   --cc-light:    #fef3d7;  --cc-text:    #8B5A00;  --cc-icon-op: 0.08;
 
   /* INGLÉS */
-  --en-primary:  #F4B8B5;  --en-accent:  #c0392b;
-  --en-light:    #fde8e6;  --en-text:    #c0392b;  --en-icon-op: 0.07;
+  --ing-primary:  #F4B8B5;  --ing-accent:  #c0392b;
+  --ing-light:    #fde8e6;  --ing-text:    #c0392b;  --ing-icon-op: 0.07;
 
   /* Estados */
   --color-correct: #1E8449;
@@ -52,4 +52,4 @@
 [data-area="lc"]  { --area-primary:var(--lc-primary);  --area-accent:var(--lc-accent);  --area-light:var(--lc-light);  --area-text:var(--lc-text);  --area-icon-op:var(--lc-icon-op);  }
 [data-area="cn"]  { --area-primary:var(--cn-primary);  --area-accent:var(--cn-accent);  --area-light:var(--cn-light);  --area-text:var(--cn-text);  --area-icon-op:var(--cn-icon-op);  }
 [data-area="cc"]  { --area-primary:var(--cc-primary);  --area-accent:var(--cc-accent);  --area-light:var(--cc-light);  --area-text:var(--cc-text);  --area-icon-op:var(--cc-icon-op);  }
-[data-area="en"]  { --area-primary:var(--en-primary);  --area-accent:var(--en-accent);  --area-light:var(--en-light);  --area-text:var(--en-text);  --area-icon-op:var(--en-icon-op);  }
+[data-area="ing"] { --area-primary:var(--ing-primary); --area-accent:var(--ing-accent); --area-light:var(--ing-light); --area-text:var(--ing-text); --area-icon-op:var(--ing-icon-op); }

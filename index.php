@@ -88,7 +88,7 @@
           <span class="area-card__cta">Explorar →</span>
         </a>
 
-        <a class="area-card" href="pages/area.php?area=en" data-area="en">
+        <a class="area-card" href="pages/area.php?area=ing" data-area="ing">
           <div class="area-card__icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M3 5h12M4 9h9M5 13h7M3 17h12M4 21h9"/>

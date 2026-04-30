@@ -69,7 +69,7 @@
 .hero-header[data-area="cc"] {
   background: linear-gradient(135deg, #e8a020 0%, #e8a020 100%);
 }
-.hero-header[data-area="en"] {
+.hero-header[data-area="ing"] {
   background: linear-gradient(135deg, #c0392b 0%, #c0392b 100%);
 }
 
@@ -213,13 +213,13 @@
 .area-card[data-area="lc"]:hover { border-top-color: var(--lc-accent); }
 .area-card[data-area="cn"]:hover { border-top-color: var(--cn-accent); }
 .area-card[data-area="cc"]:hover { border-top-color: var(--cc-accent); }
-.area-card[data-area="en"]:hover { border-top-color: var(--en-accent); }
+.area-card[data-area="ing"]:hover { border-top-color: var(--ing-accent); }
 
 .area-card[data-area="mat"] { border-top-color: var(--mat-primary); }
 .area-card[data-area="lc"] { border-top-color: var(--lc-primary); }
 .area-card[data-area="cn"] { border-top-color: var(--cn-primary); }
 .area-card[data-area="cc"] { border-top-color: var(--cc-primary); }
-.area-card[data-area="en"] { border-top-color: var(--en-primary); }
+.area-card[data-area="ing"] { border-top-color: var(--ing-primary); }
 
 .area-card__icon {
   width: 52px;
@@ -240,7 +240,7 @@
 .area-card[data-area="lc"] .area-card__icon { background: var(--lc-light); color: var(--lc-accent); }
 .area-card[data-area="cn"] .area-card__icon { background: var(--cn-light); color: var(--cn-accent); }
 .area-card[data-area="cc"] .area-card__icon { background: var(--cc-light); color: var(--cc-accent); }
-.area-card[data-area="en"] .area-card__icon { background: var(--en-light); color: var(--en-accent); }
+.area-card[data-area="ing"] .area-card__icon { background: var(--ing-light); color: var(--ing-accent); }
 
 .area-card__name {
   font-size: 1.1rem;
@@ -266,7 +266,7 @@
 .area-card[data-area="lc"] .area-card__cta { color: var(--lc-accent); }
 .area-card[data-area="cn"] .area-card__cta { color: var(--cn-accent); }
 .area-card[data-area="cc"] .area-card__cta { color: var(--cc-accent); }
-.area-card[data-area="en"] .area-card__cta { color: var(--en-accent); }
+.area-card[data-area="ing"] .area-card__cta { color: var(--ing-accent); }
 
 .site-footer {
   background: var(--color-white);

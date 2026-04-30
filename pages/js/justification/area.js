@@ -38,7 +38,6 @@ function spawnBackgroundIcons(area) {
 function configureArea(area) {
   var configArea = area;
   if (area === 'cc' || area === 'soc') configArea = 'soc';
-  else if (area === 'en') configArea = 'en';
 
   const config = AREA_CONFIG[configArea] || AREA_CONFIG.mat;
   const header = document.getElementById('headerArea');
