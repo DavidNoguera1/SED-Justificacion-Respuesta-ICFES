@@ -870,9 +870,41 @@ body {
   margin-top: 0.5rem;
 }
 
+.modal-prose li p {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.modal-prose ul ul,
+.modal-prose ol ol,
+.modal-prose ul ol,
+.modal-prose ol ul {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.modal-prose kbd {
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+  padding: 0.125rem 0.375rem;
+  font-family: monospace;
+  font-size: 0.875em;
+  color: #374151;
+}
+
 .modal-prose strong {
   color: var(--area-accent);
   font-weight: 700;
+}
+
+.modal-prose h3 {
+  color: var(--area-accent);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
 }
 
 .modal-prose h4 {

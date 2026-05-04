@@ -31,7 +31,7 @@ function renderQuestion(q, area, expanded) {
 
   // Guardar contenido para los modales
   window._modalContent = {
-    guide: processHtmlImages(extendedDescription || 'No hay guia teorica extendida disponible.'),
+    guide: `<div class="modal-prose">${processHtmlImages(extendedDescription || 'No hay guia teorica extendida disponible.')}</div>`,
     wrong: `
       <div class="modal-prose mb-6">
         ${hasValue(q.invalidOptions) ? processHtmlImages(q.invalidOptions) : '<p>No hay justificacion detallada para los distractores.</p>'}
@@ -256,7 +256,7 @@ function renderAsideContent(data) {
           </div>
           <div class="info-bubble__content">
             <div class="info-bubble__title">Guia Teorica</div>
-            <div class="info-bubble__preview">${escapeHtml(extendedDescription.substring(0, 60))}...</div>
+            <div class="info-bubble__preview">${stripHtml(extendedDescription).substring(0, 60)}...</div>
             <div class="info-bubble__cta"><i class="fas fa-arrow-right"></i> Ver guia completa</div>
           </div>
         </div>
