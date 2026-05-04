@@ -34,9 +34,47 @@ function detectContentConfig(q) {
     return IMG_BASE_PATH + imgName + '.png';
   }
 
+  function convertPlainTableToHtml(text) {
+    if (!text || text.includes('<table')) return text;
+    
+    const tablePattern = /Especie\s*Nombre\s*cient[\wáéíóú]+\s*Ciclo\s*\(\s*d[ií]as\s*\)\s*Número\s*de\s*ciclos\s*al\s*año/i;
+    if (!tablePattern.test(text)) return text;
+    
+    const dataPattern = /(\d+)([A-Z][a-záéíóú]+(?:\s+[a-záéíóú]+)+)\s*(\d+\s*-\s*\d+)\s*(\d+)/g;
+    const rows = [];
+    let match;
+    while ((match = dataPattern.exec(text)) !== null) {
+      rows.push([match[1], match[2].trim(), match[3], match[4]]);
+    }
+    
+    if (rows.length < 2) return text;
+    
+    const headers = ['Especie', 'Nombre científico', 'Ciclo (días)', 'Número de ciclos al año'];
+    
+    let tableHtml = '<table border="1" style="width:100%; border-collapse:collapse; text-align:center;">';
+    tableHtml += '<tr>';
+    headers.forEach(h => tableHtml += `<th>${h}</th>`);
+    tableHtml += '</tr>';
+    
+    rows.forEach(row => {
+      tableHtml += '<tr>';
+      row.forEach(cell => tableHtml += `<td>${cell}</td>`);
+      tableHtml += '</tr>';
+    });
+    tableHtml += '</table>';
+    
+    const startIdx = text.indexOf('Especie');
+    const endMatch = text.match(/Con base en la información anterior/i);
+    const endIdx = endMatch ? endMatch.index : text.length;
+    
+    const tableSection = text.substring(startIdx, endIdx);
+    return text.replace(tableSection, tableHtml);
+  }
+
   function processHtmlImages(html) {
     if (!html) return '';
-    return html.replace(/src=["']([^"']+\.png)["']/gi, (match, src) => {
+    const withTable = convertPlainTableToHtml(html);
+    return withTable.replace(/src=["']([^"']+\.png)["']/gi, (match, src) => {
       if (src.startsWith('http') || src.startsWith('/') || src.startsWith('../')) {
         return match;
       }

@@ -442,6 +442,15 @@ body {
   margin-top: 0.85rem;
 }
 
+.learning-prose table,
+.learning-prose table th,
+.learning-prose table td,
+.learning-card--question table,
+.learning-card--question table th,
+.learning-card--question table td {
+  border: 1px solid #000;
+}
+
 .learning-prose img {
   border-radius: 0.75rem;
   display: block;
