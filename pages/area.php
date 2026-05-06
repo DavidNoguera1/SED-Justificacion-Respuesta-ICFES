@@ -123,7 +123,8 @@
       cn: 'Ciencias Naturales',
       cc: 'Competencias Ciudadanas',
       soc: 'Competencias Ciudadanas',
-      en: 'Inglés'
+      en: 'Inglés',
+      ing: 'Inglés'
     };
     
     const AREA_SUBJECT = {
@@ -132,7 +133,8 @@
       cn: 'cn',
       cc: 'soc',
       soc: 'soc',
-      en: 'ing'
+      en: 'ing',
+      ing: 'ing'
     };
     
     const AREA_ICONS = {
