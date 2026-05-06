@@ -114,7 +114,7 @@ function renderQuestion(q, area, expanded) {
           </div>
           <div class="info-bubble__content">
             <div class="info-bubble__title">Guia Teorica</div>
-            <div class="info-bubble__preview">${stripHtml(extendedDescription).substring(0, 60)}...</div>
+            <div class="info-bubble__preview">${stripHtml(extendedDescription).substring(0, 100)}...</div>
             <div class="info-bubble__cta"><i class="fas fa-arrow-right"></i> Ver guia completa</div>
           </div>
         </div>
@@ -158,7 +158,7 @@ function renderQuestion(q, area, expanded) {
           </div>
           <div class="info-bubble__content">
             <div class="info-bubble__title">Opciones Incorrectas</div>
-            <div class="info-bubble__preview">${hasValue(q.invalidOptions) ? escapeHtml(q.invalidOptions.substring(0, 60)) + '...' : 'Ver analisis de distractores'}</div>
+            <div class="info-bubble__preview">${hasValue(q.invalidOptions) ? stripHtml(q.invalidOptions).substring(0, 100) + '...' : 'Ver analisis de distractores'}</div>
             <div class="info-bubble__cta"><i class="fas fa-arrow-right"></i> Ver detalles</div>
           </div>
         </div>
