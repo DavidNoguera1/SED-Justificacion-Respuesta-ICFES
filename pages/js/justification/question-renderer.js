@@ -107,6 +107,29 @@ function renderQuestion(q, area, expanded) {
           ${renderOptions(options, optionsImg, correctIdx, conf.hasOptionsImg, letters)}
         </section>
 
+        ${hasValue(extendedDescription) ? `
+        <div class="info-bubble" onclick="openModal('guide')">
+          <div class="info-bubble__icon">
+            <i class="fas fa-graduation-cap"></i>
+          </div>
+          <div class="info-bubble__content">
+            <div class="info-bubble__title">Guia Teorica</div>
+            <div class="info-bubble__preview">${stripHtml(extendedDescription).substring(0, 60)}...</div>
+            <div class="info-bubble__cta"><i class="fas fa-arrow-right"></i> Ver guia completa</div>
+          </div>
+        </div>
+        ` : `
+        <div class="info-bubble info-bubble--empty">
+          <div class="info-bubble__icon">
+            <i class="fas fa-graduation-cap"></i>
+          </div>
+          <div class="info-bubble__content">
+            <div class="info-bubble__title">Guia Teorica</div>
+            <div class="info-bubble__preview">Sin contenido disponible</div>
+          </div>
+        </div>
+        `}
+
         <section class="learning-card learning-card--success">
           <h2 class="learning-section-title text-green-700 flex items-center gap-2 mb-4">
             <i class="fas fa-graduation-cap"></i> Analisis de la respuesta correcta
@@ -246,31 +269,5 @@ function renderAsideContent(data) {
         'learning-prose text-sm'
       )}
     </section>
-
-    <!-- Burbujas interactivas para Guia Teorica y Opciones Incorrectas -->
-    <div class="bubbles-grid">
-      ${hasValue(extendedDescription) ? `
-        <div class="info-bubble" onclick="openModal('guide')">
-          <div class="info-bubble__icon">
-            <i class="fas fa-graduation-cap"></i>
-          </div>
-          <div class="info-bubble__content">
-            <div class="info-bubble__title">Guia Teorica</div>
-            <div class="info-bubble__preview">${stripHtml(extendedDescription).substring(0, 60)}...</div>
-            <div class="info-bubble__cta"><i class="fas fa-arrow-right"></i> Ver guia completa</div>
-          </div>
-        </div>
-      ` : `
-        <div class="info-bubble info-bubble--empty">
-          <div class="info-bubble__icon">
-            <i class="fas fa-graduation-cap"></i>
-          </div>
-          <div class="info-bubble__content">
-            <div class="info-bubble__title">Guia Teorica</div>
-            <div class="info-bubble__preview">Sin contenido disponible</div>
-          </div>
-        </div>
-      `}
-    </div>
   `;
 }
