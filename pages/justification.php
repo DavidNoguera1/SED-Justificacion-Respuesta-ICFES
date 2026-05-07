@@ -28,11 +28,11 @@
         extend: {
           colors: {
             mat: { light: '#e8eef5', DEFAULT: '#1a3a5c', dark: '#1a3a5c' },
-            lc: { light: '#ede8ff', DEFAULT: '#5b3fa0', dark: '#6B1A1A' },
+            lc: { light: '#ede8ff', DEFAULT: '#5b3fa0', dark: '#5b3fa0' },
             cn: { light: '#d4f0e2', DEFAULT: '#1e8a4a', dark: '#1e8a4a' },
             soc: { light: '#fef3d7', DEFAULT: '#e8a020', dark: '#e8a020' },
-            ing: { light: '#fde8e6', DEFAULT: '#c0392b', dark: '#3B1259' },
-            cc: { light: '#fef3d7', DEFAULT: '#e8a020', dark: '#6B3800' }
+            ing: { light: '#fde8e6', DEFAULT: '#c0392b', dark: '#c0392b' },
+            cc: { light: '#fef3d7', DEFAULT: '#e8a020', dark: '#e8a020' }
           }
         }
       }
