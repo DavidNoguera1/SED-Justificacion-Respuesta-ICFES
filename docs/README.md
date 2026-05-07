@@ -79,4 +79,4 @@ Página de análisis de pregunta ha sido refactorizada:
 | lc     | Lectura Crítica |
 | cn     | Ciencias Naturales |
 | cc     | Competencias Ciudadanas |
-| en     | Inglés |
+| ing     | Inglés |

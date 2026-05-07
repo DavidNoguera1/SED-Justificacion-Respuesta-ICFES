@@ -105,7 +105,7 @@
   </main>
 
   <footer class="site-footer">
-    <p>Material de apoyo pedagógico — No oficial</p>
+    <p>Material de apoyo pedagógico para la prueba Saber 11 — Desarrollado por la Secretaria de Educación de Nariño</p>
   </footer>
 
   <script>
