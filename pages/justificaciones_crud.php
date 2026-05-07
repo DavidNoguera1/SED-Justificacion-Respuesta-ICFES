@@ -74,7 +74,7 @@
           <button class="area-pill bg-mat text-white active" data-area="mat">MAT</button>
           <button class="area-pill bg-lc text-white" data-area="lc">LC</button>
           <button class="area-pill bg-cn text-white" data-area="cn">CN</button>
-          <button class="area-pill bg-cc text-white" data-area="soc">SOC</button>
+          <button class="area-pill bg-cc text-white" data-area="soc">CC</button>
           <button class="area-pill bg-ing text-white" data-area="ing">ING</button>
         </div>
       </div>
