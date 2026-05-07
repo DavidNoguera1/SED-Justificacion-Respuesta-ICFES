@@ -369,6 +369,68 @@
   align-items: flex-start;
 }
 
+/* Iconos de elementos cuando está colapsada */
+.info-sidebar-collapsed #infoSidebar #infoSidebarIcons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem 0.5rem;
+}
+
+.info-sidebar-icons {
+  display: none;
+}
+
+.info-sidebar-collapsed #infoSidebar #infoSidebarIcons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem 0.5rem;
+}
+
+.info-sidebar-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  background: var(--area-light);
+  color: var(--area-accent);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.info-sidebar-icon-btn:hover {
+  background: var(--area-accent);
+  color: white;
+  transform: scale(1.1);
+}
+
+.info-sidebar-icon-btn::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: calc(100% + 0.5rem);
+  top: 50%;
+  transform: translateY(-50%);
+  background: #1f2937;
+  color: white;
+  padding: 0.35rem 0.6rem;
+  border-radius: 0.35rem;
+  font-size: 0.7rem;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  z-index: 50;
+}
+
+.info-sidebar-icon-btn:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
 #infoSidebarContent::-webkit-scrollbar {
   width: 4px;
 }

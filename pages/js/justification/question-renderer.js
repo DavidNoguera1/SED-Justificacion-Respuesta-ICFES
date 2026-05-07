@@ -200,7 +200,7 @@ function renderAsideContent(data) {
 
   aside.innerHTML = `
     ${hasTechnicalFields ? `
-    <div class="collapsible-section" data-collapsed="false">
+    <div class="collapsible-section" data-collapsed="false" id="tech-spec">
       <section class="side-card">
         <div class="flex items-center justify-between mb-4">
           <h3 class="learning-eyebrow mb-0">Ficha tecnica</h3>
@@ -222,13 +222,13 @@ function renderAsideContent(data) {
     ` : ''}
 
     ${hasValue(mediaInteractiva) ? `
-    <section class="side-card">
+    <section class="side-card" id="media-section">
       <h3 class="learning-eyebrow mb-4">Media interactiva</h3>
       <div class="media-frame media-frame--small">${renderMedia(mediaInteractiva)}</div>
     </section>
     ` : ''}
 
-    <section class="side-card">
+    <section class="side-card" id="glossary-section">
       <div class="flex items-center gap-3 mb-4">
         <span class="aside-icon"><i class="fas fa-spell-check"></i></span>
         <h3 class="font-bold text-slate-800">Glosario de palabras</h3>
@@ -236,7 +236,7 @@ function renderAsideContent(data) {
       ${renderGlossary(glossaryItems)}
     </section>
 
-    <section class="side-card">
+    <section class="side-card" id="curious-section">
       <div class="flex items-center gap-3 mb-3">
         <span class="aside-icon"><i class="fas fa-lightbulb"></i></span>
         <h3 class="font-bold text-slate-800">Dato curioso</h3>
@@ -249,7 +249,7 @@ function renderAsideContent(data) {
       )}
     </section>
 
-    <section class="side-card learning-card--danger">
+    <section class="side-card learning-card--danger" id="error-section">
       <div class="flex items-center gap-3 mb-3">
         <span class="aside-icon"><i class="fas fa-bug"></i></span>
         <h3 class="font-bold text-slate-800">Error comun</h3>

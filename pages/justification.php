@@ -105,6 +105,26 @@
           </div>
         </div>
       </div>
+      
+      <!-- Iconos de elementos (visible cuando está colapsado) -->
+      <div id="infoSidebarIcons" class="info-sidebar-icons">
+        <button class="info-sidebar-icon-btn" data-target="tech-spec" data-tooltip="Ficha técnica">
+          <i class="fas fa-clipboard-list"></i>
+        </button>
+        <button class="info-sidebar-icon-btn" data-target="media-section" data-tooltip="Media">
+          <i class="fas fa-play-circle"></i>
+        </button>
+        <button class="info-sidebar-icon-btn" data-target="glossary-section" data-tooltip="Glosario">
+          <i class="fas fa-spell-check"></i>
+        </button>
+        <button class="info-sidebar-icon-btn" data-target="curious-section" data-tooltip="Dato curioso">
+          <i class="fas fa-lightbulb"></i>
+        </button>
+        <button class="info-sidebar-icon-btn" data-target="error-section" data-tooltip="Error común">
+          <i class="fas fa-bug"></i>
+        </button>
+      </div>
+      
       <div id="infoSidebarContent" class="flex-1 overflow-y-auto p-4 space-y-4 transition-all duration-300">
         <div class="side-card loading-skeleton h-32"></div>
         <div class="side-card loading-skeleton h-32"></div>
@@ -186,30 +206,62 @@
 <script src="js/justification/interactions.js?v=20260428_perf_1"></script>
 <script>
   let infoSidebarCollapsed = false;
+  document.getElementById('showInfoSidebar').style.right = '1rem';
   
-  function toggleInfoSidebar() {
+  function toggleInfoSidebar(targetId) {
     const toggleBtn = document.getElementById('toggleInfoCollapse');
     const showBtn = document.getElementById('showInfoSidebar');
     
-    infoSidebarCollapsed = !infoSidebarCollapsed;
+    infoSidebarCollapsed = false;
+    
+    document.body.classList.remove('info-sidebar-collapsed');
+    toggleBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+    toggleBtn.title = 'Ocultar panel';
+    showBtn.classList.add('opacity-0', 'pointer-events-none');
+    showBtn.style.right = '1rem';
+    
+    if (targetId) {
+      setTimeout(function() {
+        const target = document.getElementById(targetId);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 150);
+    }
+  }
+  
+  document.getElementById('toggleInfoCollapse').addEventListener('click', function() {
+    const toggleBtn = document.getElementById('toggleInfoCollapse');
+    const showBtn = document.getElementById('showInfoSidebar');
     
     if (infoSidebarCollapsed) {
+      // Abrir sidebar
+      toggleInfoSidebar(null);
+    } else {
+      // Colapsar sidebar
+      infoSidebarCollapsed = true;
       document.body.classList.add('info-sidebar-collapsed');
       toggleBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
       toggleBtn.title = 'Mostrar panel';
       showBtn.classList.remove('opacity-0', 'pointer-events-none');
-    } else {
-      document.body.classList.remove('info-sidebar-collapsed');
-      toggleBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
-      toggleBtn.title = 'Ocultar panel';
-      showBtn.classList.add('opacity-0', 'pointer-events-none');
+      showBtn.style.right = '4.5rem';
     }
-  }
+  });
   
-  document.getElementById('toggleInfoCollapse').addEventListener('click', toggleInfoSidebar);
   document.getElementById('showInfoSidebar').addEventListener('click', function() {
-    document.getElementById('showInfoSidebar').classList.add('opacity-0', 'pointer-events-none');
-    toggleInfoSidebar();
+    const showBtn = document.getElementById('showInfoSidebar');
+    showBtn.classList.add('opacity-0', 'pointer-events-none');
+    showBtn.style.right = '1rem';
+    toggleInfoSidebar(null);
+  });
+  
+  // Icon navigation
+  document.getElementById('infoSidebarIcons').addEventListener('click', function(e) {
+    const btn = e.target.closest('.info-sidebar-icon-btn');
+    if (btn) {
+      const targetId = btn.dataset.target;
+      toggleInfoSidebar(targetId);
+    }
   });
 </script>
 </body>
