@@ -133,11 +133,6 @@
     </div>
   </aside>
 
-  <!-- Botón flotante para mostrar sidebar derecha cuando está oculta -->
-  <button id="showInfoSidebar" class="fixed right-4 top-1/2 transform -translate-y-1/2 z-25 bg-mat-dark text-white p-3 rounded-lg shadow-lg hover:bg-mat-light transition opacity-0 pointer-events-none" title="Mostrar recursos">
-    <i class="fas fa-chevron-left"></i>
-  </button>
-
   <!-- Contenido principal -->
   <div id="mainContent" class="ml-72 mr-80 transition-all duration-300">
     <!-- Header dinámico según área -->
@@ -205,19 +200,15 @@
 <script src="js/justification/interactions.js?v=20260428_perf_1"></script>
 <script>
   let infoSidebarCollapsed = false;
-  document.getElementById('showInfoSidebar').style.right = '1rem';
   
   function toggleInfoSidebar(targetId) {
     const toggleBtn = document.getElementById('toggleInfoCollapse');
-    const showBtn = document.getElementById('showInfoSidebar');
     
     infoSidebarCollapsed = false;
     
     document.body.classList.remove('info-sidebar-collapsed');
     toggleBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
     toggleBtn.title = 'Ocultar panel';
-    showBtn.classList.add('opacity-0', 'pointer-events-none');
-    showBtn.style.right = '1rem';
     
     if (targetId) {
       setTimeout(function() {
@@ -231,30 +222,17 @@
   
   document.getElementById('toggleInfoCollapse').addEventListener('click', function() {
     const toggleBtn = document.getElementById('toggleInfoCollapse');
-    const showBtn = document.getElementById('showInfoSidebar');
     
     if (infoSidebarCollapsed) {
-      // Abrir sidebar
       toggleInfoSidebar(null);
     } else {
-      // Colapsar sidebar
       infoSidebarCollapsed = true;
       document.body.classList.add('info-sidebar-collapsed');
       toggleBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
       toggleBtn.title = 'Mostrar panel';
-      showBtn.classList.remove('opacity-0', 'pointer-events-none');
-      showBtn.style.right = '4.5rem';
     }
   });
   
-  document.getElementById('showInfoSidebar').addEventListener('click', function() {
-    const showBtn = document.getElementById('showInfoSidebar');
-    showBtn.classList.add('opacity-0', 'pointer-events-none');
-    showBtn.style.right = '1rem';
-    toggleInfoSidebar(null);
-  });
-  
-  // Icon navigation
   document.getElementById('infoSidebarIcons').addEventListener('click', function(e) {
     const btn = e.target.closest('.info-sidebar-icon-btn');
     if (btn) {
