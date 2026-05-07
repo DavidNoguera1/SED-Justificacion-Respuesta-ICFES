@@ -10,6 +10,61 @@ let sidebarCollapsed = false;
 let visibleCount = ITEMS_PER_PAGE;
 let currentQuestionId = null;
 let isSearchActive = false;
+let currentArea = 'mat';
+
+const API_QUESTION = '../api/questions.php';
+
+async function loadQuestionsForArea(area) {
+  currentArea = area;
+  visibleCount = ITEMS_PER_PAGE;
+  isSearchActive = false;
+  
+  updateAreaUI(area);
+  document.getElementById('sidebarQuestions').innerHTML = '<p class="text-xs text-gray-400 text-center py-4">Cargando preguntas...</p>';
+  
+  try {
+    const response = await fetch(API_QUESTION + '?subject=' + area + '&summary=true');
+    const data = await response.json();
+    
+    if (Array.isArray(data)) {
+      sidebarQuestions = data;
+      sidebarFiltered = [...data];
+    } else if (data.questions) {
+      sidebarQuestions = data.questions;
+      sidebarFiltered = [...data.questions];
+    } else {
+      sidebarQuestions = [];
+      sidebarFiltered = [];
+    }
+    
+    renderSidebar(sidebarFiltered, currentQuestionId, area);
+  } catch (e) {
+    console.error('Error loading questions:', e);
+    document.getElementById('sidebarQuestions').innerHTML = '<p class="text-xs text-red-400 text-center py-4">Error al cargar</p>';
+  }
+}
+
+function updateAreaUI(area) {
+  const config = AREA_CONFIG[area] || AREA_CONFIG.mat;
+  const header = document.getElementById('sidebarHeader');
+  const icon = document.getElementById('sidebarIcon');
+  const iconCollapsed = document.getElementById('sidebarIconCollapsed');
+  const sidebarAreaName = document.getElementById('sidebarAreaName');
+  
+  header.className = 'p-5 text-white bg-' + config.color + '-dark transition-colors duration-300';
+  icon.className = 'fas ' + config.icon + ' text-3xl opacity-90 mb-3 block';
+  iconCollapsed.className = 'fas ' + config.icon + ' text-2xl opacity-90 hidden';
+  sidebarAreaName.textContent = config.name;
+  
+  document.querySelectorAll('#areaSelector .area-pill').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.dataset.area === area) {
+      btn.classList.add('active');
+    }
+  });
+  
+  document.body.setAttribute('data-area', area);
+}
 
 function normalizeText(str) {
   if (!str) return '';
@@ -149,8 +204,11 @@ function getAreaColorClass(area) {
 
 function setupNavigation(area, currentId, subject, questionsList, useCache) {
   window._currentArea = area;
+  currentArea = area;
   currentQuestionId = currentId;
   isSearchActive = false;
+  
+  updateAreaUI(area);
   
   try {
     if (questionsList && Array.isArray(questionsList)) {
@@ -189,7 +247,11 @@ function setupNavigation(area, currentId, subject, questionsList, useCache) {
         if (newId === currentQuestionId) return;
         
         currentQuestionId = newId;
+        currentArea = newArea;
+        window._currentArea = newArea;
         window.ensureQuestionVisible(newId);
+        
+        updateAreaUI(newArea);
         
         history.pushState({id: newId, area: newArea}, '', 'justification.php?id=' + newId + '&area=' + newArea);
         await window.loadQuestion(newId, newArea, false);
@@ -212,6 +274,23 @@ function setupNavigation(area, currentId, subject, questionsList, useCache) {
 
       sidebarContainer.dataset.listenersAttached = 'true';
     }
+
+    const areaButtons = document.querySelectorAll('#areaSelector .area-pill');
+    areaButtons.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const newArea = this.dataset.area;
+        if (newArea !== currentArea) {
+          currentArea = newArea;
+          window._currentArea = newArea;
+          
+          loadQuestionsForArea(newArea).then(function() {
+            const firstQuestion = sidebarFiltered.length > 0 ? sidebarFiltered[0].id : 1;
+            history.pushState({id: firstQuestion, area: newArea}, '', 'justification.php?id=' + firstQuestion + '&area=' + newArea);
+            window.loadQuestion(firstQuestion, newArea, false);
+          });
+        }
+      });
+    });
   } catch (e) {
     console.error('Navigation error:', e);
   }

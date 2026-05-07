@@ -20,6 +20,9 @@
     #questionContent { min-height: 50vh; }
     .loading-skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
     @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    .area-pill { padding: 0.35rem 0.75rem; border-radius: 9999px; font-size: 0.7rem; font-weight: 600; transition: all 0.2s ease; cursor: pointer; }
+    .area-pill:hover { transform: scale(1.05); }
+    .area-pill.active { box-shadow: 0 0 0 2px white, 0 0 0 4px currentColor; }
   </style>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -69,6 +72,17 @@
             <i class="fas fa-folder w-5 text-center"></i>
             <span class="sidebar-text">Ver Área</span>
           </a>
+        </div>
+      </div>
+      
+      <!-- Selector de áreas -->
+      <div class="p-2 border-b border-gray-200 bg-gray-50 sidebar-text">
+        <div class="flex flex-wrap gap-1" id="areaSelector">
+          <button class="area-pill bg-mat text-white active" data-area="mat">MAT</button>
+          <button class="area-pill bg-lc text-white" data-area="lc">LC</button>
+          <button class="area-pill bg-cn text-white" data-area="cn">CN</button>
+          <button class="area-pill bg-cc text-white" data-area="soc">CC</button>
+          <button class="area-pill bg-ing text-white" data-area="ing">ING</button>
         </div>
       </div>
       
@@ -191,14 +205,14 @@
     </div>
   </div>
 </div>
-<script src="js/justification/config.js?v=20260428_perf_1"></script>
-<script src="js/justification/area.js?v=20260428_perf_1"></script>
-<script src="js/justification/content-utils.js?v=20260428_perf_1"></script>
-<script src="js/justification/render-helpers.js?v=20260428_perf_1"></script>
-<script src="js/justification/question-renderer.js?v=20260430_tech_fields"></script>
-<script src="js/justification/sidebar.js?v=20260428_perf_1"></script>
-<script src="js/justification/api.js?v=20260428_perf_1"></script>
-<script src="js/justification/interactions.js?v=20260428_perf_1"></script>
+<script src="js/justification/config.js?v=20260507_v1"></script>
+<script src="js/justification/area.js?v=20260507_v1"></script>
+<script src="js/justification/content-utils.js?v=20260507_v1"></script>
+<script src="js/justification/render-helpers.js?v=20260507_v1"></script>
+<script src="js/justification/question-renderer.js?v=20260507_v1"></script>
+<script src="js/justification/sidebar.js?v=20260507_v1"></script>
+<script src="js/justification/api.js?v=20260507_v1"></script>
+<script src="js/justification/interactions.js?v=20260507_v1"></script>
 <script>
   let infoSidebarCollapsed = false;
   

@@ -131,6 +131,9 @@ async function loadQuestion(id, areaUrl, isPreload) {
   const content = document.getElementById('questionContent');
   const forceRefresh = !isPreload && (new URLSearchParams(location.search).get('refresh') === '1');
 
+  if (!isPreload && window.configureArea) {
+    window.configureArea(areaUrl);
+  }
   if (!isPreload) {
     content.innerHTML = `
       <div class="learning-shell">
