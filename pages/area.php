@@ -122,8 +122,6 @@
       lc: 'Lectura Crítica',
       cn: 'Ciencias Naturales',
       cc: 'Competencias Ciudadanas',
-      soc: 'Competencias Ciudadanas',
-      en: 'Inglés',
       ing: 'Inglés'
     };
     
@@ -133,7 +131,6 @@
       cn: 'cn',
       cc: 'soc',
       soc: 'soc',
-      en: 'ing',
       ing: 'ing'
     };
     
@@ -142,7 +139,6 @@
       lc: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'],
       cn: ['⚛', '🧬', '🔬', '🧪', '🌿', '⚡', '🔥', '💧', '🌊'],
       cc: ['⚖️', '🤝', '🗳️', '🗣️', '📢', '👥', '👤', '🏛️', '🛡️'],
-      en: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'],
       ing: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
     };
     

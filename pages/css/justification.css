@@ -92,13 +92,13 @@
 .bg-lc-dark { background-color: #6B1A1A; }
 .bg-cn-dark { background-color: #1A4D2E; }
 .bg-cc-dark { background-color: #6B3800; }
-.bg-en-dark { background-color: #3B1259; }
+.bg-ing-dark { background-color: #3B1259; }
 
 .text-mat-dark { color: #1A3A5C; }
 .text-lc-dark { color: #6B1A1A; }
 .text-cn-dark { color: #1A4D2E; }
 .text-cc-dark { color: #6B3800; }
-.text-en-dark { color: #3B1259; }
+.text-ing-dark { color: #3B1259; }
 
 /* Badge de área */
 .area-badge {
@@ -149,7 +149,7 @@
 .section-lc { border-left: 4px solid #C0392B; }
 .section-cn { border-left: 4px solid #1E8449; }
 .section-cc { border-left: 4px solid #D4680B; }
-.section-en { border-left: 4px solid #7B2D8B; }
+.section-ing { border-left: 4px solid #7B2D8B; }
 
 /* ============================================================
  * OPCIONES DE RESPUESTA

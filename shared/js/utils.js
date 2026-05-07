@@ -6,7 +6,7 @@ const loadSVGIcon = (area, iconName) => {
     lc: { book: '📖', pen: '✏️', quote: '"', paragraph: '¶', magnify: '🔍' },
     cn: { atom: '⚛️', dna: '🧬', microscope: '🔬', beaker: '🧪', leaf: '🌿' },
     cc: { scale: '⚖️', hands: '🤝', map: '🗺️', shield: '🛡️', people: '👥' },
-    en: { 'letter-a': 'A', speech: '💬', flag: '🚩', grammar: '📝', abc: 'ABC' }
+    ing: { 'letter-a': 'A', speech: '💬', flag: '🚩', grammar: '📝', abc: 'ABC' }
   };
   return icons[area]?.[iconName] || '•';
 };
