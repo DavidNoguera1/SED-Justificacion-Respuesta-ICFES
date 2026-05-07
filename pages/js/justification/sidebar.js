@@ -253,6 +253,10 @@ function setupNavigation(area, currentId, subject, questionsList, useCache) {
         
         updateAreaUI(newArea);
         
+        if (newArea !== area) {
+          loadQuestionsForArea(newArea);
+        }
+        
         history.pushState({id: newId, area: newArea}, '', 'justification.php?id=' + newId + '&area=' + newArea);
         await window.loadQuestion(newId, newArea, false);
       });
@@ -282,12 +286,7 @@ function setupNavigation(area, currentId, subject, questionsList, useCache) {
         if (newArea !== currentArea) {
           currentArea = newArea;
           window._currentArea = newArea;
-          
-          loadQuestionsForArea(newArea).then(function() {
-            const firstQuestion = sidebarFiltered.length > 0 ? sidebarFiltered[0].id : 1;
-            history.pushState({id: firstQuestion, area: newArea}, '', 'justification.php?id=' + firstQuestion + '&area=' + newArea);
-            window.loadQuestion(firstQuestion, newArea, false);
-          });
+          loadQuestionsForArea(newArea);
         }
       });
     });
