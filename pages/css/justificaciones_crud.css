@@ -3,14 +3,32 @@
  * Estilos específicos para la página CRUD de justificaciones.
  * 
  * Dependencias:
- * - Tailwind CSS (via CDN)
- * - Font Awesome 6 (via CDN)
+ * - Tailwind CSS, via CDN
+ * - Font Awesome 6, via CDN
  */
 
 .bg-primary { background-color: #2F6EB5 !important; }
 .bg-primary-dark { background-color: #1a4a7a !important; }
 .text-primary { color: #2F6EB5 !important; }
 .ring-primary { --tw-ring-color: #2F6EB5 !important; }
+
+.bg-mat { background-color: #1a3a5c; }
+.bg-lc { background-color: #5b3fa0; }
+.bg-cn { background-color: #1e8a4a; }
+.bg-cc { background-color: #e8a020; }
+.bg-ing { background-color: #c0392b; }
+
+.bg-mat-light { background-color: #e8eef5; }
+.bg-lc-light { background-color: #ede8ff; }
+.bg-cn-light { background-color: #d4f0e2; }
+.bg-cc-light { background-color: #fef3d7; }
+.bg-ing-light { background-color: #fde8e6; }
+
+#sidebarIconCollapsed { display: none; }
+
+.question-item { transition: all 0.15s ease; }
+.question-item:hover { transform: translateX(2px); }
+.question-item.active { font-weight: 600; border-left: 3px solid; }
 
 #questionRef .prose img {
   max-width: 100%;
