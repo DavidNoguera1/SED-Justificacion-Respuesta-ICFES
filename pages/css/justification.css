@@ -93,12 +93,22 @@
 .bg-cn-dark { background-color: #1A4D2E; }
 .bg-cc-dark { background-color: #6B3800; }
 .bg-ing-dark { background-color: #3B1259; }
+.bg-soc-dark { background-color: #E8A020; }
 
 .text-mat-dark { color: #1A3A5C; }
 .text-lc-dark { color: #6B1A1A; }
 .text-cn-dark { color: #1A4D2E; }
 .text-cc-dark { color: #6B3800; }
 .text-ing-dark { color: #3B1259; }
+.text-soc-dark { color: #E8A020; }
+
+/* Colores claros para hover */
+.bg-mat-light { background-color: #2F6EB5; }
+.bg-lc-light { background-color: #8B2020; }
+.bg-cn-light { background-color: #2E6B4A; }
+.bg-cc-light { background-color: #8B5010; }
+.bg-ing-light { background-color: #5B2079; }
+.bg-soc-light { background-color: #F0B830; }
 
 /* Badge de área */
 .area-badge {
@@ -324,6 +334,64 @@
   margin-left: 4rem;
 }
 
+/* ============================================================
+ * SIDEBAR DE INFORMACIÓN DERECHA
+ * ============================================================ */
+
+#infoSidebar {
+  width: 20rem;
+}
+
+.info-sidebar-collapsed #infoSidebar {
+  width: 4rem;
+  overflow: hidden;
+}
+
+.info-sidebar-collapsed #infoSidebar #infoSidebarFull,
+.info-sidebar-collapsed #infoSidebar #infoSidebarContent {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.info-sidebar-collapsed #infoSidebar #infoSidebarIconCollapsed {
+  display: block !important;
+}
+
+.info-sidebar-collapsed #infoSidebar #toggleInfoCollapse {
+  padding: 0.5rem;
+}
+
+.info-sidebar-collapsed #infoSidebar .flex.items-start {
+  flex-direction: column;
+}
+
+.info-sidebar-collapsed #infoSidebar .flex.items-end {
+  align-items: flex-start;
+}
+
+#infoSidebarContent::-webkit-scrollbar {
+  width: 4px;
+}
+
+#infoSidebarContent::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#infoSidebarContent::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 2px;
+}
+
+/* Ajuste del main content cuando la sidebar derecha está colapsada */
+.info-sidebar-collapsed #mainContent {
+  margin-right: 4rem;
+}
+
+/* Transiciones suaves para el contenido */
+#infoSidebarContent > * {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
 #sidebarQuestions::-webkit-scrollbar {
   width: 4px;
 }
@@ -346,10 +414,7 @@ body {
 }
 
 .learning-shell {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 20rem;
-  gap: 1.5rem;
-  align-items: start;
+  display: block;
 }
 
 .learning-main,
@@ -679,14 +744,7 @@ body {
 }
 
 @media (max-width: 1100px) {
-  .learning-shell {
-    grid-template-columns: 1fr;
-  }
-
-  .learning-aside {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  /* Learning shell ahora es de una sola columna */
 }
 
 @media (max-width: 720px) {
@@ -707,10 +765,6 @@ body {
   #questionContent {
     padding-left: 1rem;
     padding-right: 1rem;
-  }
-
-  .learning-aside {
-    grid-template-columns: 1fr;
   }
 }
 

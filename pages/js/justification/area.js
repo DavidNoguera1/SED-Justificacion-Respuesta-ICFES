@@ -43,6 +43,8 @@ function configureArea(area) {
   const header = document.getElementById('headerArea');
   const sidebar = document.getElementById('questionSidebar');
   const sidebarHeader = document.getElementById('sidebarHeader');
+  const infoSidebarHeader = document.getElementById('infoSidebarHeader');
+  const showInfoBtn = document.getElementById('showInfoSidebar');
   const badge = document.getElementById('areaBadge');
   const icon = document.getElementById('areaIcon');
   const sidebarIcon = document.getElementById('sidebarIcon');
@@ -50,6 +52,8 @@ function configureArea(area) {
 
   header.className = 'bg-' + config.color + '-dark text-white py-6 shadow-md transition-colors duration-300';
   sidebarHeader.className = 'p-5 text-white bg-' + config.color + '-dark transition-colors duration-300';
+  infoSidebarHeader.className = 'p-4 text-white bg-' + config.color + '-dark transition-colors duration-300';
+  showInfoBtn.className = 'fixed right-4 top-1/2 transform -translate-y-1/2 z-25 text-white p-3 rounded-lg shadow-lg transition opacity-0 pointer-events-none bg-' + config.color + '-dark hover:bg-' + config.color + '-light';
   badge.textContent = config.name + ' - ID: 0';
   icon.className = 'fas ' + config.icon + ' text-4xl opacity-80';
   sidebarIcon.className = 'fas ' + config.icon + ' text-3xl opacity-90 mb-3 block';

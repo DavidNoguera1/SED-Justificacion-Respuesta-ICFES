@@ -28,10 +28,11 @@
         extend: {
           colors: {
             mat: { light: '#e8eef5', DEFAULT: '#1a3a5c', dark: '#1a3a5c' },
-            lc: { light: '#ede8ff', DEFAULT: '#5b3fa0', dark: '#5b3fa0' },
+            lc: { light: '#ede8ff', DEFAULT: '#5b3fa0', dark: '#6B1A1A' },
             cn: { light: '#d4f0e2', DEFAULT: '#1e8a4a', dark: '#1e8a4a' },
             soc: { light: '#fef3d7', DEFAULT: '#e8a020', dark: '#e8a020' },
-            ing: { light: '#fde8e6', DEFAULT: '#c0392b', dark: '#c0392b' }
+            ing: { light: '#fde8e6', DEFAULT: '#c0392b', dark: '#3B1259' },
+            cc: { light: '#fef3d7', DEFAULT: '#e8a020', dark: '#6B3800' }
           }
         }
       }
@@ -87,8 +88,39 @@
     </div>
   </aside>
 
+  <!-- Sidebar de información derecha (ocultable) -->
+  <aside id="infoSidebar" class="fixed top-0 right-0 h-full w-80 flex flex-col z-30 transition-all duration-300">
+    <div class="flex flex-col h-full bg-gray-50 border-l border-gray-200">
+      <div id="infoSidebarHeader" class="p-4 bg-mat-dark text-white transition-colors duration-300">
+        <div class="flex items-start justify-between">
+          <div id="infoSidebarFull" class="transition-all duration-300">
+            <span class="text-xs font-bold uppercase tracking-wider opacity-80">Información</span>
+            <h2 class="text-lg font-extrabold mt-1">Recursos</h2>
+          </div>
+          <div class="flex flex-col items-end gap-4">
+            <i id="infoSidebarIconCollapsed" class="fas fa-info-circle text-2xl opacity-90 hidden"></i>
+            <button id="toggleInfoCollapse" class="p-2 rounded-lg hover:bg-white/20 transition text-white/80 hover:text-white" title="Ocultar panel">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div id="infoSidebarContent" class="flex-1 overflow-y-auto p-4 space-y-4 transition-all duration-300">
+        <div class="side-card loading-skeleton h-32"></div>
+        <div class="side-card loading-skeleton h-32"></div>
+        <div class="side-card loading-skeleton h-32"></div>
+        <div class="side-card loading-skeleton h-32"></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Botón flotante para mostrar sidebar derecha cuando está oculta -->
+  <button id="showInfoSidebar" class="fixed right-4 top-1/2 transform -translate-y-1/2 z-25 bg-mat-dark text-white p-3 rounded-lg shadow-lg hover:bg-mat-light transition opacity-0 pointer-events-none" title="Mostrar recursos">
+    <i class="fas fa-chevron-left"></i>
+  </button>
+
   <!-- Contenido principal -->
-  <div id="mainContent" class="ml-72 transition-all duration-300">
+  <div id="mainContent" class="ml-72 mr-80 transition-all duration-300">
     <!-- Header dinámico según área -->
     <header id="headerArea" class="bg-mat-dark text-white py-6 shadow-md transition-colors duration-300">
       <div class="max-w-7xl mx-auto px-8">
@@ -152,5 +184,33 @@
 <script src="js/justification/sidebar.js?v=20260428_perf_1"></script>
 <script src="js/justification/api.js?v=20260428_perf_1"></script>
 <script src="js/justification/interactions.js?v=20260428_perf_1"></script>
+<script>
+  let infoSidebarCollapsed = false;
+  
+  function toggleInfoSidebar() {
+    const toggleBtn = document.getElementById('toggleInfoCollapse');
+    const showBtn = document.getElementById('showInfoSidebar');
+    
+    infoSidebarCollapsed = !infoSidebarCollapsed;
+    
+    if (infoSidebarCollapsed) {
+      document.body.classList.add('info-sidebar-collapsed');
+      toggleBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+      toggleBtn.title = 'Mostrar panel';
+      showBtn.classList.remove('opacity-0', 'pointer-events-none');
+    } else {
+      document.body.classList.remove('info-sidebar-collapsed');
+      toggleBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+      toggleBtn.title = 'Ocultar panel';
+      showBtn.classList.add('opacity-0', 'pointer-events-none');
+    }
+  }
+  
+  document.getElementById('toggleInfoCollapse').addEventListener('click', toggleInfoSidebar);
+  document.getElementById('showInfoSidebar').addEventListener('click', function() {
+    document.getElementById('showInfoSidebar').classList.add('opacity-0', 'pointer-events-none');
+    toggleInfoSidebar();
+  });
+</script>
 </body>
 </html>

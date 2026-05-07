@@ -164,14 +164,6 @@ function renderQuestion(q, area, expanded) {
         </div>
         ` : ''}
       </div>
-
-      <aside class="learning-aside" id="learningAside">
-        <!-- Aside content loaded lazily -->
-        <div class="loading-skeleton h-32 side-card"></div>
-        <div class="loading-skeleton h-32 side-card"></div>
-        <div class="loading-skeleton h-32 side-card"></div>
-        <div class="loading-skeleton h-32 side-card"></div>
-      </aside>
     </div>
   `;
 
@@ -189,7 +181,7 @@ function renderQuestion(q, area, expanded) {
 }
 
 function renderAsideContent(data) {
-  const aside = document.getElementById('learningAside');
+  const aside = document.getElementById('infoSidebarContent');
   if (!aside) return;
 
   const { extendedDescription, mediaInteractiva, glossaryItems, datoCurioso, errorComun,
