@@ -52,4 +52,5 @@
 [data-area="lc"]  { --area-primary:var(--lc-primary);  --area-accent:var(--lc-accent);  --area-light:var(--lc-light);  --area-text:var(--lc-text);  --area-icon-op:var(--lc-icon-op);  }
 [data-area="cn"]  { --area-primary:var(--cn-primary);  --area-accent:var(--cn-accent);  --area-light:var(--cn-light);  --area-text:var(--cn-text);  --area-icon-op:var(--cn-icon-op);  }
 [data-area="cc"]  { --area-primary:var(--cc-primary);  --area-accent:var(--cc-accent);  --area-light:var(--cc-light);  --area-text:var(--cc-text);  --area-icon-op:var(--cc-icon-op);  }
+[data-area="soc"] { --area-primary:var(--cc-primary); --area-accent:var(--cc-accent); --area-light:var(--cc-light); --area-text:var(--cc-text); --area-icon-op:var(--cc-icon-op);  }
 [data-area="ing"] { --area-primary:var(--ing-primary); --area-accent:var(--ing-accent); --area-light:var(--ing-light); --area-text:var(--ing-text); --area-icon-op:var(--ing-icon-op); }
