@@ -62,8 +62,6 @@ function updateAreaUI(area) {
       btn.classList.add('active');
     }
   });
-  
-  document.body.setAttribute('data-area', area);
 }
 
 function normalizeText(str) {
