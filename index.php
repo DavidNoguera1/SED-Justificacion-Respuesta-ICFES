@@ -14,7 +14,8 @@
 
   <nav class="navbar">
     <div class="navbar-brand">
-      <img src="shared/logo.svg" alt="SED Nariño" class="navbar-logo" style="height: 40px;">
+      <span class="navbar-logo">📚</span>
+      <span class="navbar-title">SED Nariño</span>
     </div>
     <div class="navbar-links">
       <a href="#heroHeader" class="nav-link">Inicio</a>
@@ -23,24 +24,50 @@
     </div>
   </nav>
 
-  <header class="hero-header" id="heroHeader" data-area="mat">
-    <div class="hero-bg" id="heroBg"></div>
-    <div class="hero-content">
-      <div class="hero-badge">PREPARACIÓN SABER 11</div>
-      <h1 class="hero-title">Refuerzo Pedagógico<br></h1>
-      <p class="hero-subtitle">Domina cada concepto, entiende cada respuesta. Más que memorizar — comprende el <em>por qué</em> detrás de cada pregunta del ICFES.</p>
-      
-      <div class="tips-carousel">
-        <span class="tips-label">💡 Consejo del día:</span>
-        <span class="tip-current" id="tipCurrent"></span>
-      </div>
+<header class="hero-header" id="heroHeader" data-area="mat">
+
+  <div class="hero-bg" id="heroBg"></div>
+
+  <!-- TEXTO -->
+  <div class="hero-top">
+    <span class="hero-badge">Preparación Saber 11</span>
+
+    <h1 class="hero-title">
+      Refuerzo Pedagógico
+    </h1>
+
+    <p class="hero-subtitle">
+      Domina cada concepto, entiende cada respuesta.
+      Más que memorizar — comprende el
+      <em>por qué</em> detrás de cada pregunta del ICFES.
+    </p>
+  </div>
+
+  <!-- IMAGEN -->
+  <div class="hero-center">
+    <img
+      src="shared/img/hero-estudiantes.webp"
+      alt="Preparación Saber 11"
+      class="hero-image"
+    >
+  </div>
+
+  <!-- CONSEJOS -->
+  <div class="hero-bottom">
+    <div class="tips-carousel">
+      <span class="tips-label">💡 Consejo:</span>
+      <span class="tip-current" id="tipCurrent"></span>
     </div>
-  </header>
+  </div>
+
+</header>
 
   <main class="container">
     <section class="areas-section" id="areasSection">
-      <h2 class="section-title">Selecciona un área para comenzar</h2>
-      <p class="section-subtitle">Cada área contiene explicaciones detalladas para que entiendas la lógica detrás de cada respuesta.</p>
+      <div class="section-header">
+        <h2 class="section-title">Selecciona un área para comenzar</h2>
+        <p class="section-subtitle">Cada área contiene explicaciones detalladas para que entiendas la lógica detrás de cada respuesta.</p>
+      </div>
       
       <div class="areas-grid">
         <a class="area-card" href="pages/area.php?area=mat" data-area="mat">
@@ -51,7 +78,7 @@
           </div>
           <h3 class="area-card__name">Matemáticas</h3>
           <p class="area-card__desc">Álgebra, geometría, estadística y razonamiento cuantitativo</p>
-          <span class="area-card__cta">Explorar →</span>
+          <span class="area-card__cta">Explorar</span>
         </a>
 
         <a class="area-card" href="pages/area.php?area=lc" data-area="lc">
@@ -62,7 +89,7 @@
           </div>
           <h3 class="area-card__name">Lectura Crítica</h3>
           <p class="area-card__desc">Comprensión, inferencia y análisis de textos</p>
-          <span class="area-card__cta">Explorar →</span>
+          <span class="area-card__cta">Explorar</span>
         </a>
 
         <a class="area-card" href="pages/area.php?area=cn" data-area="cn">
@@ -73,7 +100,7 @@
           </div>
           <h3 class="area-card__name">Ciencias Naturales</h3>
           <p class="area-card__desc">Física, química, biología y método científico</p>
-          <span class="area-card__cta">Explorar →</span>
+          <span class="area-card__cta">Explorar</span>
         </a>
 
         <a class="area-card" href="pages/area.php?area=cc" data-area="cc">
@@ -84,7 +111,7 @@
           </div>
           <h3 class="area-card__name">Competencias Ciudadanas</h3>
           <p class="area-card__desc">Pensamiento social, participación y convivencia</p>
-          <span class="area-card__cta">Explorar →</span>
+          <span class="area-card__cta">Explorar</span>
         </a>
 
         <a class="area-card" href="pages/area.php?area=ing" data-area="ing">
@@ -95,7 +122,7 @@
           </div>
           <h3 class="area-card__name">Inglés</h3>
           <p class="area-card__desc">Comprensión lectora, gramática y vocabulario</p>
-          <span class="area-card__cta">Explorar →</span>
+          <span class="area-card__cta">Explorar</span>
         </a>
       </div>
     </section>
@@ -147,8 +174,9 @@
           top: ${Math.random() * 90 + 5}%;
           left: ${Math.random() * 90 + 5}%;
           font-size: ${35 + Math.random() * 55}px;
+          opacity: ${0.06 + Math.random() * 0.04};
+          animation: float ${12 + Math.random() * 12}s ease-in-out infinite;
           animation-delay: ${Math.random() * 5}s;
-          animation-duration: ${12 + Math.random() * 12}s;
         `;
         canvas.appendChild(el);
       }
@@ -156,7 +184,9 @@
 
     function updateArea(area) {
       const header = document.getElementById('heroHeader');
+      const areasSection = document.getElementById('areasSection');
       header.dataset.area = area;
+      areasSection.dataset.area = area;
       spawnBackgroundIcons(area);
     }
 
