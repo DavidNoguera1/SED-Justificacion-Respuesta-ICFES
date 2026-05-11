@@ -3,8 +3,8 @@
  * Carga unificada de pregunta con cache inmediato y refresco en segundo plano.
  */
 
-const CACHE_PREFIX = 'qc_v2_';
-const LEGACY_CACHE_PREFIX = 'qc_';
+const CACHE_PREFIX = 'qc_v3_';
+const LEGACY_CACHE_PREFIX = 'qc_v2_';
 const CACHE_EXPIRY = 1000 * 60 * 5;
 
 function getCacheKey(id) {
@@ -202,7 +202,19 @@ async function loadQuestion(id, areaUrl, isPreload) {
 window.loadQuestion = loadQuestion;
 
 async function initJustification() {
-  const params = new URLSearchParams(location.search);
+  // Clean up old caches that don't have customName
+  try {
+    const keysToRemove = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && (key.startsWith('qc_v2_') || key.startsWith('qc_'))) {
+        keysToRemove.push(key);
+      }
+    }
+    keysToRemove.forEach(k => localStorage.removeItem(k));
+  } catch (e) {}
+  
+  const params = new URLSearchParams(window.location.search);
   const id = parseInt(params.get('id'));
   const areaUrl = params.get('area') || 'mat';
 

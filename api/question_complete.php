@@ -93,7 +93,11 @@ function getJustificacionExpandida($conn, $idPregunta) {
 }
 
 function getQuestionsBySubject($conn, $subject) {
-    $stmt = $conn->prepare("SELECT id, text_content, subject FROM questions WHERE subject = ? AND (activo IS NULL OR activo = 1) ORDER BY id ASC");
+    $stmt = $conn->prepare("SELECT q.id, q.text_content, q.subject, je.nombre_pregunta as custom_name 
+                           FROM questions q 
+                           LEFT JOIN justificaciones_expandidas je ON q.id = je.idPregunta 
+                           WHERE q.subject = ? AND (q.activo IS NULL OR q.activo = 1) 
+                           ORDER BY q.id ASC");
     $stmt->bind_param('s', $subject);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -103,6 +107,7 @@ function getQuestionsBySubject($conn, $subject) {
         $questions[] = [
             'id' => (int) $row['id'],
             'text' => $row['text_content'] ?? '',
+            'customName' => !empty($row['custom_name']) ? $row['custom_name'] : null,
             'subject' => $row['subject']
         ];
     }

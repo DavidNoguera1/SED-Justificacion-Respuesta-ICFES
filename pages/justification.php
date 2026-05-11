@@ -205,14 +205,14 @@
     </div>
   </div>
 </div>
-<script src="js/justification/config.js?v=20260507_v1"></script>
-<script src="js/justification/area.js?v=20260507_v1"></script>
-<script src="js/justification/content-utils.js?v=20260507_v1"></script>
-<script src="js/justification/render-helpers.js?v=20260507_v1"></script>
-<script src="js/justification/question-renderer.js?v=20260507_v1"></script>
-<script src="js/justification/sidebar.js?v=20260507_v1"></script>
-<script src="js/justification/api.js?v=20260507_v1"></script>
-<script src="js/justification/interactions.js?v=20260507_v1"></script>
+<script src="js/justification/config.js?v=20260511_v1"></script>
+<script src="js/justification/area.js?v=20260511_v1"></script>
+<script src="js/justification/content-utils.js?v=20260511_v1"></script>
+<script src="js/justification/render-helpers.js?v=20260511_v1"></script>
+<script src="js/justification/question-renderer.js?v=20260511_v1"></script>
+<script src="js/justification/sidebar.js?v=20260511_v1"></script>
+<script src="js/justification/api.js?v=20260511_v1"></script>
+<script src="js/justification/interactions.js?v=20260511_v1"></script>
 <script>
   let infoSidebarCollapsed = false;
   

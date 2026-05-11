@@ -13,6 +13,7 @@ let isSearchActive = false;
 let currentArea = 'mat';
 
 const API_QUESTION = '../api/questions.php';
+const SIDEBAR_VERSION = '20260511_v1';
 
 async function loadQuestionsForArea(area) {
   currentArea = area;
@@ -23,7 +24,7 @@ async function loadQuestionsForArea(area) {
   document.getElementById('sidebarQuestions').innerHTML = '<p class="text-xs text-gray-400 text-center py-4">Cargando preguntas...</p>';
   
   try {
-    const response = await fetch(API_QUESTION + '?subject=' + area + '&summary=true');
+    const response = await fetch(API_QUESTION + '?subject=' + area + '&summary=true&v=' + SIDEBAR_VERSION, { cache: 'no-cache' });
     const data = await response.json();
     
     if (Array.isArray(data)) {
@@ -96,6 +97,7 @@ function filterSidebarQuestions(searchTerm) {
   } else {
     sidebarFiltered = sidebarQuestions.filter(q => {
       const searchFields = [
+        q.customName || '',
         q.text || '',
         ...(q.options || [])
       ].join(' ');
@@ -135,7 +137,8 @@ function renderSidebar(questions, currentId, area) {
   
   container.innerHTML = toRender.map(q => {
     const isActive = q.id === currentId;
-    const preview = q.text ? q.text.replace(/<[^>]+>/g, '').trim().substring(0, 70) : 'Sin texto';
+    const displayText = q.customName || q.text;
+    const preview = displayText ? displayText.replace(/<[^>]+>/g, '').trim().substring(0, 70) : 'Sin texto';
     const truncated = preview.length >= 70 ? preview + '...' : preview;
     return `
       <a href="justification.php?id=${q.id}&area=${area}" 

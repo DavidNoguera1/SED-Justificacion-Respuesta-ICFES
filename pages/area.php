@@ -266,7 +266,7 @@
         const item = document.createElement('a');
         item.href = 'justification.php?id=' + q.id + '&area=' + currentArea;
         item.className = 'question-list-item';
-        const qtext = q.text || 'Pregunta #' + q.id;
+        const qtext = q.customName || q.text || 'Pregunta #' + q.id;
         item.innerHTML = '<span class="qli-id">#' + q.id + '</span><p class="qli-text">' + truncate(qtext, 80) + '</p><span class="qli-arrow">→</span>';
         fragment.appendChild(item);
       });
@@ -367,7 +367,7 @@
       const searchTerm = normalizeText(document.getElementById('filter-search').value.trim());
       
       filteredQuestions = allQuestions.filter(q => {
-        const searchFields = q.searchText || [q.text || '', q.context || '', ...(q.options || [])].join(' ');
+        const searchFields = q.searchText || [q.customName || '', q.text || '', q.context || '', ...(q.options || [])].join(' ');
         if (searchTerm && !normalizeText(searchFields).includes(searchTerm)) {
           return false;
         }

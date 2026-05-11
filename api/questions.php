@@ -16,18 +16,20 @@ require_once __DIR__ . '/cache.php';
 function getQuestions($subject = null, $activeOnly = true, $filters = [], $summary = false) {
     $conn = getConnection();
     
-    if ($summary) {
+if ($summary) {
         $sql = "SELECT 
-                    id,
-                    subject,
-                    context,
-                    text_content,
-                    options,
-                    competency,
-                    level,
-                    component,
-                    skill
-                FROM questions
+                    q.id,
+                    q.subject,
+                    q.context,
+                    q.text_content,
+                    q.options,
+                    q.competency,
+                    q.level,
+                    q.component,
+                    q.skill,
+                    je.nombre_pregunta as custom_name
+                FROM questions q
+                LEFT JOIN justificaciones_expandidas je ON q.id = je.idPregunta
                 WHERE 1=1";
     } else {
         $sql = "SELECT 
@@ -124,10 +126,11 @@ function transformQuestionSummary($row) {
         implode(' ', $options),
     ]));
 
-    return [
+return [
         'id' => (int) $row['id'],
         'subject' => $row['subject'],
         'text' => $row['text_content'] ?? '',
+        'customName' => !empty($row['custom_name']) ? $row['custom_name'] : null,
         'competency' => $row['competency'] ?? '',
         'level' => $row['level'] ?? '',
         'component' => $row['component'] ?? '',

@@ -37,7 +37,7 @@ async function loadQuestionsForArea(area) {
   document.getElementById('sidebarQuestions').innerHTML = '<p class="text-xs text-gray-400 text-center py-4">Cargando preguntas...</p>';
   
   try {
-    const response = await fetch(API_QUESTION + '?subject=' + area + '&summary=true');
+    const response = await fetch(API_QUESTION + '?subject=' + area + '&summary=true&v=' + SIDEBAR_VERSION, { cache: 'no-cache' });
     const data = await response.json();
     
     if (Array.isArray(data)) {
@@ -86,7 +86,7 @@ function filterSidebarQuestions(searchTerm) {
     sidebarFiltered = [...sidebarQuestions];
   } else {
     sidebarFiltered = sidebarQuestions.filter(q => {
-      const searchFields = [q.text || '', q.context || ''].join(' ');
+      const searchFields = [q.customName || '', q.text || '', q.context || ''].join(' ');
       return normalizeText(searchFields).includes(term);
     });
   }
@@ -108,7 +108,8 @@ function renderSidebar() {
   
   container.innerHTML = toRender.map(q => {
     const isActive = q.id === currentQuestionId;
-    const preview = q.text ? q.text.replace(/<[^>]+>/g, '').trim().substring(0, 60) : 'Sin texto';
+    const displayText = q.customName || q.text;
+    const preview = displayText ? displayText.replace(/<[^>]+>/g, '').trim().substring(0, 60) : 'Sin texto';
     const truncated = preview.length >= 60 ? preview + '...' : preview;
     const areaConfig = AREA_CONFIG[currentArea] || AREA_CONFIG.mat;
     const activeClass = isActive 
