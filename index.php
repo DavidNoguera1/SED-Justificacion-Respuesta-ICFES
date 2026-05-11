@@ -14,8 +14,7 @@
 
   <nav class="navbar">
     <div class="navbar-brand">
-      <span class="navbar-logo">📚</span>
-      <span class="navbar-title">SED Nariño</span>
+      <img src="shared/logo.svg" alt="SED Nariño" class="navbar-logo" style="height: 28px; width: auto;">
     </div>
     <div class="navbar-links">
       <a href="#heroHeader" class="nav-link">Inicio</a>
