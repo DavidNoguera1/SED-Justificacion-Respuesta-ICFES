@@ -22,6 +22,7 @@
   </script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="css/justificaciones_crud.css">
+  <link rel="icon" href="../shared/img/favicon.png" type="image/png">
   <style>
     body.sidebar-collapsed #mainContent { margin-left: 4rem; }
     body:not(.sidebar-collapsed) #mainContent { margin-left: 18rem; }

@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="../shared/css/components.css?v=20260428_perf_1">
   <link rel="stylesheet" href="../shared/css/backgrounds.css?v=20260428_perf_1">
   <link rel="stylesheet" href="css/area.css?v=20260428_perf_1">
+  <link rel="icon" href="../shared/img/favicon.png" type="image/png">
 </head>
 <body>
 

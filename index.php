@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="shared/css/layout.css">
   <link rel="stylesheet" href="shared/css/components.css">
   <link rel="stylesheet" href="shared/css/index.css">
+  <link rel="icon" href="shared/img/favicon.png" type="image/png">
 </head>
 <body>
 

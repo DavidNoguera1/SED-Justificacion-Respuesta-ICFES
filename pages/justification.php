@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="../shared/css/variables.css?v=20260428_perf_1">
   <link rel="stylesheet" href="css/justification.css?v=20260428_perf_1">
   <link rel="stylesheet" href="../shared/css/backgrounds.css?v=20260428_perf_1">
+  <link rel="icon" href="../shared/img/favicon.png" type="image/png">
   <style>
     body { position: relative; }
     .bg-canvas { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
